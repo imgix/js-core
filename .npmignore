@@ -1,0 +1,3 @@
+# npm ignore file is to override the default of reading the .gitignore file
+# http://mammal.io/articles/using-es6-today/
+src/

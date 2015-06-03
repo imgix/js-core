@@ -1,0 +1,20 @@
+{
+  "name": "imgix-core-js",
+  "description": "Common boilerplate for all imgix JavaScript-based functionality.",
+  "version": "0.1.0",
+  "scripts": {
+    "compile": "babel -d lib/ src/",
+    "prepublish": "npm run compile",
+    "test": "mocha --compilers js:babel/register"
+  },
+  "main": "lib/client.js",
+  "dependencies": {
+    "lodash": "^3.9.3",
+    "MD5": "^1.2.2"
+  },
+  "devDependencies": {
+    "babel": "^5.0.0",
+    "mocha": "^2.2.5",
+    "phantomjs": "^1.9.17"
+  }
+}
