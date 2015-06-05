@@ -33,9 +33,9 @@ console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h
 ```javascript
 import Client from "imgix/client";
 
-let imgixClient = new Client("my-social-network.imgix.net", "<SECURE TOKEN>"");
+let imgixClient = new Client("my-social-network.imgix.net", "<SECURE TOKEN>");
 let url = imgixClient.path("/path/to/image.png").toUrl({ w: 400, h: 300 }).toString();
-console.log(url) // => "https://my-social-network.imgix.net/users/1.png?w=400&h=300&s=…"
+console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h=300&s=…"
 ```
 
 ## Testing
