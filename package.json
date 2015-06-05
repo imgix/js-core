@@ -2,6 +2,7 @@
   "name": "imgix-core-js",
   "description": "Common boilerplate for all imgix JavaScript-based functionality.",
   "version": "0.1.0",
+  "repository": "https://github.com/imgix/imgix-core-js",
   "scripts": {
     "compile": "babel -d lib/ src/",
     "prepublish": "npm run compile",
@@ -9,8 +10,9 @@
   },
   "main": "lib/client.js",
   "dependencies": {
-    "lodash": "^3.9.3",
-    "MD5": "^1.2.2"
+    "MD5": "^1.2.2",
+    "URIjs": "^1.15.1",
+    "lodash.merge": "^3.3.1"
   },
   "devDependencies": {
     "babel": "^5.0.0",
