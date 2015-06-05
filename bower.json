@@ -1,0 +1,25 @@
+{
+  "name": "imgix-core-js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/imgix/imgix-core-js",
+  "authors": [
+    "kellysutton <michael.k.sutton@gmail.com>"
+  ],
+  "description": "Common boilerplate for all imgix JavaScript-based functionality.",
+  "main": "lib/client.js",
+  "moduleType": [
+    "amd",
+    "es6"
+  ],
+  "keywords": [
+    "imgix"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
