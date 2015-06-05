@@ -6,9 +6,8 @@
     "kellysutton <michael.k.sutton@gmail.com>"
   ],
   "description": "Common boilerplate for all imgix JavaScript-based functionality.",
-  "main": "lib/client.js",
+  "main": "src/client.js",
   "moduleType": [
-    "amd",
     "es6"
   ],
   "keywords": [
