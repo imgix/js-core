@@ -1,6 +1,6 @@
 # imgix-core-js
 
-imgix-core-js is an npm package that provides the common boilerplate for all imgix JavaScript-based functionality. This includes [imgix.js](https://github.com/imgix/imgix.js).
+imgix-core-js is an npm package that provides the common boilerplate for imgix server-side JavaScript-based functionality. For client-side imgix functionality, please see [imgix.js](http://www.imgix.com/imgix-js).
 
 imgix-core-js adheres to the [imgix-blueprint](https://github.com/imgix/imgix-blueprint) for definitions of its functionality.
 
