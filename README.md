@@ -10,22 +10,33 @@ imgix-core-js adheres to the [imgix-blueprint](https://github.com/imgix/imgix-bl
 npm install --save-dev imgix-core-js
 ```
 
+## ES6
+
+imgix-core-js and its tests are written in ES6 JavaScript. [Babel](https://babeljs.io/) is used for transpilation into the `lib/` directory.
+
 ## Using
 
 Depending on your module system, using imgx-core-js is done a few different ways. The most common entry point will be the `Client` class.
+
+### CommonJS
+
+```javascript
+var ImgixClient = require('imgix-core-js');
+
+var client = new ImgixClient("my-social-network.imgix.net", "<SECURE TOKEN>");
+var url = client.path("/path/to/image.png").toUrl({ w: 400, h: 300 }).toString();
+console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h=300&s=…"
+```
 
 ### ES6 Modules
 
 ```javascript
 import Client from "imgix/client";
 
-let imgixClient = new Client('my-source-address.imgix.net', '<SECURE TOKEN>');
-let url = imgixClient.path("/path/to/image.png").toString();
+let imgixClient = new Client("my-social-network.imgix.net", "<SECURE TOKEN>"");
+let url = imgixClient.path("/path/to/image.png").toUrl({ w: 400, h: 300 }).toString();
+console.log(url) // => "https://my-social-network.imgix.net/users/1.png?w=400&h=300&s=…"
 ```
-
-## ES6
-
-imgix-core-js and its tests are written in ES6 JavaScript. [Babel](https://babeljs.io/) is used for transpilation into the `lib/` directory.
 
 ## Testing
 
