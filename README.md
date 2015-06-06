@@ -47,3 +47,20 @@ imgix-core-js uses mocha for testing. Here’s how to run those tests:
 ```
 npm test
 ```
+
+## Publishing a new version
+
+Publishing a new version needs to be done for both NPM and Bower. To publish a new version of the NPM package:
+
+```bash
+$ npm publish
+```
+
+To publish a new version of the Bower package:
+
+```bash
+$ npm run compile_umd # dist/imgix-core-js.umd.js is the entry point for Bower
+$ git add -f dist/imgix-core-js.umd.js
+$ git tag -a vX.Y.Z
+$ git push origin --tags master
+```
