@@ -10,8 +10,8 @@
   },
   "main": "lib/client.js",
   "dependencies": {
-    "MD5": "^1.2.2",
     "URIjs": "^1.15.1",
+    "blueimp-md5": "^1.1.0",
     "lodash.merge": "^3.3.1"
   },
   "devDependencies": {

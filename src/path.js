@@ -1,4 +1,4 @@
-import md5 from "MD5";
+import { md5 } from "blueimp-md5";
 import URI from "URIjs";
 import merge from "lodash.merge";
 
