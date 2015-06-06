@@ -5,7 +5,8 @@
   "repository": "https://github.com/imgix/imgix-core-js",
   "scripts": {
     "compile": "babel -d lib/ src/",
-    "prepublish": "npm run compile",
+    "compile_umd": "babel --modules umd --module-id Imgix --out-file dist/imgix-core-js.umd.js src/imgix-core-js.js",
+    "prepublish": "npm run compile && npm run compile_umd",
     "test": "mocha --compilers js:babel/register"
   },
   "main": "lib/client.js",

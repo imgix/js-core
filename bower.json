@@ -5,6 +5,7 @@
   "authors": [
     "kellysutton <michael.k.sutton@gmail.com>"
   ],
+  "main": "dist/imgix-core-js.umd.js",
   "description": "Common boilerplate for all imgix JavaScript-based functionality.",
   "keywords": [
     "imgix"
