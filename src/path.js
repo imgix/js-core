@@ -1,6 +1,6 @@
 import { md5 } from "blueimp-md5";
 import URI from "URIjs";
-import merge from "lodash.merge";
+import _ from "lodash";
 
 export default class Path {
   constructor(path, host, token=null, secure=true) {
@@ -31,12 +31,12 @@ export default class Path {
   }
 
   toUrl(newParams) {
-    this.queryParams = merge(this.queryParams, newParams);
+    this.queryParams = _.merge(this.queryParams, newParams);
     return this;
   }
 
   _query() {
-    return URI.buildQuery(merge(this._queryWithoutSignature(), this._signature()));
+    return URI.buildQuery(_.merge(this._queryWithoutSignature(), this._signature()));
   }
 
   _queryWithoutSignature() {

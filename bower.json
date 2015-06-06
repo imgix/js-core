@@ -16,5 +16,10 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "uri.js": "~1.15.1",
+    "blueimp-md5": "~1.1.0",
+    "lodash": "~3.9.3"
+  }
 }
