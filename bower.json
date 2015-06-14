@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "uri.js": "~1.15.1",
-    "blueimp-md5": "~1.1.0",
-    "lodash": "~3.9.3"
+    "lodash": "~3.9.3",
+    "md5": "~0.3.0"
   }
 }
