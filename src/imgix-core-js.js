@@ -2,13 +2,17 @@ import md5 from "js-md5";
 import URI from "URIjs";
 import _ from "lodash";
 
+export const VERSION = "0.2.0";
+
 export class Path {
-  constructor(path, host, token=null, secure=true) {
+  constructor(path, host, token=null, secure=true, librarySignature="js", libraryVersion=VERSION) {
     this.path = path;
     this.host = host;
     this.token = token;
     this.secure = secure;
     this.queryParams = {};
+    this.librarySignature = librarySignature;
+    this.libraryVersion = libraryVersion;
 
     // We are dealing with a fully-qualified URL as a path, encode it
     if (this.path.indexOf("http") === 0) {
@@ -40,7 +44,13 @@ export class Path {
   }
 
   _queryWithoutSignature() {
-    return this.queryParams;
+    let query = this.queryParams;
+
+    if (this.librarySignature && this.libraryVersion) {
+      query.ixlib = `${this.librarySignature}-${this.libraryVersion}`;
+    }
+
+    return query;
   }
 
   _signature() {
@@ -60,13 +70,15 @@ export class Path {
 }
 
 export class Client {
-  constructor(host, token=null, secure=true) {
+  constructor(host, token=null, secure=true, librarySignature="js", libraryVersion=VERSION) {
     this.host = host;
     this.token = token;
     this.secure = secure;
+    this.librarySignature = librarySignature;
+    this.libraryVersion = libraryVersion;
   }
 
   path(urlPath) {
-    return new Path(urlPath, this.host, this.token, this.secure);
+    return new Path(urlPath, this.host, this.token, this.secure, this.librarySignature, this.libraryVersion);
   }
 }

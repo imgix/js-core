@@ -29,10 +29,16 @@
 
   var _2 = _interopRequireDefault(_lodash);
 
+  var VERSION = "0.2.0";
+
+  exports.VERSION = VERSION;
+
   var Path = (function () {
     function Path(path, host) {
       var token = arguments[2] === undefined ? null : arguments[2];
       var secure = arguments[3] === undefined ? true : arguments[3];
+      var librarySignature = arguments[4] === undefined ? "js" : arguments[4];
+      var libraryVersion = arguments[5] === undefined ? VERSION : arguments[5];
 
       _classCallCheck(this, Path);
 
@@ -41,6 +47,8 @@
       this.token = token;
       this.secure = secure;
       this.queryParams = {};
+      this.librarySignature = librarySignature;
+      this.libraryVersion = libraryVersion;
 
       // We are dealing with a fully-qualified URL as a path, encode it
       if (this.path.indexOf("http") === 0) {
@@ -77,7 +85,13 @@
     }, {
       key: "_queryWithoutSignature",
       value: function _queryWithoutSignature() {
-        return this.queryParams;
+        var query = this.queryParams;
+
+        if (this.librarySignature && this.libraryVersion) {
+          query.ixlib = "" + this.librarySignature + "-" + this.libraryVersion;
+        }
+
+        return query;
       }
     }, {
       key: "_signature",
@@ -106,18 +120,22 @@
     function Client(host) {
       var token = arguments[1] === undefined ? null : arguments[1];
       var secure = arguments[2] === undefined ? true : arguments[2];
+      var librarySignature = arguments[3] === undefined ? "js" : arguments[3];
+      var libraryVersion = arguments[4] === undefined ? VERSION : arguments[4];
 
       _classCallCheck(this, Client);
 
       this.host = host;
       this.token = token;
       this.secure = secure;
+      this.librarySignature = librarySignature;
+      this.libraryVersion = libraryVersion;
     }
 
     _createClass(Client, [{
       key: "path",
       value: function path(urlPath) {
-        return new Path(urlPath, this.host, this.token, this.secure);
+        return new Path(urlPath, this.host, this.token, this.secure, this.librarySignature, this.libraryVersion);
       }
     }]);
 
