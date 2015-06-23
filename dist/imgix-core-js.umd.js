@@ -1527,9 +1527,9 @@
 });
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define("Imgix", ["exports", "js-md5", "URIjs", "lodash/object/merge"], factory);
+    define("Imgix", ["exports", "js-md5", "URIjs", "./lodash/object/merge"], factory);
   } else if (typeof exports !== "undefined") {
-    factory(exports, require("js-md5"), require("URIjs"), require("lodash/object/merge"));
+    factory(exports, require("js-md5"), require("URIjs"), require("./lodash/object/merge"));
   } else {
     var mod = {
       exports: {}

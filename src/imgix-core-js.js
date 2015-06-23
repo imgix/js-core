@@ -1,6 +1,6 @@
 import md5 from "js-md5";
 import URI from "URIjs";
-import merge from "lodash/object/merge";
+import merge from "./lodash/object/merge";
 
 export const VERSION = "0.2.0";
 
