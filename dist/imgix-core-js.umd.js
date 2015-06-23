@@ -29,7 +29,7 @@
 
   var _URI = _interopRequireDefault(_URIjs);
 
-  var VERSION = "0.2.0";
+  var VERSION = "0.2.1";
 
   exports.VERSION = VERSION;
 
