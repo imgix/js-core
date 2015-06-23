@@ -1,7 +1,7 @@
 import md5 from "js-md5";
 import URI from "URIjs";
 
-export const VERSION = "0.2.0";
+export const VERSION = "0.2.1";
 
 export class Path {
   constructor(path, host, token=null, secure=true, librarySignature="js", libraryVersion=VERSION) {
