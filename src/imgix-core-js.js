@@ -1,6 +1,5 @@
 import md5 from "js-md5";
 import URI from "URIjs";
-import merge from "./lodash/object/merge";
 
 export const VERSION = "0.2.0";
 
@@ -35,12 +34,12 @@ export class Path {
   }
 
   toUrl(newParams) {
-    this.queryParams = merge(this.queryParams, newParams);
+    this.queryParams = Object.assign(this.queryParams, newParams);
     return this;
   }
 
   _query() {
-    return URI.buildQuery(merge(this._queryWithoutSignature(), this._signature()));
+    return URI.buildQuery(Object.assign(this._queryWithoutSignature(), this._signature()));
   }
 
   _queryWithoutSignature() {
