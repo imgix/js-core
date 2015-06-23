@@ -1,16 +1,16 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define("Imgix", ["exports", "js-md5", "URIjs", "lodash"], factory);
+    define("Imgix", ["exports", "js-md5", "URIjs"], factory);
   } else if (typeof exports !== "undefined") {
-    factory(exports, require("js-md5"), require("URIjs"), require("lodash"));
+    factory(exports, require("js-md5"), require("URIjs"));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod.exports, global.md5, global.URI, global._);
+    factory(mod.exports, global.md5, global.URI);
     global.Imgix = mod.exports;
   }
-})(this, function (exports, _jsMd5, _URIjs, _lodash) {
+})(this, function (exports, _jsMd5, _URIjs) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {
@@ -19,6 +19,8 @@
 
   var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
   function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
   function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26,8 +28,6 @@
   var _md5 = _interopRequireDefault(_jsMd5);
 
   var _URI = _interopRequireDefault(_URIjs);
-
-  var _2 = _interopRequireDefault(_lodash);
 
   var VERSION = "0.2.0";
 
@@ -50,7 +50,6 @@
       this.librarySignature = librarySignature;
       this.libraryVersion = libraryVersion;
 
-      // We are dealing with a fully-qualified URL as a path, encode it
       if (this.path.indexOf("http") === 0) {
         this.path = _URI["default"].encode(this.path);
       }
@@ -74,13 +73,13 @@
     }, {
       key: "toUrl",
       value: function toUrl(newParams) {
-        this.queryParams = _2["default"].merge(this.queryParams, newParams);
+        this.queryParams = _extends(this.queryParams, newParams);
         return this;
       }
     }, {
       key: "_query",
       value: function _query() {
-        return _URI["default"].buildQuery(_2["default"].merge(this._queryWithoutSignature(), this._signature()));
+        return _URI["default"].buildQuery(_extends(this._queryWithoutSignature(), this._signature()));
       }
     }, {
       key: "_queryWithoutSignature",

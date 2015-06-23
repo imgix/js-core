@@ -5,19 +5,20 @@
   "repository": "https://github.com/imgix/imgix-core-js",
   "scripts": {
     "assert_version": "node assert_version.js",
-    "compile": "babel -d lib/ src/",
-    "compile_umd": "babel --modules umd --module-id Imgix --out-file dist/imgix-core-js.umd.js src/imgix-core-js.js",
+    "compile": "babel --plugins object-assign -d lib/ src/",
+    "compile_umd": "babel --plugins object-assign --no-comments --modules umd --module-id Imgix --out-file dist/imgix-core-js.umd.js src/imgix-core-js.js",
     "prepublish": "npm run compile && npm run compile_umd && npm run assert_version",
     "test": "mocha --compilers js:babel/register"
   },
   "main": "lib/client.js",
   "dependencies": {
     "URIjs": "^1.15.1",
-    "js-md5": "^0.3.0",
-    "lodash": "^3.3.1"
+    "js-md5": "^0.3.0"
   },
   "devDependencies": {
     "babel": "^5.0.0",
+    "babel-core": "^5.6.4",
+    "babel-plugin-object-assign": "^1.1.0",
     "mocha": "^2.2.5",
     "phantomjs": "^1.9.17"
   }
