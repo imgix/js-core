@@ -11,13 +11,13 @@ imgix-core-js adheres to the [imgix-blueprint](https://github.com/imgix/imgix-bl
 imgix-core-js can be installed as either via npm or via bower:
 
 ```
-npm install --save imgix-core-js
+$ npm install --save imgix-core-js
 ```
 
 or 
 
 ```
-bower install --save imgix-core-js
+$ bower install --save imgix-core-js
 ```
 
 ## ES6
@@ -42,6 +42,16 @@ console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h
 
 ```javascript
 import Client from "imgix/client";
+
+let imgixClient = new Client("my-social-network.imgix.net", "<SECURE TOKEN>");
+let url = imgixClient.path("/path/to/image.png").toUrl({ w: 400, h: 300 }).toString();
+console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h=300&s=…"
+```
+
+### In the browser
+
+```javascript
+// Include dist/imgix-core-js.umd.js somewhere on the head
 
 let imgixClient = new Client("my-social-network.imgix.net", "<SECURE TOKEN>");
 let url = imgixClient.path("/path/to/image.png").toUrl({ w: 400, h: 300 }).toString();
