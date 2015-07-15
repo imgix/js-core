@@ -8,8 +8,16 @@ imgix-core-js adheres to the [imgix-blueprint](https://github.com/imgix/imgix-bl
 
 ## Installing
 
+imgix-core-js can be installed as either via npm or via bower:
+
 ```
 npm install --save imgix-core-js
+```
+
+or 
+
+```
+bower install --save imgix-core-js
 ```
 
 ## ES6
