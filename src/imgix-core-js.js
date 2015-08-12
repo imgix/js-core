@@ -1,5 +1,5 @@
-import md5 from "js-md5";
-import URI from "URIjs";
+import crypto from "crypto";
+import url from "url";
 
 export const VERSION = "0.2.1";
 
@@ -15,7 +15,7 @@ export class Path {
 
     // We are dealing with a fully-qualified URL as a path, encode it
     if (this.path.indexOf("http") === 0) {
-      this.path = URI.encode(this.path);
+      this.path = encodeURIComponent(this.path);
     }
 
     if (this.path[0] !== "/") {
@@ -24,13 +24,13 @@ export class Path {
   }
 
   toString() {
-    let uri = new URI({
-      protocol: this.secure ? "https" : "http",
-      hostname: this.host,
-      path: this.path,
-      query: this._query()
+    return url.format({
+      protocol: this.secure ? "https:" : "http:",
+      slashes: true,
+      host: this.host,
+      query: this._query(),
+      pathname: this.path
     });
-    return uri.toString();
   }
 
   toUrl(newParams) {
@@ -39,7 +39,7 @@ export class Path {
   }
 
   _query() {
-    return URI.buildQuery(Object.assign(this._queryWithoutSignature(), this._signature()));
+    return Object.assign(this._queryWithoutSignature(), this._signature());
   }
 
   _queryWithoutSignature() {
@@ -52,19 +52,23 @@ export class Path {
     return query;
   }
 
+  _md5(input) {
+    return crypto.createHash('md5').update(input).digest('hex');
+  }
+
   _signature() {
     if (!this.token) {
       return {};
     }
 
     let signatureBase = this.token + this.path;
-    let query = URI.buildQuery(this.queryParams);
+    let query = url.format({query: this.queryParams});
 
     if (!!query) {
-      signatureBase += `?${query}`;
+      signatureBase += `${query}`;
     }
 
-    return { s: md5(signatureBase) };
+    return { s: this._md5(signatureBase) };
   }
 }
 
