@@ -6,7 +6,7 @@
   "scripts": {
     "assert_version": "node assert_version.js",
     "compile": "babel --plugins object-assign -d lib/ src/",
-    "compile_umd": "babel --plugins object-assign --no-comments --modules umd --module-id Imgix --out-file dist/imgix-core-js.umd.js src/imgix-core-js.js",
+    "compile_umd": "browserify -d -e src/imgix-core-js.js -t [ babelify --plugins object-assign --no-comments --modules umd --moduleId Imgix ] --outfile dist/imgix-core-js.umd.js",
     "prepublish": "npm run compile && npm run compile_umd && npm run assert_version",
     "test": "mocha --compilers js:babel/register"
   },
@@ -16,6 +16,8 @@
     "babel": "^5.0.0",
     "babel-core": "^5.6.4",
     "babel-plugin-object-assign": "^1.1.0",
+    "babelify": "^6.1.3",
+    "browserify": "^11.0.1",
     "mocha": "^2.2.5",
     "phantomjs": "^1.9.17"
   }
