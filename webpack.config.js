@@ -1,8 +1,6 @@
 module.exports = {
     context: __dirname + "/src",
-    
     entry: "./imgix-core-js.js",
-
     module: {
       loaders: [
         {
@@ -12,9 +10,8 @@ module.exports = {
         }
       ]
     },
-
     devtool: "cheap-module-source-map",
-
+    target: "web",
     output: {
         path: __dirname + "/dist",
         filename: "imgix-core-js.umd.js",

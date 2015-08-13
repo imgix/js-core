@@ -6,7 +6,7 @@
   "scripts": {
     "assert_version": "node assert_version.js",
     "compile": "babel --plugins object-assign -d lib/ src/",
-    "compile_umd": "webpack",
+    "compile_umd": "webpack -p",
     "prepublish": "npm run compile && npm run compile_umd && npm run assert_version",
     "test": "mocha --compilers js:babel/register"
   },
