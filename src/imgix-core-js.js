@@ -1,5 +1,4 @@
-import crypto from "crypto";
-import url from "url";
+import md5 from "js-md5";
 
 export const VERSION = "0.2.1";
 
@@ -24,13 +23,12 @@ export class Path {
   }
 
   toString() {
-    return url.format({
-      protocol: this.secure ? "https:" : "http:",
-      slashes: true,
-      host: this.host,
-      query: this._query(),
-      pathname: this.path
-    });
+    const protocol = this.secure ? "https://" : "http://";
+    const host = this.host;
+    const path = this.path;
+    const query = this._query();
+
+    return `${protocol}${host}${path}${query}`;
   }
 
   toUrl(newParams) {
@@ -38,8 +36,24 @@ export class Path {
     return this;
   }
 
+  _toQueryString(queryParams) {
+    let r20 = /%20/g;
+
+    let queryStringComponents = Object.keys(queryParams).map((key) => {
+      let encodedKey = encodeURIComponent(key);
+      let encodedValue = encodeURIComponent(queryParams[key]);
+
+      return `${encodedKey}=${encodedValue}`;
+    });
+
+    return queryStringComponents.join("&").replace(r20, "+");
+  }
+
   _query() {
-    return Object.assign(this._queryWithoutSignature(), this._signature());
+    let queryParams = Object.assign(this._queryWithoutSignature(), this._signature());
+    let queryString = this._toQueryString(queryParams);
+
+    return( queryString ? `?${queryString}` : '' );
   }
 
   _queryWithoutSignature() {
@@ -52,23 +66,19 @@ export class Path {
     return query;
   }
 
-  _md5(input) {
-    return crypto.createHash('md5').update(input).digest('hex');
-  }
-
   _signature() {
     if (!this.token) {
       return {};
     }
 
     let signatureBase = this.token + this.path;
-    let query = url.format({query: this.queryParams});
+    let query = this._toQueryString(this.queryParams);
 
     if (!!query) {
-      signatureBase += `${query}`;
+      signatureBase += `?${query}`;
     }
 
-    return { s: this._md5(signatureBase) };
+    return { s: md5(signatureBase) };
   }
 }
 

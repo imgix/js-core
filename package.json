@@ -6,19 +6,21 @@
   "scripts": {
     "assert_version": "node assert_version.js",
     "compile": "babel --plugins object-assign -d lib/ src/",
-    "compile_umd": "webpack -p",
+    "compile_umd": "babel --out-file dist/imgix-core-js.umd.js src/imgix-core-js.js",
+    "compile_all": "npm run compile && npm run compile_umd",
     "prepublish": "npm run compile && npm run compile_umd && npm run assert_version",
     "test": "mocha --compilers js:babel/register"
   },
   "main": "lib/client.js",
-  "dependencies": {},
+  "dependencies": {
+    "js-md5": "^0.3.0"
+  },
   "devDependencies": {
     "babel": "^5.0.0",
     "babel-core": "^5.6.4",
     "babel-loader": "^5.3.2",
     "babel-plugin-object-assign": "^1.1.0",
     "mocha": "^2.2.5",
-    "phantomjs": "^1.9.17",
-    "webpack": "^1.11.0"
+    "phantomjs": "^1.9.17"
   }
 }
