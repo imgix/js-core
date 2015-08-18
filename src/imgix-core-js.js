@@ -1,5 +1,4 @@
 import md5 from "js-md5";
-import URI from "URIjs";
 
 export const VERSION = "0.2.1";
 
@@ -15,7 +14,7 @@ export class Path {
 
     // We are dealing with a fully-qualified URL as a path, encode it
     if (this.path.indexOf("http") === 0) {
-      this.path = URI.encode(this.path);
+      this.path = encodeURIComponent(this.path);
     }
 
     if (this.path[0] !== "/") {
@@ -24,13 +23,12 @@ export class Path {
   }
 
   toString() {
-    let uri = new URI({
-      protocol: this.secure ? "https" : "http",
-      hostname: this.host,
-      path: this.path,
-      query: this._query()
-    });
-    return uri.toString();
+    const protocol = this.secure ? "https://" : "http://";
+    const host = this.host;
+    const path = this.path;
+    const query = this._query();
+
+    return `${protocol}${host}${path}${query}`;
   }
 
   toUrl(newParams) {
@@ -38,8 +36,24 @@ export class Path {
     return this;
   }
 
+  _toQueryString(queryParams) {
+    let r20 = /%20/g;
+
+    let queryStringComponents = Object.keys(queryParams).map((key) => {
+      let encodedKey = encodeURIComponent(key);
+      let encodedValue = encodeURIComponent(queryParams[key]);
+
+      return `${encodedKey}=${encodedValue}`;
+    });
+
+    return queryStringComponents.join("&").replace(r20, "+");
+  }
+
   _query() {
-    return URI.buildQuery(Object.assign(this._queryWithoutSignature(), this._signature()));
+    let queryParams = Object.assign(this._queryWithoutSignature(), this._signature());
+    let queryString = this._toQueryString(queryParams);
+
+    return( queryString ? `?${queryString}` : '' );
   }
 
   _queryWithoutSignature() {
@@ -58,7 +72,7 @@ export class Path {
     }
 
     let signatureBase = this.token + this.path;
-    let query = URI.buildQuery(this.queryParams);
+    let query = this._toQueryString(this.queryParams);
 
     if (!!query) {
       signatureBase += `?${query}`;

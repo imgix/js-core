@@ -1,0 +1,9 @@
+{
+  "plugins": ["object-assign"],
+  "optional": ["optimisation"],
+  "comments": false,
+  "compact": true,
+  "sourceMaps": true,
+  "modules": "umd",
+  "moduleId": "Imgix"
+}
