@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/imgix/imgix-core-js.png?branch=master)](https://travis-ci.org/imgix/imgix-core-js)
 
-imgix-core-js is an npm package that provides the common boilerplate for imgix server-side JavaScript-based functionality. For client-side imgix functionality, please see [imgix.js](https://www.imgix.com/imgix-js).
+imgix-core-js is an npm and bower package that provides the common boilerplate for imgix server-side and client-side JavaScript-based functionality. For a turn-key imgix solution, please see [imgix.js](https://www.imgix.com/imgix-js).
 
 imgix-core-js adheres to the [imgix-blueprint](https://github.com/imgix/imgix-blueprint) for definitions of its functionality.
 
