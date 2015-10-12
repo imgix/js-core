@@ -1,5 +1,5 @@
 import md5 from "js-md5";
-import URI from "URIjs";
+import URI from "urijs";
 
 export const VERSION = "0.2.1";
 
