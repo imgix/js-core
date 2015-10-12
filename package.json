@@ -12,8 +12,8 @@
   },
   "main": "lib/client.js",
   "dependencies": {
-    "URIjs": "^1.15.1",
-    "js-md5": "^0.3.0"
+    "js-md5": "^0.3.0",
+    "urijs": "^1.16.1"
   },
   "devDependencies": {
     "babel": "^5.0.0",
