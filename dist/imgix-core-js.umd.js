@@ -1,8 +1,8 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define("Imgix", ["exports", "js-md5", "URIjs"], factory);
+    define("Imgix", ["exports", "js-md5", "urijs"], factory);
   } else if (typeof exports !== "undefined") {
-    factory(exports, require("js-md5"), require("URIjs"));
+    factory(exports, require("js-md5"), require("urijs"));
   } else {
     var mod = {
       exports: {}
@@ -10,7 +10,7 @@
     factory(mod.exports, global.md5, global.URI);
     global.Imgix = mod.exports;
   }
-})(this, function (exports, _jsMd5, _URIjs) {
+})(this, function (exports, _jsMd5, _urijs) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {
@@ -27,7 +27,7 @@
 
   var _md5 = _interopRequireDefault(_jsMd5);
 
-  var _URI = _interopRequireDefault(_URIjs);
+  var _URI = _interopRequireDefault(_urijs);
 
   var VERSION = "0.2.1";
 
@@ -35,10 +35,10 @@
 
   var Path = (function () {
     function Path(path, host) {
-      var token = arguments[2] === undefined ? null : arguments[2];
-      var secure = arguments[3] === undefined ? true : arguments[3];
-      var librarySignature = arguments[4] === undefined ? "js" : arguments[4];
-      var libraryVersion = arguments[5] === undefined ? VERSION : arguments[5];
+      var token = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+      var secure = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
+      var librarySignature = arguments.length <= 4 || arguments[4] === undefined ? "js" : arguments[4];
+      var libraryVersion = arguments.length <= 5 || arguments[5] === undefined ? VERSION : arguments[5];
 
       _classCallCheck(this, Path);
 
@@ -87,7 +87,7 @@
         var query = this.queryParams;
 
         if (this.librarySignature && this.libraryVersion) {
-          query.ixlib = "" + this.librarySignature + "-" + this.libraryVersion;
+          query.ixlib = this.librarySignature + "-" + this.libraryVersion;
         }
 
         return query;
@@ -117,10 +117,10 @@
 
   var Client = (function () {
     function Client(host) {
-      var token = arguments[1] === undefined ? null : arguments[1];
-      var secure = arguments[2] === undefined ? true : arguments[2];
-      var librarySignature = arguments[3] === undefined ? "js" : arguments[3];
-      var libraryVersion = arguments[4] === undefined ? VERSION : arguments[4];
+      var token = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+      var secure = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+      var librarySignature = arguments.length <= 3 || arguments[3] === undefined ? "js" : arguments[3];
+      var libraryVersion = arguments.length <= 4 || arguments[4] === undefined ? VERSION : arguments[4];
 
       _classCallCheck(this, Client);
 
