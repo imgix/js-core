@@ -16,6 +16,9 @@ export class Path {
     // We are dealing with a fully-qualified URL as a path, encode it
     if (this.path.indexOf("http") === 0) {
       this.path = URI.encode(this.path);
+    } else {
+      // Replace spaces in path with '+'
+      this.path = this.path.replace(/ /g, "+");
     }
 
     if (this.path[0] !== "/") {

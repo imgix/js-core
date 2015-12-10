@@ -28,6 +28,11 @@ describe('Path', () => {
       assert.equal(path.toString(), "http://my-source.imgix.net/path/to/image.png");
     });
 
+    it('encodes with the space in path correctly', () => {
+      let path = new Path('/users/image 1.png', 'my-social-network.imgix.net', 'FOO123bar', true, null);
+      assert.equal(path.toString(), "https://my-social-network.imgix.net/users/image+1.png?s=9254fd1082fa408fd7cc7c0b0f651cc2");
+    });
+
     it('encodes with a token correctly', () => {
       let path = new Path('/users/1.png', 'my-social-network.imgix.net', 'FOO123bar', true, null);
       assert.equal(path.toString(), "https://my-social-network.imgix.net/users/1.png?s=6797c24146142d5b40bde3141fd3600c");
