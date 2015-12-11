@@ -1,7 +1,7 @@
 {
   "name": "imgix-core-js",
   "description": "Common boilerplate for all imgix JavaScript-based functionality.",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "repository": "https://github.com/imgix/imgix-core-js",
   "scripts": {
     "assert_version": "node assert_version.js",

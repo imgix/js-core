@@ -29,7 +29,7 @@
 
   var _URI = _interopRequireDefault(_urijs);
 
-  var VERSION = "0.2.3";
+  var VERSION = "0.2.4";
 
   exports.VERSION = VERSION;
 
@@ -52,6 +52,8 @@
 
       if (this.path.indexOf("http") === 0) {
         this.path = _URI["default"].encode(this.path);
+      } else {
+        this.path = _URI["default"].encodeReserved(this.path);
       }
 
       if (this.path[0] !== "/") {
