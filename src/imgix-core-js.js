@@ -18,7 +18,7 @@ export class Path {
       this.path = URI.encode(this.path);
     } else {
       // Replace spaces in path with '+'
-      this.path = this.path.replace(/ /g, "+");
+      this.path = URI.encodeReserved(this.path);
     }
 
     if (this.path[0] !== "/") {

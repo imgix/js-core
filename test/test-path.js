@@ -30,7 +30,7 @@ describe('Path', () => {
 
     it('encodes with the space in path correctly', () => {
       let path = new Path('/users/image 1.png', 'my-social-network.imgix.net', 'FOO123bar', true, null);
-      assert.equal(path.toString(), "https://my-social-network.imgix.net/users/image+1.png?s=9254fd1082fa408fd7cc7c0b0f651cc2");
+      assert.equal(path.toString(), "https://my-social-network.imgix.net/users/image%201.png?s=193462f12470fe53927d0cf21e07d404");
     });
 
     it('encodes with a token correctly', () => {
