@@ -28,7 +28,7 @@ describe('Path', () => {
       assert.equal(path.toString(), "http://my-source.imgix.net/path/to/image.png");
     });
 
-    it('encodes with the space in path correctly', () => {
+    it('encodes with a space in path correctly', () => {
       let path = new Path('/users/image 1.png', 'my-social-network.imgix.net', 'FOO123bar', true, null);
       assert.equal(path.toString(), "https://my-social-network.imgix.net/users/image%201.png?s=193462f12470fe53927d0cf21e07d404");
     });
@@ -41,6 +41,11 @@ describe('Path', () => {
     it('encodes a fully-qualified URL correctly', () => {
       let path = new Path('http://avatars.com/john-smith.png', 'my-social-network.imgix.net', 'FOO123bar', true, null);
       assert.equal(path.toString(), "https://my-social-network.imgix.net/http%3A%2F%2Favatars.com%2Fjohn-smith.png?s=493a52f008c91416351f8b33d4883135");
+    });
+
+    it('encodes a fully-qualified URL with spaces in path correctly', () => {
+      let path = new Path('http://awebsite.com/users dir/image 1.png', 'my-social-network.imgix.net', 'FOO123bar', true, null);
+      assert.equal(path.toString(), "https://my-social-network.imgix.net/http%3A%2F%2Fawebsite.com%2Fusers%20dir%2Fimage%201.png?s=a82cd70cc2b2edae1fd0d83fc86e7884");
     });
 
     it('encodes a simple path with parameters and a signature', () => {
