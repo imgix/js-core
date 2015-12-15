@@ -26,7 +26,7 @@ imgix-core-js and its tests are written in ES6 JavaScript. [Babel](https://babel
 
 ## Using
 
-Depending on your module system, using imgx-core-js is done a few different ways. The most common entry point will be the `Client` class.
+Depending on your module system, using imgix-core-js is done a few different ways. The most common entry point will be the `Client` class. Whenever you provide data to imgix-core-js, make sure it is not already URL-encoded, as the library handles proper encoding internally.
 
 ### CommonJS
 
