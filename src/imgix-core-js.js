@@ -17,7 +17,6 @@ export class Path {
     if (this.path.indexOf("http") === 0) {
       this.path = URI.encode(this.path);
     } else {
-      // Replace spaces in path with '+'
       this.path = URI.encodeReserved(this.path);
     }
 
