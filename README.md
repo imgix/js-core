@@ -14,7 +14,7 @@ imgix-core-js can be installed as either via npm or via bower:
 $ npm install --save imgix-core-js
 ```
 
-or 
+or
 
 ```
 $ bower install --save imgix-core-js
@@ -56,6 +56,19 @@ console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h
 let imgixClient = new Client("my-social-network.imgix.net", "<SECURE TOKEN>");
 let url = imgixClient.path("/path/to/image.png").toUrl({ w: 400, h: 300 }).toString();
 console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h=300&s=…"
+```
+
+## What is the `ixlib` param on every request?
+
+For security and diagnostic purposes, we sign all requests with the language and version of library used to generate the URL.
+
+This can be disabled by passing a falsy value for the `librarySignature` param to either `new Path` or `new Client`:
+
+``` javascript
+// `librarySignature` is the last param in both examples
+
+new Path('my-image.png', 'my-source.imgix.net', null, true, null);
+new Client('my-source.imgix.net', null, true, null);
 ```
 
 ## Testing
