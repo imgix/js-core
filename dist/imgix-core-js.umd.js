@@ -31,7 +31,7 @@
 
   var _Base64 = _interopRequireDefault(_jsBase64);
 
-  var VERSION = "0.3.0";
+  var VERSION = "0.3.1";
 
   exports.VERSION = VERSION;
 

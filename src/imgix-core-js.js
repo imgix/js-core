@@ -2,7 +2,7 @@ import md5 from "js-md5";
 import URI from "urijs";
 import Base64 from "js-base64";
 
-export const VERSION = "0.3.0";
+export const VERSION = "0.3.1";
 
 export class Path {
   constructor(path, host, token=null, secure=true, librarySignature="js", libraryVersion=VERSION) {
