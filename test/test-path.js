@@ -60,12 +60,20 @@ describe('Path', () => {
 
     it('URL encodes param keys', () => {
       let path = new Path('demo.png', 'demo.imgix.net', null, true, null);
-      assert.equal(path.toUrl({ 'hello world': 'interesting' }).toString(), 'https://demo.imgix.net/demo.png?hello%20world=interesting')
+
+      assert.equal(path.toUrl({ 'hello world': 'interesting' }).toString(), 'https://demo.imgix.net/demo.png?hello%20world=interesting');
     });
 
     it('URL encodes param values', () => {
       let path = new Path('demo.png', 'demo.imgix.net', null, true, null);
-      assert.equal(path.toUrl({ 'hello_world': '/foo"> <script>alert("hacked")</script><' }).toString(), 'https://demo.imgix.net/demo.png?hello_world=%2Ffoo%22%3E%20%3Cscript%3Ealert%28%22hacked%22%29%3C%2Fscript%3E%3C')
+
+      assert.equal(path.toUrl({ 'hello_world': '/foo"> <script>alert("hacked")</script><' }).toString(), 'https://demo.imgix.net/demo.png?hello_world=%2Ffoo%22%3E%20%3Cscript%3Ealert%28%22hacked%22%29%3C%2Fscript%3E%3C');
+    });
+
+    it('Base64 encodes Base64 param variants', () => {
+      let path = new Path('~text', 'demo.imgix.net', null, true, null);
+
+      assert.equal(path.toUrl({ 'txt64': 'I cannøt belîév∑ it wors! 😱' }).toString(), 'https://demo.imgix.net/~text?txt64=SSBjYW5uw7h0IGJlbMOuw6l24oiRIGl0IHdvcu-jv3MhIPCfmLE');
     });
   });
 });

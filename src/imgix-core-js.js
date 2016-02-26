@@ -1,5 +1,6 @@
 import md5 from "js-md5";
 import URI from "urijs";
+import Base64 from "js-base64";
 
 export const VERSION = "0.2.4";
 
@@ -44,8 +45,25 @@ export class Path {
     return URI.buildQuery(Object.assign(this._queryWithoutSignature(), this._signature()), false, false);
   }
 
-  _queryWithoutSignature() {
+  _b64EncodedQuery() {
     let query = this.queryParams;
+    let encodedQuery = {};
+
+    for (let key in query) {
+      let val = query[key];
+
+      if (key.substr(-2) == '64') {
+        encodedQuery[key] = Base64.Base64.encodeURI(val);
+      } else {
+        encodedQuery[key] = val;
+      }
+    }
+
+    return encodedQuery;
+  }
+
+  _queryWithoutSignature() {
+    let query = this._b64EncodedQuery();
 
     if (this.librarySignature && this.libraryVersion) {
       query.ixlib = `${this.librarySignature}-${this.libraryVersion}`;
@@ -60,7 +78,7 @@ export class Path {
     }
 
     let signatureBase = this.token + this.path;
-    let query = URI.buildQuery(this.queryParams);
+    let query = URI.buildQuery(this._b64EncodedQuery());
 
     if (!!query) {
       signatureBase += `?${query}`;
