@@ -57,5 +57,15 @@ describe('Path', () => {
       let path = new Path('http://avatars.com/john-smith.png', 'my-social-network.imgix.net', 'FOO123bar', true, null);
       assert.equal(path.toUrl({ w: 400, h: 300 }).toString(), "https://my-social-network.imgix.net/http%3A%2F%2Favatars.com%2Fjohn-smith.png?w=400&h=300&s=61ea1cc7add87653bb0695fe25f2b534");
     });
+
+    it('URL encodes param keys', () => {
+      let path = new Path('demo.png', 'demo.imgix.net', null, true, null);
+      assert.equal(path.toUrl({ 'hello world': 'interesting' }).toString(), 'https://demo.imgix.net/demo.png?hello%20world=interesting')
+    });
+
+    it('URL encodes param values', () => {
+      let path = new Path('demo.png', 'demo.imgix.net', null, true, null);
+      assert.equal(path.toUrl({ 'hello_world': '/foo"> <script>alert("hacked")</script><' }).toString(), 'https://demo.imgix.net/demo.png?hello_world=%2Ffoo%22%3E%20%3Cscript%3Ealert%28%22hacked%22%29%3C%2Fscript%3E%3C')
+    });
   });
 });

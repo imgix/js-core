@@ -41,7 +41,7 @@ export class Path {
   }
 
   _query() {
-    return URI.buildQuery(Object.assign(this._queryWithoutSignature(), this._signature()));
+    return URI.buildQuery(Object.assign(this._queryWithoutSignature(), this._signature()), false, false);
   }
 
   _queryWithoutSignature() {
