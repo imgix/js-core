@@ -1,16 +1,16 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define("Imgix", ["exports", "js-md5", "urijs"], factory);
+    define("Imgix", ["exports", "js-md5", "urijs", "js-base64"], factory);
   } else if (typeof exports !== "undefined") {
-    factory(exports, require("js-md5"), require("urijs"));
+    factory(exports, require("js-md5"), require("urijs"), require("js-base64"));
   } else {
     var mod = {
       exports: {}
     };
-    factory(mod.exports, global.md5, global.URI);
+    factory(mod.exports, global.md5, global.URI, global.Base64);
     global.Imgix = mod.exports;
   }
-})(this, function (exports, _jsMd5, _urijs) {
+})(this, function (exports, _jsMd5, _urijs, _jsBase64) {
   "use strict";
 
   Object.defineProperty(exports, "__esModule", {
@@ -28,6 +28,8 @@
   var _md5 = _interopRequireDefault(_jsMd5);
 
   var _URI = _interopRequireDefault(_urijs);
+
+  var _Base64 = _interopRequireDefault(_jsBase64);
 
   var VERSION = "0.2.4";
 
@@ -81,12 +83,30 @@
     }, {
       key: "_query",
       value: function _query() {
-        return _URI["default"].buildQuery(_extends(this._queryWithoutSignature(), this._signature()));
+        return _URI["default"].buildQuery(_extends(this._queryWithoutSignature(), this._signature()), false, false);
+      }
+    }, {
+      key: "_b64EncodedQuery",
+      value: function _b64EncodedQuery() {
+        var query = this.queryParams;
+        var encodedQuery = {};
+
+        for (var key in query) {
+          var val = query[key];
+
+          if (key.substr(-2) == '64') {
+            encodedQuery[key] = _Base64["default"].encodeURI(val);
+          } else {
+            encodedQuery[key] = val;
+          }
+        }
+
+        return encodedQuery;
       }
     }, {
       key: "_queryWithoutSignature",
       value: function _queryWithoutSignature() {
-        var query = this.queryParams;
+        var query = this._b64EncodedQuery();
 
         if (this.librarySignature && this.libraryVersion) {
           query.ixlib = this.librarySignature + "-" + this.libraryVersion;
@@ -102,7 +122,7 @@
         }
 
         var signatureBase = this.token + this.path;
-        var query = _URI["default"].buildQuery(this.queryParams);
+        var query = _URI["default"].buildQuery(this._b64EncodedQuery());
 
         if (!!query) {
           signatureBase += "?" + query;
