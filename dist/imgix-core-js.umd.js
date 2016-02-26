@@ -31,7 +31,7 @@
 
   var _Base64 = _interopRequireDefault(_jsBase64);
 
-  var VERSION = "0.2.4";
+  var VERSION = "0.3.0";
 
   exports.VERSION = VERSION;
 
@@ -95,7 +95,7 @@
           var val = query[key];
 
           if (key.substr(-2) == '64') {
-            encodedQuery[key] = _Base64["default"].encodeURI(val);
+            encodedQuery[key] = _Base64["default"].Base64.encodeURI(val);
           } else {
             encodedQuery[key] = val;
           }
