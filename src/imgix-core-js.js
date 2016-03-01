@@ -44,11 +44,7 @@
         this.settings.libraryParam = "js-" + VERSION;
       }
 
-      if (this.settings.useHTTPS) {
-        this.settings.urlPrefix = 'https://'
-      } else {
-        this.settings.urlPrefix = 'http://'
-      }
+      this.settings.urlPrefix = this.settings.useHTTPS ? 'https://' : 'http://'
     }
 
     ImgixClient.prototype.buildURL = function(path, params) {
@@ -59,7 +55,7 @@
       }
 
       var queryParams = this._buildParams(params);
-      if (this.settings.secureURLToken != null) {
+      if (!!this.settings.secureURLToken) {
         queryParams = this._signParams(path, queryParams);
       }
 

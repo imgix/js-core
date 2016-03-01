@@ -33,8 +33,14 @@ Depending on your module system, using imgix-core-js is done a few different way
 ```javascript
 var ImgixClient = require('imgix-core-js');
 
-var client = new ImgixClient("my-social-network.imgix.net", "<SECURE TOKEN>");
-var url = client.path("/path/to/image.png").toUrl({ w: 400, h: 300 }).toString();
+var client = new ImgixClient({
+  host: "my-social-network.imgix.net",
+  secureURLToken: "<SECURE TOKEN>"
+});
+var url = client.buildURL("/path/to/image.png", {
+  w: 400,
+  h: 300
+});
 console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h=300&s=…"
 ```
 
