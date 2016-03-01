@@ -102,6 +102,7 @@ npm test
 To publish a new version of the NPM package:
 
 ```bash
+$ npm run prepublish
 $ npm publish
 ```
 
