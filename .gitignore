@@ -1,6 +1,4 @@
-lib/
 node_modules/
-dist/
 bower_components/
 npm-debug.log
 .DS_Store
