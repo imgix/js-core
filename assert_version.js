@@ -1,7 +1,7 @@
 var packageVersion = require('./package').version;
-var libVersion = require('./lib/imgix-core-js').VERSION;
+var distVersion = require('./dist/imgix-core-js').VERSION;
 
-if (packageVersion === libVersion) {
+if (packageVersion === distVersion) {
   return 0;
 } else {
   process.stdout.write("FAIL: package.json and lib/imgix-core-js.js versions do not match!\n");

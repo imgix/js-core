@@ -3,9 +3,10 @@
   "version": "0.3.1",
   "homepage": "https://github.com/imgix/imgix-core-js",
   "authors": [
-    "kellysutton <michael.k.sutton@gmail.com>"
+    "Kelly Sutton <michael.k.sutton@gmail.com>",
+    "Paul Straw <paulstraw@paulstraw.com>"
   ],
-  "main": "dist/imgix-core-js.umd.js",
+  "main": "dist/imgix-core-js.js",
   "description": "Common boilerplate for all imgix JavaScript-based functionality.",
   "keywords": [
     "imgix"
@@ -19,7 +20,6 @@
     "tests"
   ],
   "dependencies": {
-    "uri.js": "~1.15.1",
     "md5": "~0.3.0",
     "js-base64": "~2.1.9"
   }
