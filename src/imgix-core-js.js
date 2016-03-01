@@ -1,103 +1,126 @@
-import md5 from "js-md5";
-import URI from "urijs";
-import Base64 from "js-base64";
-
-export const VERSION = "0.3.1";
-
-export class Path {
-  constructor(path, host, token=null, secure=true, librarySignature="js", libraryVersion=VERSION) {
-    this.path = path;
-    this.host = host;
-    this.token = token;
-    this.secure = secure;
-    this.queryParams = {};
-    this.librarySignature = librarySignature;
-    this.libraryVersion = libraryVersion;
-
-    // We are dealing with a fully-qualified URL as a path, encode it
-    if (this.path.indexOf("http") === 0) {
-      this.path = URI.encode(this.path);
-    } else {
-      this.path = URI.encodeReserved(this.path);
-    }
-
-    if (this.path[0] !== "/") {
-      this.path = "/" + this.path;
-    }
+(function (global, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define('Imgix', ['exports', 'js-md5', 'js-base64'], factory);
+  } else if (typeof exports !== 'undefined') {
+    module.exports = factory(exports, require('js-md5'), require('js-base64'));
+  } else {
+    var mod = {
+      exports: {}
+    };
+    global.ImgixClient = factory(mod.exports, global.md5, global.Base64);
   }
+})(this, function (exports, _jsMd5, _jsBase64) {
+  var md5 = _jsMd5;
+  var Base64 = _jsBase64;
 
-  toString() {
-    let uri = new URI({
-      protocol: this.secure ? "https" : "http",
-      hostname: this.host,
-      path: this.path,
-      query: this._query()
-    });
-    return uri.toString();
-  }
+  var VERSION = '0.3.1';
+  var DEFAULTS = {
+    host: null,
+    useHTTPS: true,
+    includeLibraryParam: true
+  };
 
-  toUrl(newParams) {
-    this.queryParams = Object.assign(this.queryParams, newParams);
-    return this;
-  }
+  var ImgixClient = (function() {
+    function ImgixClient(opts) {
+      var key, val;
 
-  _query() {
-    return URI.buildQuery(Object.assign(this._queryWithoutSignature(), this._signature()), false, false);
-  }
+      this.settings = {};
 
-  _b64EncodedQuery() {
-    let query = this.queryParams;
-    let encodedQuery = {};
+      for (key in DEFAULTS) {
+        val = DEFAULTS[key];
+        this.settings[key] = val;
+      }
 
-    for (let key in query) {
-      let val = query[key];
+      for (key in opts) {
+        val = opts[key];
+        this.settings[key] = val;
+      }
 
-      if (key.substr(-2) == '64') {
-        encodedQuery[key] = Base64.Base64.encodeURI(val);
+      if (!this.settings.host) {
+        throw new Error('ImgixClient must be passed a valid host');
+      }
+
+      if (this.settings.includeLibraryParam) {
+        this.settings.libraryParam = "js-" + VERSION;
+      }
+
+      if (this.settings.useHTTPS) {
+        this.settings.urlPrefix = 'https://'
       } else {
-        encodedQuery[key] = val;
+        this.settings.urlPrefix = 'http://'
       }
     }
 
-    return encodedQuery;
-  }
+    ImgixClient.prototype.buildURL = function(path, params) {
+      path = this._sanitizePath(path);
 
-  _queryWithoutSignature() {
-    let query = this._b64EncodedQuery();
+      if (params == null) {
+        params = {};
+      }
 
-    if (this.librarySignature && this.libraryVersion) {
-      query.ixlib = `${this.librarySignature}-${this.libraryVersion}`;
-    }
+      var queryParams = this._buildParams(params);
+      if (this.settings.secureURLToken != null) {
+        queryParams = this._signParams(path, queryParams);
+      }
 
-    return query;
-  }
+      return this.settings.urlPrefix + this.settings.host + path + queryParams;
+    };
 
-  _signature() {
-    if (!this.token) {
-      return {};
-    }
+    ImgixClient.prototype._sanitizePath = function(path) {
+      if (path.indexOf('http') === 0) {
+        path = encodeURIComponent(path);
+      } else {
+        path = encodeURI(path);
+      }
 
-    let signatureBase = this.token + this.path;
-    let query = URI.buildQuery(this._b64EncodedQuery());
+      if (path[0] !== '/') {
+        path = "/" + path;
+      }
 
-    if (!!query) {
-      signatureBase += `?${query}`;
-    }
+      return path;
+    };
 
-    return { s: md5(signatureBase) };
-  }
-}
+    ImgixClient.prototype._buildParams = function(params) {
+      if (this.settings.libraryParam) {
+        params.ixlib = this.settings.libraryParam
+      }
 
-export class Client {
-  constructor(host, token=null, secure=true, librarySignature="js", libraryVersion=VERSION) {
-    this.host = host;
-    this.token = token;
-    this.secure = secure;
-    this.librarySignature = librarySignature;
-    this.libraryVersion = libraryVersion;
-  }
+      var queryParams = [];
+      var key, val, encodedKey, encodedVal;
+      for (key in params) {
+        val = params[key];
+        encodedKey = encodeURIComponent(key);
+        encodedVal;
 
-  path(urlPath) {
-    return new Path(urlPath, this.host, this.token, this.secure, this.librarySignature, this.libraryVersion);
-  }
-}
+        if (key.substr(-2) === '64') {
+          encodedVal = Base64.Base64.encodeURI(val);
+        } else {
+          encodedVal = encodeURIComponent(val);
+        }
+        queryParams.push(encodedKey + "=" + encodedVal);
+      }
+
+      if (queryParams[0]) {
+        queryParams[0] = "?" + queryParams[0];
+      }
+      return queryParams.join('&');
+    };
+
+    ImgixClient.prototype._signParams = function(path, queryParams) {
+      var signatureBase = this.settings.secureURLToken + path + queryParams;
+      var signature = md5(signatureBase);
+
+      if (queryParams.length > 0) {
+        return queryParams = queryParams + "&s=" + signature;
+      } else {
+        return queryParams = "?s=" + signature;
+      }
+    };
+
+    ImgixClient.VERSION = VERSION;
+
+    return ImgixClient;
+  })();
+
+  return ImgixClient;
+});
