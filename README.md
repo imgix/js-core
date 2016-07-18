@@ -60,12 +60,14 @@ console.log(url); // => 'https://my-social-network.imgix.net/users/1.png?w=400&h
 
 ``` javascript
 var client = new ImgixClient({
-  host: 'my-social-network.imgix.net',
-  secureURLToken: '<SECURE TOKEN>'
+  host: 'my-social-network.imgix.net'
+  // Do not use signed URLs with `secureURLToken` on the client side,
+  // as this would leak your token to the world. Signed URLs should
+  // be generated on the server.
 });
 
 var url = client.buildURL('/path/to/image.png', { w: 400, h: 300 });
-console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h=300&s=…"
+console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h=300"
 ```
 
 
