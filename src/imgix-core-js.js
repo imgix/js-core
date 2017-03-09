@@ -63,17 +63,23 @@
     };
 
     ImgixClient.prototype._sanitizePath = function(path) {
-      if (path.indexOf('http') === 0) {
+      // Strip leading slash first (we'll re-add after encoding)
+      path = path.replace(/^\//, '');
+
+      // Decode the path, since we don't know whether it's pre-encoded
+      path = decodeURIComponent(path);
+
+      if (/^https?:\/\//.test(path)) {
+        // Use encodeURIComponent if we think the path is a full URL,
+        // since it encodes all characters
         path = encodeURIComponent(path);
       } else {
+        // Use encodeURI if we think the path is just a path,
+        // so it leaves legal characters like '/' and '@' alone
         path = encodeURI(path);
       }
 
-      if (path[0] !== '/') {
-        path = "/" + path;
-      }
-
-      return path;
+      return '/' + path;
     };
 
     ImgixClient.prototype._buildParams = function(params) {
