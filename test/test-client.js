@@ -122,6 +122,16 @@ describe('Client', function() {
       assert.equal(url, "https://my-social-network.imgix.net/http%3A%2F%2Favatars.com%2Fjohn-smith.png?w=400&h=300&s=61ea1cc7add87653bb0695fe25f2b534");
     });
 
+    it('encodes a fully-qualified HTTPS URL with parameters and a signature', function() {
+      var url = signedClient.buildURL('https://avatars.com/john-smith.png', { w: 400, h: 300 });
+      assert.equal(url, "https://my-social-network.imgix.net/https%3A%2F%2Favatars.com%2Fjohn-smith.png?w=400&h=300&s=7fb92b2af2526019d64ec26465388533");
+    });
+
+    it('encodes a fully-qualified URL with parameters and a signature, even when the path contains a leading slash', function() {
+      var url = signedClient.buildURL('/http://avatars.com/john-smith.png', { w: 400, h: 300 });
+      assert.equal(url, "https://my-social-network.imgix.net/http%3A%2F%2Favatars.com%2Fjohn-smith.png?w=400&h=300&s=61ea1cc7add87653bb0695fe25f2b534");
+    });
+
     it('URL encodes param keys', function() {
       var url = unsignedClient.buildURL('demo.png', { 'hello world': 'interesting' });
       assert.equal(url, 'https://my-source.imgix.net/demo.png?hello%20world=interesting');
