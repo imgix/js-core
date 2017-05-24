@@ -1,16 +1,16 @@
 var assert = require('assert');
 var ImgixClient = require('../src/imgix-core-js');
 
-describe('Client', function() {
-  describe('contstructor', function() {
-    it('initializes with correct defaults', function() {
+describe('Imgix client:', function describeSuite() {
+  describe('The constructor', function describeSuite() {
+    it('initializes with correct defaults', function testSpec() {
       var client = new ImgixClient({ host: 'my-host.imgix.net' });
       assert.equal("my-host.imgix.net", client.settings.host);
       assert.equal(null, client.settings.secureURLToken);
       assert.equal(true, client.settings.useHTTPS);
     });
 
-    it('initialized with a token', function() {
+    it('initializes with a token', function testSpec() {
       var client = new ImgixClient({
         host: 'my-host.imgix.net',
         secureURLToken: 'MYT0KEN'
@@ -20,7 +20,7 @@ describe('Client', function() {
       assert.equal(true, client.settings.useHTTPS);
     });
 
-    it('initialized in insecure mode', function() {
+    it('initializes in insecure mode', function testSpec() {
       var client = new ImgixClient({
         host: 'my-host.imgix.net',
         secureURLToken: 'MYT0KEN',
