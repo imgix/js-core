@@ -13,7 +13,7 @@
   var md5 = _jsMd5;
   var Base64 = _jsBase64;
 
-  var VERSION = '1.0.5';
+  var VERSION = '1.0.6';
   var DEFAULTS = {
     host: null,
     useHTTPS: true,
@@ -66,17 +66,19 @@
       // Strip leading slash first (we'll re-add after encoding)
       path = path.replace(/^\//, '');
 
-      // Decode the path, since we don't know whether it's pre-encoded
-      path = decodeURIComponent(path);
-
       if (/^https?:\/\//.test(path)) {
-        // Use encodeURIComponent if we think the path is a full URL,
-        // since it encodes all characters
+        // Use de/encodeURIComponent to ensure *all* characters are handled,
+        // since it's being used as a path
         path = encodeURIComponent(path);
+      } else if (/^https?%3A%2F%2F/.test(path)) {
+        // Decode and re-encode the path, to ensure that it's fully, correctly encoded.
+        // Use de/encodeURIComponent to ensure *all* characters are handled,
+        // since it's being used as a path
+        path = decodeURIComponent(encodeURIComponent(path));
       } else {
-        // Use encodeURI if we think the path is just a path,
+        // Use de/encodeURI if we think the path is just a path,
         // so it leaves legal characters like '/' and '@' alone
-        path = encodeURI(path);
+        path = decodeURI(encodeURI(path));
       }
 
       return '/' + path;
