@@ -1,16 +1,16 @@
 (function (global, factory) {
   if (typeof define === 'function' && define.amd) {
-    define('Imgix', ['exports', 'md5', 'js-base64'], factory);
+    define('Imgix', ['exports', 'js-md5', 'js-base64'], factory);
   } else if (typeof exports !== 'undefined') {
-    module.exports = factory(exports, require('md5'), require('js-base64').Base64);
+    module.exports = factory(exports, require('js-md5'), require('js-base64').Base64);
   } else {
     var mod = {
       exports: {}
     };
     global.ImgixClient = factory(mod.exports, global.md5, global.Base64);
   }
-})(this, function (exports, _md5, _jsBase64) {
-  var md5 = _md5;
+})(this, function (exports, _jsMd5, _jsBase64) {
+  var md5 = _jsMd5;
   var Base64 = _jsBase64;
 
   var VERSION = '1.0.6';
