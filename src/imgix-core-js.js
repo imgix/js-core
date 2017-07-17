@@ -13,7 +13,7 @@
   var md5 = _md5;
   var Base64 = _jsBase64;
 
-  var VERSION = '1.0.6';
+  var VERSION = '1.0.7';
   var DEFAULTS = {
     host: null,
     useHTTPS: true,
