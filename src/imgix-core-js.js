@@ -47,6 +47,58 @@
       this.settings.urlPrefix = this.settings.useHTTPS ? 'https://' : 'http://'
     }
 
+    ImgixClient.prototype.imgTag = function(path, alt, params) {
+      path = this._sanitizePath(path);
+
+      if (params == null) {
+        params = {};
+      }
+
+      var queryParams = this._buildParams(params);
+      if (!!this.settings.secureURLToken) {
+        queryParams = this._signParams(path, queryParams);
+      }
+
+      return '<img src="' + this.settings.urlPrefix + this.settings.host + path + queryParams + '" alt="' + alt + '">';
+    };
+
+    ImgixClient.prototype.srcSet = function(path, alt, sizes, params) {
+      var parent = this
+      path = this._sanitizePath(path);
+
+      if (params == null) {
+        params = {};
+      }
+
+      var queryParams = this._buildParams(params);
+      if (!!this.settings.secureURLToken) {
+        queryParams = this._signParams(path, queryParams);
+      }
+
+      var srcSet = {}
+      var ratio = params.w / params.h
+
+      sizes.forEach(function (size) {
+        params.w = parseInt(size.substring(0, size.length - 1))
+        params.h = params.width / params.ratio
+
+        var queryParams = parent._buildParams(params);
+        if (!!parent.settings.secureURLToken) {
+          queryParams = parent._signParams(path, queryParams);
+        }
+
+        srcSet[size] = parent.settings.urlPrefix + parent.settings.host + path + queryParams
+      })
+
+      let srcsOut = ''
+      for (var [size, url] of Object.entries(srcSet)) {
+        srcsOut += url + ' ' + size + ', '
+      }
+      srcsOut = srcsOut.substring(0, srcsOut.length - 2)
+
+      return '<img src="' + this.settings.urlPrefix + this.settings.host + path + queryParams + '" alt="' + alt + '" srcset="' + srcsOut + '">';
+    };
+
     ImgixClient.prototype.buildURL = function(path, params) {
       path = this._sanitizePath(path);
 
