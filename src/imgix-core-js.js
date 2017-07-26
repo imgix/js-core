@@ -80,7 +80,7 @@
 
       sizes.forEach(function (size) {
         params.w = parseInt(size.substring(0, size.length - 1))
-        params.h = params.width / params.ratio
+        params.h = params.width / ratio
 
         var queryParams = parent._buildParams(params);
         if (!!parent.settings.secureURLToken) {
