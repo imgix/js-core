@@ -77,8 +77,8 @@ describe('Imgix client:', function describeSuite() {
       });
     });
 
-    describe('with a path that includes encoded characters', function describeSuite() {
-      var path = 'images/image%201.png';
+    describe('with a path that contains unencoded characters', function describeSuite() {
+      var path = 'images/"image 1".png';
 
       it('prepends a leading slash', function testSpec() {
         var expectation = '/',
@@ -87,8 +87,8 @@ describe('Imgix client:', function describeSuite() {
         assert.equal(expectation, result.substr(0, 1));
       });
 
-      it('otherwise returns the same exact path, maintaining proper encoding', function testSpec() {
-        var expectation = path,
+      it('otherwise returns the same path, except with the characters encoded properly', function testSpec() {
+        var expectation = encodeURI(path),
             result = client._sanitizePath(path);
 
         assert.equal(expectation, result.substr(1));
@@ -176,60 +176,6 @@ describe('Imgix client:', function describeSuite() {
 
         // Result should instead contain the string "%2520"
         assert.equal(expectation2, result.indexOf('%2520'));
-      });
-    });
-
-    describe('with a pre-encoded full HTTP URL', function describeSuite() {
-      var path = encodeURIComponent('http://example.com/images/1.png');
-
-      it('prepends a leading slash, unencoded', function testSpec() {
-        var expectation = '/',
-            result = client._sanitizePath(path);
-
-        assert.equal(expectation, result.substr(0, 1));
-      });
-
-      it('otherwise returns the given URL, still encoded', function testSpec() {
-        var expectation = path,
-            result = client._sanitizePath(path);
-
-        assert.equal(expectation, result.substr(1));
-      });
-    });
-
-    describe('with a pre-encoded full HTTPS URL', function describeSuite() {
-      var path = encodeURIComponent('https://example.com/images/1.png');
-
-      it('prepends a leading slash, unencoded', function testSpec() {
-        var expectation = '/',
-            result = client._sanitizePath(path);
-
-        assert.equal(expectation, result.substr(0, 1));
-      });
-
-      it('otherwise returns the given URL, still encoded', function testSpec() {
-        var expectation = path,
-            result = client._sanitizePath(path);
-
-        assert.equal(expectation, result.substr(1));
-      });
-    });
-
-    describe('with a pre-encoded full URL that contains a leading slash', function describeSuite() {
-      var path = '/' + encodeURIComponent('http://example.com/images/1.png');
-
-      it('retains the leading slash, unencoded', function testSpec() {
-        var expectation = '/',
-            result = client._sanitizePath(path);
-
-        assert.equal(expectation, result.substr(0, 1));
-      });
-
-      it('otherwise returns the given URL, still encoded', function testSpec() {
-        var expectation = path.substr(1),
-            result = client._sanitizePath(path);
-
-        assert.equal(expectation, result.substr(1));
       });
     });
   });
