@@ -13,7 +13,7 @@
   var md5 = _md5;
   var Base64 = _jsBase64;
 
-  var VERSION = '1.0.7';
+  var VERSION = '1.1.0';
   var DEFAULTS = {
     host: null,
     useHTTPS: true,
@@ -70,15 +70,10 @@
         // Use de/encodeURIComponent to ensure *all* characters are handled,
         // since it's being used as a path
         path = encodeURIComponent(path);
-      } else if (/^https?%3A%2F%2F/.test(path)) {
-        // Decode and re-encode the path, to ensure that it's fully, correctly encoded.
-        // Use de/encodeURIComponent to ensure *all* characters are handled,
-        // since it's being used as a path
-        path = decodeURIComponent(encodeURIComponent(path));
       } else {
         // Use de/encodeURI if we think the path is just a path,
         // so it leaves legal characters like '/' and '@' alone
-        path = decodeURI(encodeURI(path));
+        path = encodeURI(path);
       }
 
       return '/' + path;
