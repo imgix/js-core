@@ -11,9 +11,9 @@
   }
 })(this, function (exports, _md5, _jsBase64) {
   var md5 = _md5;
-  var Base64 = _jsBase64;
+  var Base64 = _jsBase64.Base64 || _jsBase64;
 
-  var VERSION = '1.1.0';
+  var VERSION = '1.1.1';
   var DEFAULTS = {
     host: null,
     useHTTPS: true,
