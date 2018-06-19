@@ -11,7 +11,7 @@
   "keywords": [
     "imgix"
   ],
-  "license": "MIT",
+  "license": "BSD-2-Clause",
   "ignore": [
     "**/.*",
     "node_modules",
