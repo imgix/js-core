@@ -4,31 +4,59 @@ var ImgixClient = require('../src/imgix-core-js');
 describe('Imgix client:', function describeSuite() {
   describe('The constructor', function describeSuite() {
     it('initializes with correct defaults', function testSpec() {
-      var client = new ImgixClient({ host: 'my-host.imgix.net' });
-      assert.equal("my-host.imgix.net", client.settings.host);
+      var client = new ImgixClient({ domains: 'my-host.imgix.net' });
+      assert.equal(client.settings.domains.length, 1);
+      assert.equal("my-host.imgix.net", client.settings.domains[0]);
       assert.equal(null, client.settings.secureURLToken);
       assert.equal(true, client.settings.useHTTPS);
+      assert.equal(ImgixClient.SHARD_STRATEGY_CRC, client.settings.shard_strategy);
     });
 
     it('initializes with a token', function testSpec() {
       var client = new ImgixClient({
-        host: 'my-host.imgix.net',
+        domains: 'my-host.imgix.net',
         secureURLToken: 'MYT0KEN'
       });
-      assert.equal("my-host.imgix.net", client.settings.host);
+      assert.equal(client.settings.domains.length, 1);
+      assert.equal("my-host.imgix.net", client.settings.domains[0]);
       assert.equal("MYT0KEN", client.settings.secureURLToken);
       assert.equal(true, client.settings.useHTTPS);
     });
 
     it('initializes in insecure mode', function testSpec() {
       var client = new ImgixClient({
-        host: 'my-host.imgix.net',
+        domains: 'my-host.imgix.net',
         secureURLToken: 'MYT0KEN',
         useHTTPS: false
       });
-      assert.equal("my-host.imgix.net", client.settings.host);
+      assert.equal(client.settings.domains.length, 1);
+      assert.equal("my-host.imgix.net", client.settings.domains[0]);
       assert.equal("MYT0KEN", client.settings.secureURLToken);
       assert.equal(false, client.settings.useHTTPS);
+    });
+
+    it('initializes with domains list', function testSpec() {
+      var client = new ImgixClient({
+        domains: ['my-host1.imgix.net', 'my-host2.imgix.net'],
+        secureURLToken: 'MYT0KEN',
+        useHTTPS: false
+      });
+      assert.equal(client.settings.domains.length, 2);
+      assert.equal("my-host1.imgix.net", client.settings.domains[0]);
+      assert.equal("my-host2.imgix.net", client.settings.domains[1]);
+      assert.equal("MYT0KEN", client.settings.secureURLToken);
+      assert.equal(false, client.settings.useHTTPS);
+    });
+
+    it('errors with invalid shard strategy', function testSpec() {
+      assert.throws(function() {
+        new ImgixClient({
+          domains: ['my-host1.imgix.net', 'my-host2.imgix.net'],
+          secureURLToken: 'MYT0KEN',
+          shard_strategy: 'invalid',
+          useHTTPS: false
+        })
+      }, Error);
     });
   });
 
@@ -37,7 +65,7 @@ describe('Imgix client:', function describeSuite() {
 
     beforeEach(function setupClient() {
       client = new ImgixClient({
-        host: 'testing.imgix.net'
+        domains: 'testing.imgix.net'
       });
     });
 
@@ -185,7 +213,7 @@ describe('Imgix client:', function describeSuite() {
 
     beforeEach(function setupClient() {
       client = new ImgixClient({
-        host: 'testing.imgix.net',
+        domains: 'testing.imgix.net',
         includeLibraryParam: false
       });
     });
@@ -270,7 +298,7 @@ describe('Imgix client:', function describeSuite() {
 
     beforeEach(function setupClient() {
       client = new ImgixClient({
-        host: 'testing.imgix.net',
+        domains: 'testing.imgix.net',
         secureURLToken: 'MYT0KEN',
         includeLibraryParam: false
       });
@@ -290,4 +318,76 @@ describe('Imgix client:', function describeSuite() {
       assert.equal(expectation, result);
     });
   });
+
+  describe('Sharding', function describeSuite() {
+    describe('CRC', function describeSuite() {
+      it('path resolves to same domain', function testSpec() {
+        var domains = ['my-host1.imgix.net', 'my-host2.imgix.net'];
+        var client = new ImgixClient({
+          domains: domains,
+          shard_strategy: ImgixClient.SHARD_STRATEGY_CRC
+        });
+        assert.ok(client.buildURL('/users/1.png').match(domains[0]));
+        assert.ok(client.buildURL('/users/2.png').match(domains[0]));
+        assert.ok(client.buildURL('/users/a.png').match(domains[1]));
+        assert.ok(client.buildURL('/users/1.png').match(domains[0]));
+        assert.ok(client.buildURL('/users/a.png').match(domains[1]));
+        assert.ok(client.buildURL('/users/2.png').match(domains[0]));
+        assert.ok(client.buildURL('/users/b.png').match(domains[1]));
+        assert.ok(client.buildURL('/users/a.png').match(domains[1]));
+      });
+
+      it('single domain sharding', function testSpec() {
+        var domain = 'my-host1.imgix.net';
+        var client = new ImgixClient({
+          domains: domain,
+          shard_strategy: ImgixClient.SHARD_STRATEGY_CRC
+        });
+        assert.ok(client.buildURL('/users/1.png').match(domain));
+        assert.ok(client.buildURL('/users/2.png').match(domain));
+        assert.ok(client.buildURL('/users/a.png').match(domain));
+        assert.ok(client.buildURL('/users/1.png').match(domain));
+        assert.ok(client.buildURL('/users/a.png').match(domain));
+        assert.ok(client.buildURL('/users/2.png').match(domain));
+        assert.ok(client.buildURL('/users/b.png').match(domain));
+        assert.ok(client.buildURL('/users/a.png').match(domain));
+      });
+    });
+
+    describe('Cyclic', function describeSuite() {
+      it('domains cycle', function testSpec() {
+        var domains = ['my-host1.imgix.net', 'my-host2.imgix.net', 'my-host3.imgix.net'];
+        var client = new ImgixClient({
+          domains: domains,
+          shard_strategy: ImgixClient.SHARD_STRATEGY_CYCLE
+        });
+        assert.ok(client.buildURL('/users/1.png').match(domains[0]));
+        assert.ok(client.buildURL('/users/2.png').match(domains[1]));
+        assert.ok(client.buildURL('/users/a.png').match(domains[2]));
+        assert.ok(client.buildURL('/users/1.png').match(domains[0]));
+        assert.ok(client.buildURL('/users/a.png').match(domains[1]));
+        assert.ok(client.buildURL('/users/2.png').match(domains[2]));
+        assert.ok(client.buildURL('/users/b.png').match(domains[0]));
+        assert.ok(client.buildURL('/users/a.png').match(domains[1]));
+      });
+
+      it('single domain sharding', function testSpec() {
+        var domain = 'my-host1.imgix.net';
+        var client = new ImgixClient({
+          domains: domain,
+          shard_strategy: ImgixClient.SHARD_STRATEGY_CYCLE
+        });
+        assert.ok(client.buildURL('/users/1.png').match(domain));
+        assert.ok(client.buildURL('/users/2.png').match(domain));
+        assert.ok(client.buildURL('/users/a.png').match(domain));
+        assert.ok(client.buildURL('/users/1.png').match(domain));
+        assert.ok(client.buildURL('/users/a.png').match(domain));
+        assert.ok(client.buildURL('/users/2.png').match(domain));
+        assert.ok(client.buildURL('/users/b.png').match(domain));
+        assert.ok(client.buildURL('/users/a.png').match(domain));
+      });
+
+    });
+  });
+
 });
