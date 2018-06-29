@@ -32,7 +32,7 @@ Depending on your module system, using imgix-core-js is done a few different way
 var ImgixClient = require('imgix-core-js');
 
 var client = new ImgixClient({
-  host: "my-social-network.imgix.net",
+  domains: "my-social-network.imgix.net",
   secureURLToken: "<SECURE TOKEN>"
 });
 var url = client.buildURL("/path/to/image.png", {
@@ -48,7 +48,7 @@ console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h
 import ImgixClient from 'imgix-core-js'
 
 let client = new ImgixClient({
-  host: 'my-social-network.imgix.net',
+  domains: 'my-social-network.imgix.net',
   secureURLToken: '<SECURE TOKEN>'
 });
 
@@ -60,7 +60,7 @@ console.log(url); // => 'https://my-social-network.imgix.net/users/1.png?w=400&h
 
 ``` javascript
 var client = new ImgixClient({
-  host: 'my-social-network.imgix.net'
+  domains: 'my-social-network.imgix.net'
   // Do not use signed URLs with `secureURLToken` on the client side,
   // as this would leak your token to the world. Signed URLs should
   // be generated on the server.
@@ -68,6 +68,52 @@ var client = new ImgixClient({
 
 var url = client.buildURL('/path/to/image.png', { w: 400, h: 300 });
 console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h=300"
+```
+
+## Domain Sharded URLs
+
+Domain sharding enables you to spread image requests across multiple domains.
+This allows you to bypass the requests-per-host limits of browsers. We
+recommend 2-3 domain shards maximum if you are going to use domain sharding.
+
+In order to use domain sharding, you need to add multiple domains to your
+source. You then provide a list of these domains to `ImgixClient`.
+
+``` javascript
+var ImgixClient = require('imgix-core-js');
+
+var client = new ImgixClient({
+  domains: ["demos-1.imgix.net", "demos-2.imgix.net", "demos-3.imgix.net"]
+});
+
+var url = client.buildURL("/bridge.png", {w: 100, h: 100});
+console.log(url); // => "http://demos-2.imgix.net/bridge.png?h=100&w=100"
+
+var url = client.buildURL("/flower.png", {w: 100, h: 100});
+console.log(url); // => "http://demos-3.imgix.net/flower.png?h=100&w=100"
+```
+
+By default, shards are calculated using a checksum so that the image path
+always resolves to the same domain. This improves caching in the browser.
+However, you can supply a different strategy that cycles through domains
+instead. For example:
+
+``` javascript
+var ImgixClient = require('imgix-core-js');
+
+var client = new ImgixClient({
+  domains: ["demos-1.imgix.net", "demos-2.imgix.net", "demos-3.imgix.net"],
+  shard_strategy: ImgixClient.SHARD_STRATEGY_CYCLE
+});
+
+for(i=0; i<4; i++)
+  console.log(client.buildURL("/bridge.png", {w: 100, h: 100}));
+
+// Prints out:
+// http://demos-1.imgix.net/bridge.png?h=100&w=100
+// http://demos-2.imgix.net/bridge.png?h=100&w=100
+// http://demos-3.imgix.net/bridge.png?h=100&w=100
+// http://demos-1.imgix.net/bridge.png?h=100&w=100
 ```
 
 
@@ -79,7 +125,7 @@ This can be disabled by passing a falsy value for the `includeLibraryParam` opti
 
 ``` javascript
 new ImgixClient({
-  host: 'my-source.imgix.net',
+  domains: 'my-source.imgix.net',
   includeLibraryParam: false
 });
 ```
