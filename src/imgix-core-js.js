@@ -14,7 +14,7 @@
   var Base64 = _jsBase64.Base64 || _jsBase64;
   var crc = _crc;
 
-  var VERSION = '1.1.1';
+  var VERSION = '1.2.0';
   var SHARD_STRATEGY_CRC = 'crc';
   var SHARD_STRATEGY_CYCLE = 'cycle';
   var DEFAULTS = {
