@@ -58,6 +58,30 @@ describe('Imgix client:', function describeSuite() {
         })
       }, Error);
     });
+
+    it('errors with invalid domain - appended slash', function testSpec() {
+      assert.throws(function() {
+        new ImgixClient({
+          domains: ['my-host1.imgix.net/'],
+        })
+      }, Error);
+    });
+
+    it('errors with invalid domain - prepended scheme ', function testSpec() {
+      assert.throws(function() {
+        new ImgixClient({
+          domains: ['https://my-host1.imgix.net'],
+        })
+      }, Error);
+    });
+
+    it('errors with invalid domain - appended dash ', function testSpec() {
+      assert.throws(function() {
+        new ImgixClient({
+          domains: ['my-host1.imgix.net-'],
+        })
+      }, Error);
+    });
   });
 
   describe('Calling _sanitizePath()', function describeSuite() {

@@ -4,7 +4,8 @@
   "homepage": "https://github.com/imgix/imgix-core-js",
   "authors": [
     "Kelly Sutton <michael.k.sutton@gmail.com>",
-    "Paul Straw <paulstraw@paulstraw.com>"
+    "Paul Straw <paulstraw@paulstraw.com>",
+    "Sherwin Heydarbeygi <sherwin@imgix.com>"
   ],
   "main": "dist/imgix-core-js.js",
   "description": "Common boilerplate for all imgix JavaScript-based functionality.",
