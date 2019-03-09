@@ -1,5 +1,3 @@
-var constants = require("../src/constants.js");
-
 (function (global, factory) {
   if (typeof define === 'function' && define.amd) {
     define('Imgix', ['exports', 'md5', 'js-base64', 'crc'], factory);
@@ -16,12 +14,16 @@ var constants = require("../src/constants.js");
   var Base64 = _jsBase64.Base64 || _jsBase64;
   var crc = _crc;
 
+  var VERSION = '1.2.1';
+  var SHARD_STRATEGY_CRC = 'crc';
+  var SHARD_STRATEGY_CYCLE = 'cycle';
+  var DOMAIN_REGEX = /^(?:[a-z\d\-_]{1,62}\.){0,125}(?:[a-z\d](?:\-(?=\-*[a-z\d])|[a-z]|\d){0,62}\.)[a-z\d]{1,63}$/i;
   var DEFAULTS = {
     host: null,
     domains: [],
     useHTTPS: true,
     includeLibraryParam: true,
-    shard_strategy: constants.SHARD_STRATEGY_CRC
+    shard_strategy: SHARD_STRATEGY_CRC
   };
 
   var ImgixClient = (function() {
@@ -49,10 +51,10 @@ var constants = require("../src/constants.js");
         throw new Error('ImgixClient must be passed valid domain(s)');
       }
 
-      if (this.settings.shard_strategy !== constants.SHARD_STRATEGY_CRC
-          && this.settings.shard_strategy !== constants.SHARD_STRATEGY_CYCLE) {
+      if (this.settings.shard_strategy !== SHARD_STRATEGY_CRC
+          && this.settings.shard_strategy !== SHARD_STRATEGY_CYCLE) {
         throw new Error('Shard strategy must be one of ' +
-          constants.SHARD_STRATEGY_CRC + ' or ' + constants.SHARD_STRATEGY_CYCLE);
+          SHARD_STRATEGY_CRC + ' or ' + SHARD_STRATEGY_CYCLE);
       }
 
       if (this.settings.host) {
@@ -62,7 +64,7 @@ var constants = require("../src/constants.js");
       }
 
       this.settings.domains.forEach(function(domain) {
-        if (constants.DOMAIN_REGEX.exec(domain) == null) {
+        if (DOMAIN_REGEX.exec(domain) == null) {
           throw new Error(
             'Domains must be passed in as fully-qualified ' + 
             'domain names and should not include a protocol or any path ' + 
@@ -71,7 +73,7 @@ var constants = require("../src/constants.js");
       });
 
       if (this.settings.includeLibraryParam) {
-        this.settings.libraryParam = "js-" + constants.VERSION;
+        this.settings.libraryParam = "js-" + VERSION;
       }
 
       this.settings.urlPrefix = this.settings.useHTTPS ? 'https://' : 'http://'
@@ -93,12 +95,12 @@ var constants = require("../src/constants.js");
     };
 
     ImgixClient.prototype._getDomain = function(path) {
-      if (this.settings.shard_strategy === constants.SHARD_STRATEGY_CYCLE) {
+      if (this.settings.shard_strategy === SHARD_STRATEGY_CYCLE) {
         var domain = this.settings.domains[this._shard_next_index];
         this._shard_next_index = (this._shard_next_index + 1) % this.settings.domains.length;
         return domain;
       }
-      else if (this.settings.shard_strategy === constants.SHARD_STRATEGY_CRC) {
+      else if (this.settings.shard_strategy === SHARD_STRATEGY_CRC) {
         return this.settings.domains[crc.crc32(path) % this.settings.domains.length];
       }
     }
@@ -157,9 +159,9 @@ var constants = require("../src/constants.js");
       }
     };
 
-    ImgixClient.VERSION = constants.VERSION;
-    ImgixClient.SHARD_STRATEGY_CRC = constants.SHARD_STRATEGY_CRC;
-    ImgixClient.SHARD_STRATEGY_CYCLE = constants.SHARD_STRATEGY_CYCLE;
+    ImgixClient.VERSION = VERSION;
+    ImgixClient.SHARD_STRATEGY_CRC = SHARD_STRATEGY_CRC;
+    ImgixClient.SHARD_STRATEGY_CYCLE = SHARD_STRATEGY_CYCLE;
 
     return ImgixClient;
   })();
