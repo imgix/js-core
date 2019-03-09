@@ -14,9 +14,10 @@
   var Base64 = _jsBase64.Base64 || _jsBase64;
   var crc = _crc;
 
-  var VERSION = '1.2.0';
+  var VERSION = '1.2.1';
   var SHARD_STRATEGY_CRC = 'crc';
   var SHARD_STRATEGY_CYCLE = 'cycle';
+  var DOMAIN_REGEX = /^(?:[a-z\d\-_]{1,62}\.){0,125}(?:[a-z\d](?:\-(?=\-*[a-z\d])|[a-z]|\d){0,62}\.)[a-z\d]{1,63}$/i;
   var DEFAULTS = {
     host: null,
     domains: [],
@@ -61,6 +62,15 @@
         if (this.settings.domains.length == 0)
           this.settings.domains[0] = this.settings.host;
       }
+
+      this.settings.domains.forEach(function(domain) {
+        if (DOMAIN_REGEX.exec(domain) == null) {
+          throw new Error(
+            'Domains must be passed in as fully-qualified ' + 
+            'domain names and should not include a protocol or any path ' + 
+            'element, i.e. "example.imgix.net".');
+        }
+      });
 
       if (this.settings.includeLibraryParam) {
         this.settings.libraryParam = "js-" + VERSION;

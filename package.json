@@ -1,7 +1,7 @@
 {
   "name": "imgix-core-js",
   "description": "Common boilerplate for all imgix JavaScript-based functionality.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "repository": "https://github.com/imgix/imgix-core-js",
   "scripts": {
     "assert_version": "node assert_version.js",
@@ -19,6 +19,6 @@
   "devDependencies": {
     "mocha": "^2.2.5",
     "phantomjs": "^1.9.17",
-    "uglify-js": "^2.6.2"
+    "uglify-js": "^3.4.9"
   }
 }
