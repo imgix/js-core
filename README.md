@@ -71,6 +71,8 @@ console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h
 ```
 
 ## Domain Sharded URLs
+**Warning: Domain Sharding has been deprecated and will be removed in the next major release**<br>
+To find out more, see our [blog post](https://blog.imgix.com/2019/05/03/deprecating-domain-sharding) explaining the decision to remove this feature.
 
 Domain sharding enables you to spread image requests across multiple domains.
 This allows you to bypass the requests-per-host limits of browsers. We

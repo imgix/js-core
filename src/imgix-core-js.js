@@ -46,6 +46,9 @@
       if (!Array.isArray(this.settings.domains)) {
         this.settings.domains = [this.settings.domains];
       }
+      else {
+        console.warn("Warning: Domain sharding has been deprecated and will be removed in the next major version.");
+      }
 
       if (!this.settings.host && this.settings.domains.length === 0) {
         throw new Error('ImgixClient must be passed valid domain(s)');
