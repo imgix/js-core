@@ -37,7 +37,7 @@ describe('Imgix client:', function describeSuite() {
     });
 
     it('initializes with domains list', function testSpec() {
-      var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.";
+      var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
       stub = sinon.stub(console, 'warn').callsFake(function(warning) {
         assert.equal(warning, deprecation_warning);
       });
@@ -55,7 +55,7 @@ describe('Imgix client:', function describeSuite() {
     });
 
     it('errors with invalid shard strategy', function testSpec() {
-      var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.";
+      var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
       var stub = sinon.stub(console, 'warn').callsFake(function(warning) {
         assert.equal(warning, deprecation_warning);
       });
@@ -71,7 +71,7 @@ describe('Imgix client:', function describeSuite() {
     });
 
     it('errors with invalid domain - appended slash', function testSpec() {
-      var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.";
+      var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
       var stub = sinon.stub(console, 'warn').callsFake(function(warning) {
         assert.equal(warning, deprecation_warning);
       });
@@ -84,7 +84,7 @@ describe('Imgix client:', function describeSuite() {
     });
 
     it('errors with invalid domain - prepended scheme ', function testSpec() {
-      var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.";
+      var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
       var stub = sinon.stub(console, 'warn').callsFake(function(warning) {
         assert.equal(warning, deprecation_warning);
       });
@@ -97,7 +97,7 @@ describe('Imgix client:', function describeSuite() {
     });
 
     it('errors with invalid domain - appended dash ', function testSpec() {
-      var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.";
+      var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
       var stub = sinon.stub(console, 'warn').callsFake(function(warning) {
         assert.equal(warning, deprecation_warning);
       });
@@ -372,7 +372,7 @@ describe('Imgix client:', function describeSuite() {
   describe('Sharding', function describeSuite() {
     describe('CRC', function describeSuite() {
       it('path resolves to same domain', function testSpec() {
-        var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.";
+        var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
         var stub = sinon.stub(console, 'warn').callsFake(function(warning) {
           assert.equal(warning, deprecation_warning);
         });
@@ -412,7 +412,7 @@ describe('Imgix client:', function describeSuite() {
 
     describe('Cyclic', function describeSuite() {
       it('domains cycle', function testSpec() {
-        var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.";
+        var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
         var stub = sinon.stub(console, 'warn').callsFake(function(warning) {
           assert.equal(warning, deprecation_warning);
         });
@@ -434,7 +434,7 @@ describe('Imgix client:', function describeSuite() {
       });
 
       it('single domain sharding', function testSpec() {
-        var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.";
+        var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
         var stub = sinon.stub(console, 'warn').callsFake(function(warning) {
           assert.equal(warning, deprecation_warning);
         });

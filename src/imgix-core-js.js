@@ -47,7 +47,7 @@
         this.settings.domains = [this.settings.domains];
       }
       else {
-        console.warn("Warning: Domain sharding has been deprecated and will be removed in the next major version.");
+        console.warn("Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.");
       }
 
       if (!this.settings.host && this.settings.domains.length === 0) {
