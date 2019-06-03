@@ -39,11 +39,11 @@
       }
 
       if (!this.settings.host && this.settings.domain.length === 0) {
-        throw new Error('ImgixClient must be passed valid domain(s)');
+        throw new Error('ImgixClient must be passed valid domain');
       }
 
       if (this.settings.host) {
-        console.warn("'host' argument is deprecated; use 'domains' instead.");
+        console.warn("'host' argument is deprecated; use 'domain' instead.");
         if (this.settings.domain.length == 0)
           this.settings.domain = this.settings.host;
       }
