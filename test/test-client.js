@@ -1,5 +1,6 @@
 var assert = require('assert');
 var ImgixClient = require('../src/imgix-core-js');
+var sinon = require('sinon');
 
 describe('Imgix client:', function describeSuite() {
   describe('The constructor', function describeSuite() {
