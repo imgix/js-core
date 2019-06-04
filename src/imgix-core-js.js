@@ -78,7 +78,7 @@
       }
 
       if (this.settings.host) {
-        console.warn("'host' argument is deprecated; use 'domains' instead.");
+        console.warn("'host' argument is deprecated; either use 'domain' or 'domains' instead.");
         if (this.settings.domains.length == 0)
           this.settings.domains[0] = this.settings.host;
       }
