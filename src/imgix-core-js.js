@@ -20,6 +20,7 @@
   var DOMAIN_REGEX = /^(?:[a-z\d\-_]{1,62}\.){0,125}(?:[a-z\d](?:\-(?=\-*[a-z\d])|[a-z]|\d){0,62}\.)[a-z\d]{1,63}$/i;
   var DEFAULTS = {
     host: null,
+    domain: null,
     domains: [],
     useHTTPS: true,
     includeLibraryParam: true,
@@ -43,15 +44,37 @@
         this.settings[key] = val;
       }
 
-      if (!Array.isArray(this.settings.domains)) {
-        this.settings.domains = [this.settings.domains];
-      }
-      else {
+      // If settings.domains is passed in as an array of 1 or more elements
+      // will generate a deprecation warning
+      if (Array.isArray(this.settings.domains) && this.settings.domains.length > 0) {
         console.warn("Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.");
       }
-
-      if (!this.settings.host && this.settings.domains.length === 0) {
-        throw new Error('ImgixClient must be passed valid domain(s)');
+      // If settings.domains is passed in as a signle domain str
+      // will keep original behavior
+      else if (!Array.isArray(this.settings.domains)) {
+        this.settings.domains = [this.settings.domains];
+      }
+      // If new domain argument is being used
+      else {
+        // If domain is passed an array
+        // check if it is an array > 1 elements
+        if (Array.isArray(this.settings.domain)) {
+          if(this.settings.domain.length > 1) {
+            throw new Error('ImgixClient.settings.domain cannot take multiple domains');
+          }
+          else {
+            this.settings.domains = this.settings.domain;
+          }
+        }
+        // If domain is passed in as a string
+        // this keeps behavior consistent 
+        else {
+          this.settings.domains = [this.settings.domain];
+        }
+      }
+      
+      if (!this.settings.host && this.settings.domains == 0) {
+          throw new Error('ImgixClient must be passed valid domain(s)');
       }
 
       if (this.settings.shard_strategy !== SHARD_STRATEGY_CRC
