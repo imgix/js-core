@@ -108,6 +108,33 @@ describe('Imgix client:', function describeSuite() {
       }, Error);
       stub.restore();
     });
+
+    it('accepts argument "domain" as a single domain name', function testSpec() {
+      var expectedUrl = 'https://my-host.imgix.net/image.jpg?ixlib=js-'+ImgixClient.VERSION;
+      var client = new ImgixClient({ domain: 'my-host.imgix.net' });
+      assert.equal("my-host.imgix.net", client.settings.domain);
+      assert.equal(expectedUrl, client.buildURL('image.jpg'));
+    });
+
+    it('accepts both arguments "domains" and "domain", giving priority to "domains"', function testSpec() {
+      var expectedUrl = 'https://my-host.imgix.net/image.jpg?ixlib=js-'+ImgixClient.VERSION;
+      var client = new ImgixClient({ domains: 'my-host.imgix.net', domain: 'other-domain.imgix.net' });
+      assert.equal("my-host.imgix.net", client.settings.domains);
+      assert.equal(expectedUrl, client.buildURL('image.jpg'));
+    });
+
+    it('errors when "domain" is passed multiple domains', function testSpec() {
+      assert.throws(function() {
+        new ImgixClient({ domain: ['my-host.imgix.net', 'another-domain.imgix.net'] });
+      }, Error);
+    });
+
+    it('errors when neither "domains" nor "domain" is passed', function testSpec() {
+      assert.throws(function() {
+        new ImgixClient({});
+      }, Error);
+    });
+
   });
 
   describe('Calling _sanitizePath()', function describeSuite() {
