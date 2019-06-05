@@ -48,10 +48,9 @@
         if (this.settings.domains.length > 1) {
           console.warn("Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.");
         }
-        else if (this.settings.domains.length == 0)
-        {
+        else if (this.settings.domains.length == 0) {
           if (typeof(this.settings.domain) != "string" && this.settings.domain != null) {
-              throw new Error('ImgixClient.settings.domain only accepts a string argument');
+            throw new Error('ImgixClient.settings.domain only accepts a string argument');
           }
           else {
             this.settings.domains = [this.settings.domain];
@@ -61,9 +60,9 @@
       else {
         this.settings.domains = [this.settings.domains];
       }
-      
+
       if (!this.settings.host && this.settings.domains == 0) {
-          throw new Error('ImgixClient must be passed valid domain(s)');
+        throw new Error('ImgixClient must be passed valid domain(s)');
       }
 
       if (this.settings.shard_strategy !== SHARD_STRATEGY_CRC
