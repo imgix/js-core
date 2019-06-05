@@ -70,7 +70,6 @@ var url = client.buildURL('/path/to/image.png', { w: 400, h: 300 });
 console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h=300"
 ```
 
-
 ## What is the `ixlib` param on every request?
 
 For security and diagnostic purposes, we sign all requests with the language and version of library used to generate the URL.

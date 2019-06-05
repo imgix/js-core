@@ -14,12 +14,13 @@
   var Base64 = _jsBase64.Base64 || _jsBase64;
   var crc = _crc;
 
-  var VERSION = '1.3.0';
+  var VERSION = '1.4.0';
   var SHARD_STRATEGY_CRC = 'crc';
   var SHARD_STRATEGY_CYCLE = 'cycle';
   var DOMAIN_REGEX = /^(?:[a-z\d\-_]{1,62}\.){0,125}(?:[a-z\d](?:\-(?=\-*[a-z\d])|[a-z]|\d){0,62}\.)[a-z\d]{1,63}$/i;
   var DEFAULTS = {
     host: null,
+    domain: null,
     domains: [],
     useHTTPS: true,
     includeLibraryParam: true,
@@ -43,14 +44,24 @@
         this.settings[key] = val;
       }
 
-      if (!Array.isArray(this.settings.domains)) {
-        this.settings.domains = [this.settings.domains];
+      if (Array.isArray(this.settings.domains)) { 
+        if (this.settings.domains.length > 1) {
+          console.warn("Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.");
+        }
+        else if (this.settings.domains.length == 0) {
+          if (typeof(this.settings.domain) != "string" && this.settings.domain != null) {
+            throw new Error('ImgixClient.settings.domain only accepts a string argument');
+          }
+          else {
+            this.settings.domains = [this.settings.domain];
+          }
+        }
       }
       else {
-        console.warn("Warning: Domain sharding has been deprecated and will be removed in the next major version.");
+        this.settings.domains = [this.settings.domains];
       }
 
-      if (!this.settings.host && this.settings.domains.length === 0) {
+      if (!this.settings.host && this.settings.domains == 0) {
         throw new Error('ImgixClient must be passed valid domain(s)');
       }
 
@@ -61,7 +72,7 @@
       }
 
       if (this.settings.host) {
-        console.warn("'host' argument is deprecated; use 'domains' instead.");
+        console.warn("'host' argument is deprecated; either use 'domain' or 'domains' instead.");
         if (this.settings.domains.length == 0)
           this.settings.domains[0] = this.settings.host;
       }
