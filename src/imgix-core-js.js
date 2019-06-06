@@ -17,7 +17,7 @@
   var DOMAIN_REGEX = /^(?:[a-z\d\-_]{1,62}\.){0,125}(?:[a-z\d](?:\-(?=\-*[a-z\d])|[a-z]|\d){0,62}\.)[a-z\d]{1,63}$/i;
   var DEFAULTS = {
     host: null,
-    domain: '',
+    domain: null,
     useHTTPS: true,
     includeLibraryParam: true
   };
@@ -38,11 +38,8 @@
         this.settings[key] = val;
       }
 
-      if (typeof(this.settings.domain) != "string") {
-        throw new Error('ImgixClient.settings.domain only accepts a string argument');
-      }
-      else if (!this.settings.host && this.settings.domain == '') {
-        throw new Error('ImgixClient must be passed valid domain');
+      if (!this.settings.host && typeof this.settings.domain != "string") {
+        throw new Error('ImgixClient must be passed a valid string domain');
       }
 
       if (this.settings.host) {
