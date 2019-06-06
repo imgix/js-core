@@ -16,7 +16,6 @@
   var VERSION = '1.4.0';
   var DOMAIN_REGEX = /^(?:[a-z\d\-_]{1,62}\.){0,125}(?:[a-z\d](?:\-(?=\-*[a-z\d])|[a-z]|\d){0,62}\.)[a-z\d]{1,63}$/i;
   var DEFAULTS = {
-    host: null,
     domain: null,
     useHTTPS: true,
     includeLibraryParam: true
@@ -36,12 +35,6 @@
       for (key in opts) {
         val = opts[key];
         this.settings[key] = val;
-      }
-
-      if (this.settings.host) {
-        console.warn("'host' argument is deprecated; use 'domain' instead.");
-        if (this.settings.domain.length == 0)
-          this.settings.domain = this.settings.host;
       }
 
       if (typeof this.settings.domain != "string") {
