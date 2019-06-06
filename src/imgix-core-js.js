@@ -38,7 +38,10 @@
         this.settings[key] = val;
       }
 
-      if (!this.settings.host && this.settings.domain.length === 0) {
+      if (typeof(this.settings.domain) != "string") {
+        throw new Error('ImgixClient.settings.domain only accepts a string argument');
+      }
+      else if (!this.settings.host && this.settings.domain == '') {
         throw new Error('ImgixClient must be passed valid domain');
       }
 
@@ -50,8 +53,8 @@
 
       if (DOMAIN_REGEX.exec(this.settings.domain) == null) {
         throw new Error(
-          'Domains must be passed in as fully-qualified ' + 
-          'domain names and should not include a protocol or any path ' + 
+          'Domain must be passed in as fully-qualified ' + 
+          'domain name and should not include a protocol or any path ' + 
           'element, i.e. "example.imgix.net".');
       }
 
