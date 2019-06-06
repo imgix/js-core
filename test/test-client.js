@@ -5,131 +5,71 @@ var sinon = require('sinon');
 describe('Imgix client:', function describeSuite() {
   describe('The constructor', function describeSuite() {
     it('initializes with correct defaults', function testSpec() {
-      var client = new ImgixClient({ domains: 'my-host.imgix.net' });
-      assert.equal(client.settings.domains.length, 1);
-      assert.equal("my-host.imgix.net", client.settings.domains[0]);
+      var client = new ImgixClient({ domain: 'my-host.imgix.net' });
+      assert.equal("my-host.imgix.net", client.settings.domain);
       assert.equal(null, client.settings.secureURLToken);
       assert.equal(true, client.settings.useHTTPS);
-      assert.equal(ImgixClient.SHARD_STRATEGY_CRC, client.settings.shard_strategy);
     });
 
     it('initializes with a token', function testSpec() {
       var client = new ImgixClient({
-        domains: 'my-host.imgix.net',
+        domain: 'my-host.imgix.net',
         secureURLToken: 'MYT0KEN'
       });
-      assert.equal(client.settings.domains.length, 1);
-      assert.equal("my-host.imgix.net", client.settings.domains[0]);
+      assert.equal("my-host.imgix.net", client.settings.domain);
       assert.equal("MYT0KEN", client.settings.secureURLToken);
       assert.equal(true, client.settings.useHTTPS);
     });
 
     it('initializes in insecure mode', function testSpec() {
       var client = new ImgixClient({
-        domains: 'my-host.imgix.net',
+        domain: 'my-host.imgix.net',
         secureURLToken: 'MYT0KEN',
         useHTTPS: false
       });
-      assert.equal(client.settings.domains.length, 1);
-      assert.equal("my-host.imgix.net", client.settings.domains[0]);
+      assert.equal("my-host.imgix.net", client.settings.domain);
       assert.equal("MYT0KEN", client.settings.secureURLToken);
       assert.equal(false, client.settings.useHTTPS);
-    });
-
-    it('initializes with domains list', function testSpec() {
-      var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
-      stub = sinon.stub(console, 'warn').callsFake(function(warning) {
-        assert.equal(warning, deprecation_warning);
-      });
-      var client = new ImgixClient({
-        domains: ['my-host1.imgix.net', 'my-host2.imgix.net'],
-        secureURLToken: 'MYT0KEN',
-        useHTTPS: false
-      });
-      assert.equal(client.settings.domains.length, 2);
-      assert.equal("my-host1.imgix.net", client.settings.domains[0]);
-      assert.equal("my-host2.imgix.net", client.settings.domains[1]);
-      assert.equal("MYT0KEN", client.settings.secureURLToken);
-      assert.equal(false, client.settings.useHTTPS);
-      stub.restore();
-    });
-
-    it('errors with invalid shard strategy', function testSpec() {
-      var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
-      var stub = sinon.stub(console, 'warn').callsFake(function(warning) {
-        assert.equal(warning, deprecation_warning);
-      });
-      assert.throws(function() {
-        new ImgixClient({
-          domains: ['my-host1.imgix.net', 'my-host2.imgix.net'],
-          secureURLToken: 'MYT0KEN',
-          shard_strategy: 'invalid',
-          useHTTPS: false
-        })
-      }, Error);
-      stub.restore();
     });
 
     it('errors with invalid domain - appended slash', function testSpec() {
-      var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
-      var stub = sinon.stub(console, 'warn').callsFake(function(warning) {
-        assert.equal(warning, deprecation_warning);
-      });
       assert.throws(function() {
         new ImgixClient({
-          domains: ['my-host1.imgix.net/'],
+          domain: 'my-host1.imgix.net/',
         })
       }, Error);
-      stub.restore();
     });
 
     it('errors with invalid domain - prepended scheme ', function testSpec() {
-      var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
-      var stub = sinon.stub(console, 'warn').callsFake(function(warning) {
-        assert.equal(warning, deprecation_warning);
-      });
       assert.throws(function() {
         new ImgixClient({
-          domains: ['https://my-host1.imgix.net'],
+          domain: 'https://my-host1.imgix.net',
         })
       }, Error);
-      stub.restore();
     });
 
     it('errors with invalid domain - appended dash ', function testSpec() {
-      var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
-      var stub = sinon.stub(console, 'warn').callsFake(function(warning) {
-        assert.equal(warning, deprecation_warning);
-      });
       assert.throws(function() {
         new ImgixClient({
-          domains: ['my-host1.imgix.net-'],
+          domain: 'my-host1.imgix.net-',
         })
       }, Error);
-      stub.restore();
     });
 
-    it('accepts argument "domain" as a single domain name', function testSpec() {
+    it('accepts a single domain name', function testSpec() {
       var expectedUrl = 'https://my-host.imgix.net/image.jpg?ixlib=js-'+ImgixClient.VERSION;
       var client = new ImgixClient({ domain: 'my-host.imgix.net' });
       assert.equal("my-host.imgix.net", client.settings.domain);
       assert.equal(expectedUrl, client.buildURL('image.jpg'));
     });
 
-    it('accepts both arguments "domains" and "domain", giving priority to "domains"', function testSpec() {
-      var expectedUrl = 'https://my-host.imgix.net/image.jpg?ixlib=js-'+ImgixClient.VERSION;
-      var client = new ImgixClient({ domains: 'my-host.imgix.net', domain: 'other-domain.imgix.net' });
-      assert.equal("my-host.imgix.net", client.settings.domains);
-      assert.equal(expectedUrl, client.buildURL('image.jpg'));
-    });
-
-    it('errors when "domain" is passed multiple domains', function testSpec() {
+    it('errors when domain is any non-string value', function testSpec() {
       assert.throws(function() {
         new ImgixClient({ domain: ['my-host.imgix.net', 'another-domain.imgix.net'] });
       }, Error);
     });
 
-    it('errors when neither "domains" nor "domain" is passed', function testSpec() {
+    it('errors when no domain is passed', function testSpec() {
       assert.throws(function() {
         new ImgixClient({});
       }, Error);
@@ -142,7 +82,7 @@ describe('Imgix client:', function describeSuite() {
 
     beforeEach(function setupClient() {
       client = new ImgixClient({
-        domains: 'testing.imgix.net'
+        domain: 'testing.imgix.net'
       });
     });
 
@@ -290,7 +230,7 @@ describe('Imgix client:', function describeSuite() {
 
     beforeEach(function setupClient() {
       client = new ImgixClient({
-        domains: 'testing.imgix.net',
+        domain: 'testing.imgix.net',
         includeLibraryParam: false
       });
     });
@@ -375,7 +315,7 @@ describe('Imgix client:', function describeSuite() {
 
     beforeEach(function setupClient() {
       client = new ImgixClient({
-        domains: 'testing.imgix.net',
+        domain: 'testing.imgix.net',
         secureURLToken: 'MYT0KEN',
         includeLibraryParam: false
       });
@@ -395,93 +335,4 @@ describe('Imgix client:', function describeSuite() {
       assert.equal(expectation, result);
     });
   });
-
-  describe('Sharding', function describeSuite() {
-    describe('CRC', function describeSuite() {
-      it('path resolves to same domain', function testSpec() {
-        var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
-        var stub = sinon.stub(console, 'warn').callsFake(function(warning) {
-          assert.equal(warning, deprecation_warning);
-        });
-        
-        var domains = ['my-host1.imgix.net', 'my-host2.imgix.net'];
-        var client = new ImgixClient({
-          domains: domains,
-          shard_strategy: ImgixClient.SHARD_STRATEGY_CRC
-        });
-        assert.ok(client.buildURL('/users/1.png').match(domains[0]));
-        assert.ok(client.buildURL('/users/2.png').match(domains[0]));
-        assert.ok(client.buildURL('/users/a.png').match(domains[1]));
-        assert.ok(client.buildURL('/users/1.png').match(domains[0]));
-        assert.ok(client.buildURL('/users/a.png').match(domains[1]));
-        assert.ok(client.buildURL('/users/2.png').match(domains[0]));
-        assert.ok(client.buildURL('/users/b.png').match(domains[1]));
-        assert.ok(client.buildURL('/users/a.png').match(domains[1]));
-        stub.restore();
-      });
-
-      it('single domain sharding', function testSpec() {
-        var domain = 'my-host1.imgix.net';
-        var client = new ImgixClient({
-          domains: domain,
-          shard_strategy: ImgixClient.SHARD_STRATEGY_CRC
-        });
-        assert.ok(client.buildURL('/users/1.png').match(domain));
-        assert.ok(client.buildURL('/users/2.png').match(domain));
-        assert.ok(client.buildURL('/users/a.png').match(domain));
-        assert.ok(client.buildURL('/users/1.png').match(domain));
-        assert.ok(client.buildURL('/users/a.png').match(domain));
-        assert.ok(client.buildURL('/users/2.png').match(domain));
-        assert.ok(client.buildURL('/users/b.png').match(domain));
-        assert.ok(client.buildURL('/users/a.png').match(domain));
-      });
-    });
-
-    describe('Cyclic', function describeSuite() {
-      it('domains cycle', function testSpec() {
-        var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
-        var stub = sinon.stub(console, 'warn').callsFake(function(warning) {
-          assert.equal(warning, deprecation_warning);
-        });
-
-        var domains = ['my-host1.imgix.net', 'my-host2.imgix.net', 'my-host3.imgix.net'];
-        var client = new ImgixClient({
-          domains: domains,
-          shard_strategy: ImgixClient.SHARD_STRATEGY_CYCLE
-        });
-        assert.ok(client.buildURL('/users/1.png').match(domains[0]));
-        assert.ok(client.buildURL('/users/2.png').match(domains[1]));
-        assert.ok(client.buildURL('/users/a.png').match(domains[2]));
-        assert.ok(client.buildURL('/users/1.png').match(domains[0]));
-        assert.ok(client.buildURL('/users/a.png').match(domains[1]));
-        assert.ok(client.buildURL('/users/2.png').match(domains[2]));
-        assert.ok(client.buildURL('/users/b.png').match(domains[0]));
-        assert.ok(client.buildURL('/users/a.png').match(domains[1]));
-        stub.restore();
-      });
-
-      it('single domain sharding', function testSpec() {
-        var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
-        var stub = sinon.stub(console, 'warn').callsFake(function(warning) {
-          assert.equal(warning, deprecation_warning);
-        });
-        var domain = 'my-host1.imgix.net';
-        var client = new ImgixClient({
-          domains: domain,
-          shard_strategy: ImgixClient.SHARD_STRATEGY_CYCLE
-        });
-        assert.ok(client.buildURL('/users/1.png').match(domain));
-        assert.ok(client.buildURL('/users/2.png').match(domain));
-        assert.ok(client.buildURL('/users/a.png').match(domain));
-        assert.ok(client.buildURL('/users/1.png').match(domain));
-        assert.ok(client.buildURL('/users/a.png').match(domain));
-        assert.ok(client.buildURL('/users/2.png').match(domain));
-        assert.ok(client.buildURL('/users/b.png').match(domain));
-        assert.ok(client.buildURL('/users/a.png').match(domain));
-        stub.restore();
-      });
-
-    });
-  });
-
 });
