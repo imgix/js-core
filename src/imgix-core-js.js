@@ -38,14 +38,14 @@
         this.settings[key] = val;
       }
 
-      if (!this.settings.host && typeof this.settings.domain != "string") {
-        throw new Error('ImgixClient must be passed a valid string domain');
-      }
-
       if (this.settings.host) {
         console.warn("'host' argument is deprecated; use 'domain' instead.");
         if (this.settings.domain.length == 0)
           this.settings.domain = this.settings.host;
+      }
+
+      if (typeof this.settings.domain != "string") {
+        throw new Error('ImgixClient must be passed a valid string domain');
       }
 
       if (DOMAIN_REGEX.exec(this.settings.domain) == null) {
