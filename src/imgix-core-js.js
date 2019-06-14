@@ -49,32 +49,31 @@
           console.warn("Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.");
         }
         else if (this.settings.domains.length == 0) {
-          if (typeof(this.settings.domain) != "string" && this.settings.domain != null) {
-            throw new Error('ImgixClient.settings.domain only accepts a string argument');
+          if (this.settings.host) {
+            console.warn("'host' argument is deprecated; either use 'domain' or 'domains' instead.");
+            this.settings.domains[0] = this.settings.host;
+          }
+          else if(this.settings.domain != null) {
+            if (typeof this.settings.domain == "string") {
+              this.settings.domains = [this.settings.domain];
+            }
+            else {
+              throw new Error('ImgixClient.settings.domain only accepts a string argument');
+            }
           }
           else {
-            this.settings.domains = [this.settings.domain];
+            throw new Error('ImgixClient must be passed valid domain(s)');
           }
         }
       }
-      else {
+      else if (this.settings.domains.length != 0) {
         this.settings.domains = [this.settings.domains];
-      }
-
-      if (!this.settings.host && this.settings.domains == 0) {
-        throw new Error('ImgixClient must be passed valid domain(s)');
       }
 
       if (this.settings.shard_strategy !== SHARD_STRATEGY_CRC
           && this.settings.shard_strategy !== SHARD_STRATEGY_CYCLE) {
         throw new Error('Shard strategy must be one of ' +
           SHARD_STRATEGY_CRC + ' or ' + SHARD_STRATEGY_CYCLE);
-      }
-
-      if (this.settings.host) {
-        console.warn("'host' argument is deprecated; either use 'domain' or 'domains' instead.");
-        if (this.settings.domains.length == 0)
-          this.settings.domains[0] = this.settings.host;
       }
 
       this.settings.domains.forEach(function(domain) {
