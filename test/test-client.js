@@ -54,6 +54,21 @@ describe('Imgix client:', function describeSuite() {
       stub.restore();
     });
 
+    it('initializes with host', function testSpec() {
+      var deprecation_warning = "'host' argument is deprecated; either use 'domain' or 'domains' instead.";
+      stub = sinon.stub(console, 'warn').callsFake(function(warning) {
+        var client = new ImgixClient({
+          host: 'my-host.imgix.net',
+          useHTTPS: false
+        });
+        assert.equal(warning, deprecation_warning);
+        assert.equal(client.settings.domains.length, 1);
+        assert.equal("my-host.imgix.net", client.settings.domains[0]);
+        assert.equal(false, client.settings.useHTTPS);
+      });
+      stub.restore();
+    });
+    
     it('errors with invalid shard strategy', function testSpec() {
       var deprecation_warning = "Warning: Domain sharding has been deprecated and will be removed in the next major version.\nAs a result, the 'domains' argument will be deprecated in favor of 'domain' instead.";
       var stub = sinon.stub(console, 'warn').callsFake(function(warning) {
