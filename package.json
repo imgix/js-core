@@ -12,7 +12,8 @@
   "main": "dist/imgix-core-js.js",
   "dependencies": {
     "js-base64": "^2.1.9",
-    "md5": "^2.2.1"
+    "md5": "^2.2.1",
+    "phantomjs": "^2.1.7"
   },
   "license": "BSD-2-Clause",
   "devDependencies": {
