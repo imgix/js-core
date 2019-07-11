@@ -12,12 +12,12 @@
   "main": "dist/imgix-core-js.js",
   "dependencies": {
     "js-base64": "^2.1.9",
-    "md5": "^2.2.1",
-    "phantomjs": "^2.1.7"
+    "md5": "^2.2.1"
   },
   "license": "BSD-2-Clause",
   "devDependencies": {
     "mocha": "2.5.3",
+    "phantomjs": "^2.1.7",
     "sinon": "7.3.2",
     "uglify-js": "3.6.0"
   }
