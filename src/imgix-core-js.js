@@ -70,6 +70,18 @@
       return this.settings.urlPrefix + this.settings.domain + path + queryParams;
     };
 
+    ImgixClient.prototype.buildSrcSet = function (path, params) {
+      var srcset = '';
+      var targetWidths = this._targetWidths();
+
+      for(var i = 0; i < targetWidths.length; i++) {
+        currentWidth = targetWidths[i];
+        srcset += this.buildURL(path, {...params, 'w':currentWidth}) + ' ' + currentWidth + 'w,\n';
+      }
+
+      return srcset;
+    };
+
     ImgixClient.prototype._sanitizePath = function(path) {
       // Strip leading slash first (we'll re-add after encoding)
       path = path.replace(/^\//, '');
@@ -122,6 +134,23 @@
       } else {
         return queryParams = "?s=" + signature;
       }
+    };
+
+    ImgixClient.prototype._targetWidths = function() {
+      var resolutions = [];
+      var prev = 100;
+      var INCREMENT_PERCENTAGE = 8;
+      var MAX_SIZE = 8192;
+    
+      var ensureEven = n => 2 * Math.round(n / 2);
+    
+      while (prev <= MAX_SIZE) {
+        resolutions.push(ensureEven(prev));
+        prev *= 1 + (INCREMENT_PERCENTAGE / 100) * 2;
+      }
+    
+      resolutions.push(MAX_SIZE);
+      return resolutions;
     };
 
     ImgixClient.VERSION = VERSION;
