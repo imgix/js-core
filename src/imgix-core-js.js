@@ -71,6 +71,47 @@
     };
 
     ImgixClient.prototype.buildSrcSet = function (path, params) {
+      var width = params['w'];
+      var height = params['h'];
+      var aspectRatio = params['ar'];
+      var aspectRatioAsDecimal = function() {
+        if (typeof aspectRatio !== "string") {
+          return false;
+        }
+        var isValidFormat = function(str) {
+          return /^\d+(\.\d+)?:\d+(\.\d+)?$/.test(str);
+        };
+        if (!isValidFormat(aspectRatio)) {
+          return false;
+        }
+      
+        const aspectRatioSplit = aspectRatio.split(":");
+        var arWidth = aspectRatioSplit[0];
+        var arHeight = aspectRatioSplit[1];
+      
+        return parseFloat(arWidth) / parseFloat(arHeight);
+      }();
+
+      var fixedWidth = ((width && height) || (width && aspectRatio) || (height && aspectRatio)) ? true : false;
+
+      if (fixedWidth) {
+        if (width && height) {
+          return this._buildDPRSrcSet(path, params);
+        }
+        else if (aspectRatio) { 
+          if (width) {
+            params['h'] = width / aspectRatioAsDecimal;
+          }
+          else if (height) {
+            params['w'] = height * aspectRatioAsDecimal;
+          }
+          return this._buildDPRSrcSet(path, params);
+        }
+      }
+      return this._buildSrcSetPairs(path, params);
+    };
+
+    ImgixClient.prototype._buildSrcSetPairs = function(path, params) {
       var srcset = '';
       var targetWidths = this._targetWidths();
 
@@ -79,7 +120,20 @@
         srcset += this.buildURL(path, {...params, 'w':currentWidth}) + ' ' + currentWidth + 'w,\n';
       }
 
-      return srcset;
+      return srcset.slice(0,-2);
+    };
+
+    ImgixClient.prototype._buildDPRSrcSet = function(path, params) {
+        var srcset = '';
+        var targetRatios = [1,2,3,4,5];
+        var url = this.buildURL(path, params);
+        
+        for(var i = 0; i < targetRatios.length; i++) {
+          currentRatio = targetRatios[i];
+          srcset += url + ' ' + currentRatio +'x,\n'
+        }
+
+        return srcset.slice(0,-2);
     };
 
     ImgixClient.prototype._sanitizePath = function(path) {
