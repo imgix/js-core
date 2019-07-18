@@ -70,57 +70,6 @@
       return this.settings.urlPrefix + this.settings.domain + path + queryParams;
     };
 
-    ImgixClient.prototype.buildSrcSet = function (path, params) {
-      
-      var width = params ? params['w'] : undefined;
-      var height = params ? params['h'] : undefined;
-      var aspectRatio = params ? params['ar'] : undefined;
-
-      // determines if an aspect ratio value is in the correct format 'w:h'
-      var isValidFormat = function() {
-        return /^\d+(\.\d+)?:\d+(\.\d+)?$/.test(aspectRatio);
-      }();
-
-      if (aspectRatio && !isValidFormat) {
-        throw new Error('The \'ar\' parameter key must follow the format w:h');
-      }
-
-      var fixedWidth = ((width && height) || (width && aspectRatio) || (height && aspectRatio)) ? true : false;
-
-      if (fixedWidth) {
-        return this._buildDPRSrcSet(path, params);
-      }
-      else {
-        return this._buildSrcSetPairs(path, params);
-      }
-    };
-
-    ImgixClient.prototype._buildSrcSetPairs = function(path, params) {
-      var srcset = '';
-      var targetWidths = this._targetWidths();
-
-      for(var i = 0; i < targetWidths.length; i++) {
-        currentWidth = targetWidths[i];
-        params['w'] = currentWidth;
-        srcset += this.buildURL(path, params) + ' ' + currentWidth + 'w,\n';
-      }
-
-      return srcset.slice(0,-2);
-    };
-
-    ImgixClient.prototype._buildDPRSrcSet = function(path, params) {
-        var srcset = '';
-        var targetRatios = [1,2,3,4,5];
-        var url = this.buildURL(path, params);
-        
-        for(var i = 0; i < targetRatios.length; i++) {
-          currentRatio = targetRatios[i];
-          srcset += url + ' ' + currentRatio +'x,\n'
-        }
-
-        return srcset.slice(0,-2);
-    };
-
     ImgixClient.prototype._sanitizePath = function(path) {
       // Strip leading slash first (we'll re-add after encoding)
       path = path.replace(/^\//, '');
@@ -175,21 +124,72 @@
       }
     };
 
-    ImgixClient.prototype._targetWidths = function() {
-      var resolutions = [];
-      var prev = 100;
-      var INCREMENT_PERCENTAGE = 8;
-      var MAX_SIZE = 8192;
-    
-      var ensureEven = n => 2 * Math.round(n / 2);
-    
-      while (prev <= MAX_SIZE) {
-        resolutions.push(ensureEven(prev));
-        prev *= 1 + (INCREMENT_PERCENTAGE / 100) * 2;
+    ImgixClient.prototype.buildSrcSet = function (path, params) {
+      
+      var width = params ? params['w'] : undefined;
+      var height = params ? params['h'] : undefined;
+      var aspectRatio = params ? params['ar'] : undefined;
+
+      // determines if an aspect ratio value is in the correct format 'w:h'
+      var isValidFormat = function() {
+        return /^\d+(\.\d+)?:\d+(\.\d+)?$/.test(aspectRatio);
+      }();
+
+      if (aspectRatio && !isValidFormat) {
+        throw new Error('The \'ar\' parameter key must follow the format w:h');
       }
-    
-      resolutions.push(MAX_SIZE);
-      return resolutions;
+
+      var fixedWidth = ((width && height) || (width && aspectRatio) || (height && aspectRatio)) ? true : false;
+
+      if (fixedWidth) {
+        return this._buildDPRSrcSet(path, params);
+      }
+      else {
+        return this._buildSrcSetPairs(path, params);
+      }
+    };
+
+    ImgixClient.prototype._buildSrcSetPairs = function(path, params) {
+      var srcset = '';
+      var targetWidths = function() {
+        var resolutions = [];
+        var prev = 100;
+        var INCREMENT_PERCENTAGE = 8;
+        var MAX_SIZE = 8192;
+      
+        var ensureEven = function(n){
+          return 2 * Math.round(n / 2);
+        };
+      
+        while (prev <= MAX_SIZE) {
+          resolutions.push(ensureEven(prev));
+          prev *= 1 + (INCREMENT_PERCENTAGE / 100) * 2;
+        }
+      
+        resolutions.push(MAX_SIZE);
+        return resolutions;
+      };
+
+      for(var i = 0; i < targetWidths.length; i++) {
+        currentWidth = targetWidths[i];
+        params['w'] = currentWidth;
+        srcset += this.buildURL(path, params) + ' ' + currentWidth + 'w,\n';
+      }
+
+      return srcset.slice(0,-2);
+    };
+
+    ImgixClient.prototype._buildDPRSrcSet = function(path, params) {
+        var srcset = '';
+        var targetRatios = [1,2,3,4,5];
+        var url = this.buildURL(path, params);
+        
+        for(var i = 0; i < targetRatios.length; i++) {
+          currentRatio = targetRatios[i];
+          srcset += url + ' ' + currentRatio +'x,\n'
+        }
+
+        return srcset.slice(0,-2);
     };
 
     ImgixClient.VERSION = VERSION;
