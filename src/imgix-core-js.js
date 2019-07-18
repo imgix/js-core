@@ -168,11 +168,12 @@
       
         resolutions.push(MAX_SIZE);
         return resolutions;
-      };
+      }();
 
       for(var i = 0; i < targetWidths.length; i++) {
         currentWidth = targetWidths[i];
-        params['w'] = currentWidth;
+        currentParams = params ? params : {};
+        currentParams['w'] = currentWidth;
         srcset += this.buildURL(path, params) + ' ' + currentWidth + 'w,\n';
       }
 
