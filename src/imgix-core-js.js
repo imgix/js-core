@@ -71,44 +71,28 @@
     };
 
     ImgixClient.prototype.buildSrcSet = function (path, params) {
-      var width = params['w'];
-      var height = params['h'];
-      var aspectRatio = params['ar'];
-      var aspectRatioAsDecimal = function() {
-        if (typeof aspectRatio !== "string") {
-          return false;
-        }
-        var isValidFormat = function(str) {
-          return /^\d+(\.\d+)?:\d+(\.\d+)?$/.test(str);
-        };
-        if (!isValidFormat(aspectRatio)) {
-          return false;
-        }
       
-        const aspectRatioSplit = aspectRatio.split(":");
-        var arWidth = aspectRatioSplit[0];
-        var arHeight = aspectRatioSplit[1];
-      
-        return parseFloat(arWidth) / parseFloat(arHeight);
+      var width = params ? params['w'] : undefined;
+      var height = params ? params['h'] : undefined;
+      var aspectRatio = params ? params['ar'] : undefined;
+
+      // determines if an aspect ratio value is in the correct format 'w:h'
+      var isValidFormat = function() {
+        return /^\d+(\.\d+)?:\d+(\.\d+)?$/.test(aspectRatio);
       }();
+
+      if (aspectRatio && !isValidFormat) {
+        throw new Error('The \'ar\' parameter key must follow the format w:h');
+      }
 
       var fixedWidth = ((width && height) || (width && aspectRatio) || (height && aspectRatio)) ? true : false;
 
       if (fixedWidth) {
-        if (width && height) {
-          return this._buildDPRSrcSet(path, params);
-        }
-        else if (aspectRatio) { 
-          if (width) {
-            params['h'] = width / aspectRatioAsDecimal;
-          }
-          else if (height) {
-            params['w'] = height * aspectRatioAsDecimal;
-          }
-          return this._buildDPRSrcSet(path, params);
-        }
+        return this._buildDPRSrcSet(path, params);
       }
-      return this._buildSrcSetPairs(path, params);
+      else {
+        return this._buildSrcSetPairs(path, params);
+      }
     };
 
     ImgixClient.prototype._buildSrcSetPairs = function(path, params) {
