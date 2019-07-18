@@ -16,7 +16,7 @@
   },
   "license": "BSD-2-Clause",
   "devDependencies": {
-    "mocha": "6.1.4",
+    "mocha": "6.2.0",
     "phantomjs": "2.1.7",
     "sinon": "7.3.2",
     "uglify-js": "3.6.0"
