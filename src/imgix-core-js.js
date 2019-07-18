@@ -101,7 +101,8 @@
 
       for(var i = 0; i < targetWidths.length; i++) {
         currentWidth = targetWidths[i];
-        srcset += this.buildURL(path, {...params, 'w':currentWidth}) + ' ' + currentWidth + 'w,\n';
+        params['w'] = currentWidth;
+        srcset += this.buildURL(path, params) + ' ' + currentWidth + 'w,\n';
       }
 
       return srcset.slice(0,-2);
