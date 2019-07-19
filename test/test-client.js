@@ -335,4 +335,94 @@ describe('Imgix client:', function describeSuite() {
       assert.equal(expectation, result);
     });
   });
+
+  describe('Calling buildSrcSet()', function describeSuite() {
+    describe('width descriptor mode', function describeSuite() {
+      var srcset = new ImgixClient({
+        domain: 'testing.imgix.net',
+        includeLibraryParam: false,
+        secureURLToken: 'MYT0KEN'
+      }).buildSrcSet('image.jpg');
+      
+      it('returns the expected number of `url widthDescriptor` pairs', function testSpec() {
+        assert.equal(srcset.split(',').length,31);
+      });
+      it('should not exceed the bounds of [100, 8192]', function testSpec() {
+        var srcsetSplit = srcset.split(",");
+        var min = Number.parseFloat(
+          srcsetSplit[0]
+          .split(" ")[1]
+          .slice(0, -1)
+        );
+        var max = Number.parseFloat(
+          srcsetSplit[srcsetSplit.length-1]
+          .split(" ")[1]
+          .slice(0, -1)
+        );
+        assert(min >= 100);
+        assert(max <= 8192);
+      });
+      it('should not increase more than 18% every iteration', function testSpec() {
+        var INCREMENT_ALLOWED = 0.18;
+        
+        var srcsetWidths = function() {
+          return srcset.split(",")
+          .map(function (srcsetSplit) {
+            return srcsetSplit.split(" ")[1];
+          })
+          .map(function (width) {
+            return width.slice(0, -1);
+          })
+          .map(Number.parseFloat)
+        }();
+
+        let prev = srcsetWidths[0];
+
+        for (let index = 1; index < srcsetWidths.length; index++) {
+          var element = srcsetWidths[index];
+          assert((element / prev) < (1 + INCREMENT_ALLOWED));
+          prev = element;
+        }
+      });
+      it('should correctly sign each URL', function testSpec() {
+        srcset.split(",")
+        .map(function (srcsetSplit) {
+          return srcsetSplit.split(" ")[0];
+        }).map(function (src) {
+          assert(src.includes("s="));
+        });
+      });
+    });
+
+    describe('DPR mode', function describeSuite() {
+      var srcset = new ImgixClient({
+        domain: 'testing.imgix.net',
+        includeLibraryParam: false,
+        secureURLToken: 'MYT0KEN'
+      }).buildSrcSet('image.jpg', {w:'800',h:'300'});
+
+      it('srcSet should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
+        assert(srcset.split(",").length == 5);
+
+        var devicePixelRatios = srcset.split(",")
+        .map(function (srcsetSplit){
+          return srcsetSplit.split(" ")[1];
+        })
+        
+        assert(devicePixelRatios[0] == '1x');
+        assert(devicePixelRatios[1] == '2x');
+        assert(devicePixelRatios[2] == '3x');
+        assert(devicePixelRatios[3] == '4x');
+        assert(devicePixelRatios[4] == '5x');
+      });
+      it('should correctly sign each URL', function testSpec() {
+        srcset.split(",")
+        .map(function (srcsetSplit) {
+          return srcsetSplit.split(" ")[0];
+        }).map(function (src) {
+          assert(src.includes("s="));
+        });
+      });
+    });
+  });
 });

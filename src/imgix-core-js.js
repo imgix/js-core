@@ -125,7 +125,6 @@
     };
 
     ImgixClient.prototype.buildSrcSet = function (path, params) {
-      
       var width = params ? params['w'] : undefined;
       var height = params ? params['h'] : undefined;
       var aspectRatio = params ? params['ar'] : undefined;
@@ -174,7 +173,7 @@
         currentWidth = targetWidths[i];
         currentParams = params ? params : {};
         currentParams['w'] = currentWidth;
-        srcset += this.buildURL(path, params) + ' ' + currentWidth + 'w,\n';
+        srcset += this.buildURL(path, currentParams) + ' ' + currentWidth + 'w,\n';
       }
 
       return srcset.slice(0,-2);
