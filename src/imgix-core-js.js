@@ -159,7 +159,7 @@
       }
 
       // If two of the three are defined, this is a fixed-dimension srcset
-      if (((width && height) || (width && aspectRatio) || (height && aspectRatio))) {
+      if ((width && height) || (width && aspectRatio) || (height && aspectRatio)) {
         return this._buildDPRSrcSet(path, params);
       }
       else {
