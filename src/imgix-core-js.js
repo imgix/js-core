@@ -150,8 +150,10 @@
       var width = params ? params['w'] : undefined;
       var height = params ? params['h'] : undefined;
       var aspectRatio = params ? params['ar'] : undefined;
-      delete params.dpr;
-
+      if (params) {
+        delete params.dpr;
+      }
+      
       // determines if an aspect ratio value is in the correct format 'w:h'
       var isValidFormat = /^\d+(\.\d+)?:\d+(\.\d+)?$/.test(aspectRatio);
 
