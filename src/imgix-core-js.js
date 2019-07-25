@@ -150,6 +150,7 @@
       var width = params ? params['w'] : undefined;
       var height = params ? params['h'] : undefined;
       var aspectRatio = params ? params['ar'] : undefined;
+      delete params.dpr;
 
       // determines if an aspect ratio value is in the correct format 'w:h'
       var isValidFormat = /^\d+(\.\d+)?:\d+(\.\d+)?$/.test(aspectRatio);
@@ -158,8 +159,7 @@
         throw new Error('The \'ar\' parameter key must follow the format w:h');
       }
 
-      // If two of the three are defined, this is a fixed-dimension srcset
-      if ((width && height) || (width && aspectRatio) || (height && aspectRatio)) {
+      if ((width) || (height && aspectRatio)) {
         return this._buildDPRSrcSet(path, params);
       }
       else {
