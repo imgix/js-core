@@ -339,7 +339,7 @@ describe('Imgix client:', function describeSuite() {
 
   describe('Calling buildSrcSet()', function describeSuite() {
 
-    it('removes any dpr parameter provided', function testSpec(){
+    it('removes any dpr parameter provided', function testSpec() {
       var srcset = new ImgixClient({
         domain: 'testing.imgix.net',
         includeLibraryParam: false,
@@ -355,7 +355,7 @@ describe('Imgix client:', function describeSuite() {
         secureURLToken: 'MYT0KEN'
       }).buildSrcSet('image.jpg', {w:100});
 
-      it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {        
+      it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
         assert(srcset.split(",").length == 5);
   
         var devicePixelRatios = srcset.split(",")
@@ -370,7 +370,7 @@ describe('Imgix client:', function describeSuite() {
         assert(devicePixelRatios[4] == '5x');
       });
 
-      it('should correctly sign each URL', function testSpec() {  
+      it('should correctly sign each URL', function testSpec() {
         var signKey = "s=b95cfd915f4a198442bff4ce5befe5b8";
   
         srcset.split(",")
@@ -568,7 +568,7 @@ describe('Imgix client:', function describeSuite() {
         secureURLToken: 'MYT0KEN'
       }).buildSrcSet('image.jpg', {w:100,ar:'3:2'});
 
-      it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {        
+      it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
         assert(srcset.split(",").length == 5);
   
         var devicePixelRatios = srcset.split(",")
@@ -583,7 +583,7 @@ describe('Imgix client:', function describeSuite() {
         assert(devicePixelRatios[4] == '5x');
       });
 
-      it('should correctly sign each URL', function testSpec() {  
+      it('should correctly sign each URL', function testSpec() {
         var signKey = "s=14244344b49d2933eb9dc227af37c24a";
   
         srcset.split(",")
@@ -602,7 +602,7 @@ describe('Imgix client:', function describeSuite() {
         secureURLToken: 'MYT0KEN'
       }).buildSrcSet('image.jpg', {h:100,ar:'3:2'});
 
-      it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {        
+      it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
         assert(srcset.split(",").length == 5);
   
         var devicePixelRatios = srcset.split(",")
@@ -617,7 +617,7 @@ describe('Imgix client:', function describeSuite() {
         assert(devicePixelRatios[4] == '5x');
       });
 
-      it('should correctly sign each URL', function testSpec() {  
+      it('should correctly sign each URL', function testSpec() {
         var signKey = "s=84db8cb226483fc0130b4fb58e1e6ff2";
   
         srcset.split(",")
