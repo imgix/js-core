@@ -70,6 +70,49 @@ var url = client.buildURL('/path/to/image.png', { w: 400, h: 300 });
 console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h=300"
 ```
 
+## Srcset Generation
+
+The imgix-core-js module allows for generation of custom `srcset` attributes, which can be invoked through `buildSrcSet()`. By default, the `srcset` generated will allow for responsive size switching by building a list of image-width mappings.
+
+```js
+var client = new ImgixClient({domain:'my-social-network.imgix.net', secureURLToken:'my-token', includeLibraryParam:false});
+var srcset = client.buildSrcSet('image.jpg');
+
+console.log(srcset);
+```
+
+Will produce the following attribute value, which can then be served to the client:
+
+```html
+https://my-social-network.imgix.net/image.jpg?w=100&s=e2e581a39c917bdee50b2f8689c30893 100w,
+https://my-social-network.imgix.net/image.jpg?w=116&s=836e0bc15da2ad74af8130d93a0ebda6 116w,
+https://my-social-network.imgix.net/image.jpg?w=134&s=688416d933381acda1f57068709aab79 134w,
+                                            ...
+https://my-social-network.imgix.net/image.jpg?w=7400&s=91779d82a0e1ac16db04c522fa4017e5 7400w,
+https://my-social-network.imgix.net/image.jpg?w=8192&s=59eb881b618fed314fe30cf9e3ec7b00 8192w
+```
+
+In cases where enough information is provided about an image's dimensions, `buildSrcSet()` will instead build a `srcset` that will allow for an image to be served at different resolutions. The parameters taken into consideration when determining if an image is fixed-width are `w`, `h`, and `ar`. By invoking `buildSrcSet()` with either a width **or** the height and aspect ratio provided, a different `srcset` will be generated for a fixed-size image instead.
+
+```rb
+var client = new ImgixClient({domain:'my-social-network.imgix.net', secureURLToken:'my-token', includeLibraryParam:false});
+var srcset = client.buildSrcSet('image.jpg', {h:800, ar:'3:2'});
+
+console.log(srcset);
+```
+
+Will produce the following attribute value:
+
+```html
+https://my-social-network.imgix.net/image.jpg?h=800&ar=3%3A2&s=1aa5fff0c7cdbd749f3ce3f553d239c4 1x,
+https://my-social-network.imgix.net/image.jpg?h=800&ar=3%3A2&s=1aa5fff0c7cdbd749f3ce3f553d239c4 2x,
+https://my-social-network.imgix.net/image.jpg?h=800&ar=3%3A2&s=1aa5fff0c7cdbd749f3ce3f553d239c4 3x,
+https://my-social-network.imgix.net/image.jpg?h=800&ar=3%3A2&s=1aa5fff0c7cdbd749f3ce3f553d239c4 4x,
+https://my-social-network.imgix.net/image.jpg?h=800&ar=3%3A2&s=1aa5fff0c7cdbd749f3ce3f553d239c4 5x
+```
+
+For more information to better understand `srcset`, we highly recommend [Eric Portis' "Srcset and sizes" article](https://ericportis.com/posts/2014/srcset-sizes/) which goes into depth about the subject.
+
 ## What is the `ixlib` param on every request?
 
 For security and diagnostic purposes, we sign all requests with the language and version of library used to generate the URL.
