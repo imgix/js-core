@@ -371,13 +371,13 @@ describe('Imgix client:', function describeSuite() {
       });
 
       it('should correctly sign each URL', function testSpec() {
-        var signKey = "s=b95cfd915f4a198442bff4ce5befe5b8";
+        var expected_signature = "s=b95cfd915f4a198442bff4ce5befe5b8";
   
         srcset.split(",")
         .map(function (srcsetSplit) {
           return srcsetSplit.split(" ")[0];
         }).map(function (src) {
-          assert(src.includes(signKey));
+          assert(src.includes(expected_signature));
         });
       });
     });
@@ -444,10 +444,11 @@ describe('Imgix client:', function describeSuite() {
           // param will have all params except for '&s=...'
           param = src.slice(src.indexOf('?'), src.length);
           param = param.slice(0, param.indexOf('s=')-1);
+          generated_signature = src.slice(src.indexOf('s=')+2, src.length)
           signatureBase = 'MYT0KEN' + path + param;
-          signature = md5(signatureBase);
+          expected_signature = md5(signatureBase);
           
-          assert.equal(src.slice(src.indexOf('s=')+2, src.length), signature);
+          assert.equal(expected_signature, generated_signature);
         });
       });
     });
@@ -475,13 +476,13 @@ describe('Imgix client:', function describeSuite() {
       });
 
       it('should correctly sign each URL', function testSpec() {  
-        var signKey = "s=fb081a45c449b28f69e012d474943df3";
+        var expected_signature = "s=fb081a45c449b28f69e012d474943df3";
   
         srcset.split(",")
         .map(function (srcsetSplit) {
           return srcsetSplit.split(" ")[0];
         }).map(function (src) {
-          assert(src.includes(signKey));
+          assert(src.includes(expected_signature));
         });
       });
     });
@@ -553,10 +554,11 @@ describe('Imgix client:', function describeSuite() {
           // param will have all params except for '&s=...'
           param = src.slice(src.indexOf('?'), src.length);
           param = param.slice(0, param.indexOf('s=')-1);
+          generated_signature = src.slice(src.indexOf('s=')+2, src.length)
           signatureBase = 'MYT0KEN' + path + param;
-          signature = md5(signatureBase);
+          expected_signature = md5(signatureBase);
           
-          assert.equal(src.slice(src.indexOf('s=')+2, src.length), signature);
+          assert.equal(expected_signature, generated_signature);
         });
       });
     });
@@ -584,13 +586,13 @@ describe('Imgix client:', function describeSuite() {
       });
 
       it('should correctly sign each URL', function testSpec() {
-        var signKey = "s=14244344b49d2933eb9dc227af37c24a";
+        var expected_signature = "s=14244344b49d2933eb9dc227af37c24a";
   
         srcset.split(",")
         .map(function (srcsetSplit) {
           return srcsetSplit.split(" ")[0];
         }).map(function (src) {
-          assert(src.includes(signKey));
+          assert(src.includes(expected_signature));
         });
       });
     });
@@ -618,13 +620,13 @@ describe('Imgix client:', function describeSuite() {
       });
 
       it('should correctly sign each URL', function testSpec() {
-        var signKey = "s=84db8cb226483fc0130b4fb58e1e6ff2";
+        var expected_signature = "s=84db8cb226483fc0130b4fb58e1e6ff2";
   
         srcset.split(",")
         .map(function (srcsetSplit) {
           return srcsetSplit.split(" ")[0];
         }).map(function (src) {
-          assert(src.includes(signKey));
+          assert(src.includes(expected_signature));
         });
       });
     });
