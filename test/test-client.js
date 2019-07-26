@@ -338,16 +338,6 @@ describe('Imgix client:', function describeSuite() {
   });
 
   describe('Calling buildSrcSet()', function describeSuite() {
-
-    it('removes any dpr parameter provided', function testSpec() {
-      var srcset = new ImgixClient({
-        domain: 'testing.imgix.net',
-        includeLibraryParam: false,
-        secureURLToken: 'MYT0KEN'
-      }).buildSrcSet('image.jpg', {dpr:1});
-
-      assert(!srcset.includes('dpr='));
-    });
     describe('with a width parameter provided', function describeSuite() {
       var srcset = new ImgixClient({
         domain: 'testing.imgix.net',
@@ -389,6 +379,11 @@ describe('Imgix client:', function describeSuite() {
         secureURLToken: 'MYT0KEN'
       }).buildSrcSet('image.jpg', {h:100});
 
+      it('should respect the height parameter', function testSpec(){
+        srcset.split(',').map(function (src) {
+          assert(src.includes('h='));
+        });
+      });
       it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
         assert.equal(srcset.split(',').length, 31);
       });
@@ -494,11 +489,6 @@ describe('Imgix client:', function describeSuite() {
         secureURLToken: 'MYT0KEN'
       }).buildSrcSet('image.jpg',{ar:'3:2'});
 
-      it('should error if the ar parameter is not passed in the correct format', function testSpec() {
-        assert.throws(function() {
-          client.buildSrcSet('image.jpg', {ar:'3x2'});
-        }, Error);
-      });
       it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
         assert.equal(srcset.split(',').length, 31);
       });

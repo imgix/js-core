@@ -150,16 +150,6 @@
       var width = params ? params['w'] : undefined;
       var height = params ? params['h'] : undefined;
       var aspectRatio = params ? params['ar'] : undefined;
-      if (params) {
-        delete params.dpr;
-      }
-      
-      // determines if an aspect ratio value is in the correct format 'w:h'
-      var isValidFormat = /^\d+(\.\d+)?:\d+(\.\d+)?$/.test(aspectRatio);
-
-      if (aspectRatio && !isValidFormat) {
-        throw new Error('The \'ar\' parameter key must follow the format w:h');
-      }
 
       if ((width) || (height && aspectRatio)) {
         return this._buildDPRSrcSet(path, params);
