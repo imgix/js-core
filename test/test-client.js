@@ -1,6 +1,7 @@
 var assert = require('assert');
 var ImgixClient = require('../src/imgix-core-js');
 var sinon = require('sinon');
+var md5 = require("md5");
 
 describe('Imgix client:', function describeSuite() {
   describe('The constructor', function describeSuite() {
@@ -333,6 +334,291 @@ describe('Imgix client:', function describeSuite() {
           result = client._signParams(path, '?w=400');
 
       assert.equal(expectation, result);
+    });
+  });
+
+  describe('Calling buildSrcSet()', function describeSuite() {
+    describe('with a width parameter provided', function describeSuite() {
+      var srcset = new ImgixClient({
+        domain: 'testing.imgix.net',
+        includeLibraryParam: false,
+        secureURLToken: 'MYT0KEN'
+      }).buildSrcSet('image.jpg', {w:100});
+
+      it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
+        assert(srcset.split(",").length == 5);
+  
+        var devicePixelRatios = srcset.split(",")
+        .map(function (srcsetSplit){
+          return srcsetSplit.split(" ")[1];
+        })
+        
+        assert(devicePixelRatios[0] == '1x');
+        assert(devicePixelRatios[1] == '2x');
+        assert(devicePixelRatios[2] == '3x');
+        assert(devicePixelRatios[3] == '4x');
+        assert(devicePixelRatios[4] == '5x');
+      });
+
+      it('should correctly sign each URL', function testSpec() {
+        var expected_signature = "s=b95cfd915f4a198442bff4ce5befe5b8";
+  
+        srcset.split(",")
+        .map(function (srcsetSplit) {
+          return srcsetSplit.split(" ")[0];
+        }).map(function (src) {
+          assert(src.includes(expected_signature));
+        });
+      });
+    });
+
+    describe('with a height parameter provided', function describeSuite() {
+      var srcset = new ImgixClient({
+        domain: 'testing.imgix.net',
+        includeLibraryParam: false,
+        secureURLToken: 'MYT0KEN'
+      }).buildSrcSet('image.jpg', {h:100});
+
+      it('should respect the height parameter', function testSpec(){
+        srcset.split(',').map(function (src) {
+          assert(src.includes('h='));
+        });
+      });
+      it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
+        assert.equal(srcset.split(',').length, 31);
+      });
+      it('should not exceed the bounds of [100, 8192]', function testSpec() {
+        var srcsetSplit = srcset.split(",");
+        var min = Number.parseFloat(
+          srcsetSplit[0]
+          .split(" ")[1]
+          .slice(0, -1)
+        );
+        var max = Number.parseFloat(
+          srcsetSplit[srcsetSplit.length-1]
+          .split(" ")[1]
+          .slice(0, -1)
+        );
+        assert(min >= 100);
+        assert(max <= 8192);
+      });
+      it('should not increase more than 18% every iteration', function testSpec() {
+        var INCREMENT_ALLOWED = 0.18;
+        
+        var srcsetWidths = function() {
+          return srcset.split(",")
+          .map(function (srcsetSplit) {
+            return srcsetSplit.split(" ")[1];
+          })
+          .map(function (width) {
+            return width.slice(0, -1);
+          })
+          .map(Number.parseFloat)
+        }();
+  
+        let prev = srcsetWidths[0];
+  
+        for (let index = 1; index < srcsetWidths.length; index++) {
+          var element = srcsetWidths[index];
+          assert((element / prev) < (1 + INCREMENT_ALLOWED));
+          prev = element;
+        }
+      });
+      it('should correctly sign each URL', function testSpec() {
+        var path = '/image.jpg';
+        var param, signatureBase, signature;
+  
+        srcset.split(",")
+        .map(function (srcsetSplit) {
+          // split the url portion of each srcset entry
+          return srcsetSplit.split(" ")[0];
+        }).map(function (src) {
+          // asserts that the expected 's=' parameter is being generated per entry
+          assert(src.includes("s="));
+          
+          // param will have all params except for '&s=...'
+          param = src.slice(src.indexOf('?'), src.length);
+          param = param.slice(0, param.indexOf('s=')-1);
+          generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+          signatureBase = 'MYT0KEN' + path + param;
+          expected_signature = md5(signatureBase);
+          
+          assert.equal(expected_signature, generated_signature);
+        });
+      });
+    });
+
+    describe('with a width and height parameter provided', function describeSuite() {
+      var srcset = new ImgixClient({
+        domain: 'testing.imgix.net',
+        includeLibraryParam: false,
+        secureURLToken: 'MYT0KEN'
+      }).buildSrcSet('image.jpg', {w:100,h:100});
+
+      it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {        
+        assert(srcset.split(",").length == 5);
+  
+        var devicePixelRatios = srcset.split(",")
+        .map(function (srcsetSplit){
+          return srcsetSplit.split(" ")[1];
+        })
+        
+        assert(devicePixelRatios[0] == '1x');
+        assert(devicePixelRatios[1] == '2x');
+        assert(devicePixelRatios[2] == '3x');
+        assert(devicePixelRatios[3] == '4x');
+        assert(devicePixelRatios[4] == '5x');
+      });
+
+      it('should correctly sign each URL', function testSpec() {  
+        var expected_signature = "s=fb081a45c449b28f69e012d474943df3";
+  
+        srcset.split(",")
+        .map(function (srcsetSplit) {
+          return srcsetSplit.split(" ")[0];
+        }).map(function (src) {
+          assert(src.includes(expected_signature));
+        });
+      });
+    });
+
+    describe('with an aspect ratio parameter provided', function describeSuite() {
+      var srcset = new ImgixClient({
+        domain: 'testing.imgix.net',
+        includeLibraryParam: false,
+        secureURLToken: 'MYT0KEN'
+      }).buildSrcSet('image.jpg',{ar:'3:2'});
+
+      it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
+        assert.equal(srcset.split(',').length, 31);
+      });
+      it('should not exceed the bounds of [100, 8192]', function testSpec() {
+        var srcsetSplit = srcset.split(",");
+        var min = Number.parseFloat(
+          srcsetSplit[0]
+          .split(" ")[1]
+          .slice(0, -1)
+        );
+        var max = Number.parseFloat(
+          srcsetSplit[srcsetSplit.length-1]
+          .split(" ")[1]
+          .slice(0, -1)
+        );
+        assert(min >= 100);
+        assert(max <= 8192);
+      });
+      it('should not increase more than 18% every iteration', function testSpec() {
+        var INCREMENT_ALLOWED = 0.18;
+        
+        var srcsetWidths = function() {
+          return srcset.split(",")
+          .map(function (srcsetSplit) {
+            return srcsetSplit.split(" ")[1];
+          })
+          .map(function (width) {
+            return width.slice(0, -1);
+          })
+          .map(Number.parseFloat)
+        }();
+  
+        let prev = srcsetWidths[0];
+  
+        for (let index = 1; index < srcsetWidths.length; index++) {
+          var element = srcsetWidths[index];
+          assert((element / prev) < (1 + INCREMENT_ALLOWED));
+          prev = element;
+        }
+      });
+      it('should correctly sign each URL', function testSpec() {
+        var path = '/image.jpg';
+        var param, signatureBase, signature;
+  
+        srcset.split(",")
+        .map(function (srcsetSplit) {
+          // split the url portion of each srcset entry
+          return srcsetSplit.split(" ")[0];
+        }).map(function (src) {
+          // asserts that the expected 's=' parameter is being generated per entry
+          assert(src.includes("s="));
+          
+          // param will have all params except for '&s=...'
+          param = src.slice(src.indexOf('?'), src.length);
+          param = param.slice(0, param.indexOf('s=')-1);
+          generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+          signatureBase = 'MYT0KEN' + path + param;
+          expected_signature = md5(signatureBase);
+          
+          assert.equal(expected_signature, generated_signature);
+        });
+      });
+    });
+
+    describe('with a width and aspect ratio parameter provided', function describeSuite() {
+      var srcset = new ImgixClient({
+        domain: 'testing.imgix.net',
+        includeLibraryParam: false,
+        secureURLToken: 'MYT0KEN'
+      }).buildSrcSet('image.jpg', {w:100,ar:'3:2'});
+
+      it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
+        assert(srcset.split(",").length == 5);
+  
+        var devicePixelRatios = srcset.split(",")
+        .map(function (srcsetSplit){
+          return srcsetSplit.split(" ")[1];
+        })
+        
+        assert(devicePixelRatios[0] == '1x');
+        assert(devicePixelRatios[1] == '2x');
+        assert(devicePixelRatios[2] == '3x');
+        assert(devicePixelRatios[3] == '4x');
+        assert(devicePixelRatios[4] == '5x');
+      });
+
+      it('should correctly sign each URL', function testSpec() {
+        var expected_signature = "s=14244344b49d2933eb9dc227af37c24a";
+  
+        srcset.split(",")
+        .map(function (srcsetSplit) {
+          return srcsetSplit.split(" ")[0];
+        }).map(function (src) {
+          assert(src.includes(expected_signature));
+        });
+      });
+    });
+
+    describe('with a height and aspect ratio parameter provided', function describeSuite() {
+      var srcset = new ImgixClient({
+        domain: 'testing.imgix.net',
+        includeLibraryParam: false,
+        secureURLToken: 'MYT0KEN'
+      }).buildSrcSet('image.jpg', {h:100,ar:'3:2'});
+
+      it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
+        assert(srcset.split(",").length == 5);
+  
+        var devicePixelRatios = srcset.split(",")
+        .map(function (srcsetSplit){
+          return srcsetSplit.split(" ")[1];
+        })
+        
+        assert(devicePixelRatios[0] == '1x');
+        assert(devicePixelRatios[1] == '2x');
+        assert(devicePixelRatios[2] == '3x');
+        assert(devicePixelRatios[3] == '4x');
+        assert(devicePixelRatios[4] == '5x');
+      });
+
+      it('should correctly sign each URL', function testSpec() {
+        var expected_signature = "s=84db8cb226483fc0130b4fb58e1e6ff2";
+  
+        srcset.split(",")
+        .map(function (srcsetSplit) {
+          return srcsetSplit.split(" ")[0];
+        }).map(function (src) {
+          assert(src.includes(expected_signature));
+        });
+      });
     });
   });
 });

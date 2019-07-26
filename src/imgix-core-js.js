@@ -13,8 +13,30 @@
   var md5 = _md5;
   var Base64 = _jsBase64.Base64 || _jsBase64;
 
+  // package version used in the ix-lib parameter
   var VERSION = '2.0.0';
+  // regex pattern used to determine if a domain is valid
   var DOMAIN_REGEX = /^(?:[a-z\d\-_]{1,62}\.){0,125}(?:[a-z\d](?:\-(?=\-*[a-z\d])|[a-z]|\d){0,62}\.)[a-z\d]{1,63}$/i;
+  // returns an array of width values used during scrset generation
+  var TARGET_WIDTHS = (function() {
+    var resolutions = [];
+    var prev = 100;
+    var INCREMENT_PERCENTAGE = 8;
+    var MAX_SIZE = 8192;
+  
+    var ensureEven = function(n){
+      return 2 * Math.round(n / 2);
+    };
+  
+    while (prev <= MAX_SIZE) {
+      resolutions.push(ensureEven(prev));
+      prev *= 1 + (INCREMENT_PERCENTAGE / 100) * 2;
+    }
+  
+    resolutions.push(MAX_SIZE);
+    return resolutions;
+  })();
+  // default ImgixClient settings passed in during instantiation
   var DEFAULTS = {
     domain: null,
     useHTTPS: true,
@@ -122,6 +144,46 @@
       } else {
         return queryParams = "?s=" + signature;
       }
+    };
+
+    ImgixClient.prototype.buildSrcSet = function (path, params) {
+      var width = params ? params['w'] : undefined;
+      var height = params ? params['h'] : undefined;
+      var aspectRatio = params ? params['ar'] : undefined;
+
+      if ((width) || (height && aspectRatio)) {
+        return this._buildDPRSrcSet(path, params);
+      }
+      else {
+        return this._buildSrcSetPairs(path, params);
+      }
+    };
+
+    ImgixClient.prototype._buildSrcSetPairs = function(path, params) {
+      var srcset = '';
+      var currentWidth, currentParams;
+
+      for(var i = 0; i < TARGET_WIDTHS.length; i++) {
+        currentWidth = TARGET_WIDTHS[i];
+        currentParams = params ? params : {};
+        currentParams['w'] = currentWidth;
+        srcset += this.buildURL(path, currentParams) + ' ' + currentWidth + 'w,\n';
+      }
+
+      return srcset.slice(0,-2);
+    };
+
+    ImgixClient.prototype._buildDPRSrcSet = function(path, params) {
+        var srcset = '';
+        var targetRatios = [1, 2, 3, 4, 5];
+        var url = this.buildURL(path, params);
+        
+        for(var i = 0; i < targetRatios.length; i++) {
+          currentRatio = targetRatios[i];
+          srcset += url + ' ' + currentRatio +'x,\n'
+        }
+
+        return srcset.slice(0,-2);
     };
 
     ImgixClient.VERSION = VERSION;
