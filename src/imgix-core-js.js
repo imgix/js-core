@@ -176,11 +176,12 @@
     ImgixClient.prototype._buildDPRSrcSet = function(path, params) {
         var srcset = '';
         var targetRatios = [1, 2, 3, 4, 5];
-        var url = this.buildURL(path, params);
         
         for(var i = 0; i < targetRatios.length; i++) {
           currentRatio = targetRatios[i];
-          srcset += url + ' ' + currentRatio +'x,\n'
+          currentParams = params;
+          currentParams['dpr'] = i+1;
+          srcset += this.buildURL(path, currentParams) + ' ' + currentRatio +'x,\n'
         }
 
         return srcset.slice(0,-2);
