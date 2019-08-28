@@ -361,14 +361,34 @@ describe('Imgix client:', function describeSuite() {
       });
 
       it('should correctly sign each URL', function testSpec() {
-        var expected_signature = "s=b95cfd915f4a198442bff4ce5befe5b8";
-  
+        var path = '/image.jpg';
+        var param, signatureBase, expected_signature;
+
         srcset.split(",")
         .map(function (srcsetSplit) {
           return srcsetSplit.split(" ")[0];
         }).map(function (src) {
-          assert(src.includes(expected_signature));
+          // asserts that the expected 's=' parameter is being generated per entry
+          assert(src.includes("s="));
+          
+          // param will have all params except for '&s=...'
+          param = src.slice(src.indexOf('?'), src.indexOf('s=')-1);
+          generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+          signatureBase = 'MYT0KEN' + path + param;
+          expected_signature = md5(signatureBase);
+          
+          assert.equal(expected_signature, generated_signature);
         });
+      });
+
+      it('should include a dpr param per specified src', function testSpec() {
+        
+        srclist = srcset.split(",");
+        for(var i = 0; i < srclist.length; i++)
+        {
+          src = srclist[i].split(" ")[0];
+          assert(src.includes(`dpr=${i+1}`));
+        }
       });
     });
 
@@ -426,7 +446,7 @@ describe('Imgix client:', function describeSuite() {
       });
       it('should correctly sign each URL', function testSpec() {
         var path = '/image.jpg';
-        var param, signatureBase, signature;
+        var param, signatureBase, expected_signature;
   
         srcset.split(",")
         .map(function (srcsetSplit) {
@@ -455,7 +475,7 @@ describe('Imgix client:', function describeSuite() {
         secureURLToken: 'MYT0KEN'
       }).buildSrcSet('image.jpg', {w:100,h:100});
 
-      it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {        
+      it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
         assert(srcset.split(",").length == 5);
   
         var devicePixelRatios = srcset.split(",")
@@ -470,15 +490,35 @@ describe('Imgix client:', function describeSuite() {
         assert(devicePixelRatios[4] == '5x');
       });
 
-      it('should correctly sign each URL', function testSpec() {  
-        var expected_signature = "s=fb081a45c449b28f69e012d474943df3";
+      it('should correctly sign each URL', function testSpec() {
+        var path = '/image.jpg';
+        var param, signatureBase, expected_signature;
   
         srcset.split(",")
         .map(function (srcsetSplit) {
           return srcsetSplit.split(" ")[0];
         }).map(function (src) {
-          assert(src.includes(expected_signature));
+          // asserts that the expected 's=' parameter is being generated per entry
+          assert(src.includes("s="));
+          
+          // param will have all params except for '&s=...'
+          param = src.slice(src.indexOf('?'), src.indexOf('s=')-1);
+          generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+          signatureBase = 'MYT0KEN' + path + param;
+          expected_signature = md5(signatureBase);
+          
+          assert.equal(expected_signature, generated_signature);
         });
+      });
+
+      it('should include a dpr param per specified src', function testSpec() {
+        
+        srclist = srcset.split(",");
+        for(var i = 0; i < srclist.length; i++)
+        {
+          src = srclist[i].split(" ")[0];
+          assert(src.includes(`dpr=${i+1}`));
+        }
       });
     });
 
@@ -531,7 +571,7 @@ describe('Imgix client:', function describeSuite() {
       });
       it('should correctly sign each URL', function testSpec() {
         var path = '/image.jpg';
-        var param, signatureBase, signature;
+        var param, signatureBase, expected_signature;
   
         srcset.split(",")
         .map(function (srcsetSplit) {
@@ -576,14 +616,34 @@ describe('Imgix client:', function describeSuite() {
       });
 
       it('should correctly sign each URL', function testSpec() {
-        var expected_signature = "s=14244344b49d2933eb9dc227af37c24a";
+        var path = '/image.jpg';
+        var param, signatureBase, expected_signature;
   
         srcset.split(",")
         .map(function (srcsetSplit) {
           return srcsetSplit.split(" ")[0];
         }).map(function (src) {
-          assert(src.includes(expected_signature));
+          // asserts that the expected 's=' parameter is being generated per entry
+          assert(src.includes("s="));
+          
+          // param will have all params except for '&s=...'
+          param = src.slice(src.indexOf('?'), src.indexOf('s=')-1);
+          generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+          signatureBase = 'MYT0KEN' + path + param;
+          expected_signature = md5(signatureBase);
+          
+          assert.equal(expected_signature, generated_signature);
         });
+      });
+
+      it('should include a dpr param per specified src', function testSpec() {
+        
+        srclist = srcset.split(",");
+        for(var i = 0; i < srclist.length; i++)
+        {
+          src = srclist[i].split(" ")[0];
+          assert(src.includes(`dpr=${i+1}`));
+        }
       });
     });
 
@@ -610,14 +670,34 @@ describe('Imgix client:', function describeSuite() {
       });
 
       it('should correctly sign each URL', function testSpec() {
-        var expected_signature = "s=84db8cb226483fc0130b4fb58e1e6ff2";
+        var path = '/image.jpg';
+        var param, signatureBase, expected_signature;
   
         srcset.split(",")
         .map(function (srcsetSplit) {
           return srcsetSplit.split(" ")[0];
         }).map(function (src) {
-          assert(src.includes(expected_signature));
+          // asserts that the expected 's=' parameter is being generated per entry
+          assert(src.includes("s="));
+          
+          // param will have all params except for '&s=...'
+          param = src.slice(src.indexOf('?'), src.indexOf('s=')-1);
+          generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+          signatureBase = 'MYT0KEN' + path + param;
+          expected_signature = md5(signatureBase);
+          
+          assert.equal(expected_signature, generated_signature);
         });
+      });
+
+      it('should include a dpr param per specified src', function testSpec() {
+        
+        srclist = srcset.split(",");
+        for(var i = 0; i < srclist.length; i++)
+        {
+          src = srclist[i].split(" ")[0];
+          assert(src.includes(`dpr=${i+1}`));
+        }
       });
     });
   });
