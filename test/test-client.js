@@ -380,6 +380,7 @@ describe('Imgix client:', function describeSuite() {
         assert(max <= 8192);
       });
 
+      // a 17% testing threshold is used to account for rounding
       it('should not increase more than 17% every iteration', function testSpec() {
         var INCREMENT_ALLOWED = 0.17;
         
@@ -529,6 +530,7 @@ describe('Imgix client:', function describeSuite() {
         assert(max <= 8192);
       });
 
+      // a 17% testing threshold is used to account for rounding
       it('should not increase more than 17% every iteration', function testSpec() {
         var INCREMENT_ALLOWED = 0.17;
         
@@ -672,6 +674,7 @@ describe('Imgix client:', function describeSuite() {
         assert(max <= 8192);
       });
 
+      // a 17% testing threshold is used to account for rounding
       it('should not increase more than 17% every iteration', function testSpec() {
         var INCREMENT_ALLOWED = 0.17;
         
