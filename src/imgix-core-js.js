@@ -147,9 +147,10 @@
     };
 
     ImgixClient.prototype.buildSrcSet = function (path, params) {
-      var width = params ? params['w'] : undefined;
-      var height = params ? params['h'] : undefined;
-      var aspectRatio = params ? params['ar'] : undefined;
+      var params = params || {};
+      var width = params.w;
+      var height = params.h;
+      var aspectRatio = params.ar;
 
       if ((width) || (height && aspectRatio)) {
         return this._buildDPRSrcSet(path, params);
@@ -161,13 +162,12 @@
 
     ImgixClient.prototype._buildSrcSetPairs = function(path, params) {
       var srcset = '';
-      var currentWidth, currentParams;
+      var currentWidth;
 
       for(var i = 0; i < TARGET_WIDTHS.length; i++) {
         currentWidth = TARGET_WIDTHS[i];
-        currentParams = params ? params : {};
-        currentParams['w'] = currentWidth;
-        srcset += this.buildURL(path, currentParams) + ' ' + currentWidth + 'w,\n';
+        params.w = currentWidth;
+        srcset += this.buildURL(path, params) + ' ' + currentWidth + 'w,\n';
       }
 
       return srcset.slice(0,-2);
@@ -178,10 +178,8 @@
         var targetRatios = [1, 2, 3, 4, 5];
         
         for(var i = 0; i < targetRatios.length; i++) {
-          currentRatio = targetRatios[i];
-          currentParams = params;
-          currentParams['dpr'] = i+1;
-          srcset += this.buildURL(path, currentParams) + ' ' + currentRatio +'x,\n'
+          params.dpr = i + 1;
+          srcset += this.buildURL(path, params) + ' ' + targetRatios[i] + 'x,\n'
         }
 
         return srcset.slice(0,-2);
