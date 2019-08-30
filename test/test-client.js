@@ -380,8 +380,8 @@ describe('Imgix client:', function describeSuite() {
         assert(max <= 8192);
       });
 
-      it('should not increase more than 18% every iteration', function testSpec() {
-        var INCREMENT_ALLOWED = 0.18;
+      it('should not increase more than 17% every iteration', function testSpec() {
+        var INCREMENT_ALLOWED = 0.17;
         
         var srcsetWidths = function() {
           return srcset.split(",")
@@ -529,8 +529,8 @@ describe('Imgix client:', function describeSuite() {
         assert(max <= 8192);
       });
 
-      it('should not increase more than 18% every iteration', function testSpec() {
-        var INCREMENT_ALLOWED = 0.18;
+      it('should not increase more than 17% every iteration', function testSpec() {
+        var INCREMENT_ALLOWED = 0.17;
         
         var srcsetWidths = function() {
           return srcset.split(",")
@@ -672,8 +672,8 @@ describe('Imgix client:', function describeSuite() {
         assert(max <= 8192);
       });
 
-      it('should not increase more than 18% every iteration', function testSpec() {
-        var INCREMENT_ALLOWED = 0.18;
+      it('should not increase more than 17% every iteration', function testSpec() {
+        var INCREMENT_ALLOWED = 0.17;
         
         var srcsetWidths = function() {
           return srcset.split(",")
