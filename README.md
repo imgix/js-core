@@ -92,11 +92,11 @@ https://my-social-network.imgix.net/image.jpg?w=7400&s=91779d82a0e1ac16db04c522f
 https://my-social-network.imgix.net/image.jpg?w=8192&s=59eb881b618fed314fe30cf9e3ec7b00 8192w
 ```
 
-In cases where enough information is provided about an image's dimensions, `buildSrcSet()` will instead build a `srcset` that will allow for an image to be served at different resolutions. The parameters taken into consideration when determining if an image is fixed-width are `w`, `h`, and `ar`. By invoking `buildSrcSet()` with either a width **or** the height and aspect ratio provided, a different `srcset` will be generated for a fixed-size image instead.
+In cases where enough information is provided about an image's dimensions, `buildSrcSet()` will instead build a `srcset` that will allow for an image to be served at different resolutions. The parameters taken into consideration when determining if an image is fixed-width are `w`, `h`, and `ar`. By invoking `buildSrcSet()` with either a width **or** the height and aspect ratio (along with `fit=crop`, typically) provided, a different `srcset` will be generated for a fixed-size image instead.
 
-```rb
+```js
 var client = new ImgixClient({domain:'my-social-network.imgix.net', secureURLToken:'my-token', includeLibraryParam:false});
-var srcset = client.buildSrcSet('image.jpg', {h:800, ar:'3:2'});
+var srcset = client.buildSrcSet('image.jpg', {h:800, ar:'3:2',fit:'crop'});
 
 console.log(srcset);
 ```
@@ -104,11 +104,11 @@ console.log(srcset);
 Will produce the following attribute value:
 
 ```html
-https://my-social-network.imgix.net/image.jpg?h=800&ar=3%3A2&s=1aa5fff0c7cdbd749f3ce3f553d239c4 1x,
-https://my-social-network.imgix.net/image.jpg?h=800&ar=3%3A2&s=1aa5fff0c7cdbd749f3ce3f553d239c4 2x,
-https://my-social-network.imgix.net/image.jpg?h=800&ar=3%3A2&s=1aa5fff0c7cdbd749f3ce3f553d239c4 3x,
-https://my-social-network.imgix.net/image.jpg?h=800&ar=3%3A2&s=1aa5fff0c7cdbd749f3ce3f553d239c4 4x,
-https://my-social-network.imgix.net/image.jpg?h=800&ar=3%3A2&s=1aa5fff0c7cdbd749f3ce3f553d239c4 5x
+https://my-social-network.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=1&s=3d754a157458402fd3e26977107ade74 1x,
+https://my-social-network.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=2&s=a984ad1a81d24d9dd7d18195d5262c82 2x,
+https://my-social-network.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=3&s=8b93ab83d3f1ede4887e6826112d60d1 3x,
+https://my-social-network.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=4&s=df7b67aa0439588edbfc1c249b3965d6 4x,
+https://my-social-network.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=5&s=7c4b8adb733db37d00240da4ca65d410 5x
 ```
 
 For more information to better understand `srcset`, we highly recommend [Eric Portis' "Srcset and sizes" article](https://ericportis.com/posts/2014/srcset-sizes/) which goes into depth about the subject.

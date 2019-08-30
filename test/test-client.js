@@ -338,6 +338,96 @@ describe('Imgix client:', function describeSuite() {
   });
 
   describe('Calling buildSrcSet()', function describeSuite() {
+    describe('with no parameters', function describeSuite() {
+      var srcset = new ImgixClient({
+        domain: 'testing.imgix.net',
+        includeLibraryParam: false,
+        secureURLToken: 'MYT0KEN'
+      }).buildSrcSet('image.jpg');
+      
+      it('should generate the expected default srcset pair values', function testSpec(){
+        resolutions = [100, 116, 134, 156, 182, 210, 244, 282,
+                       328, 380, 442, 512, 594, 688, 798, 926,
+                       1074, 1246, 1446, 1678, 1946, 2258, 2618,
+                       3038, 3524, 4088, 4742, 5500, 6380, 7400, 8192];
+        srclist = srcset.split(",");
+        src = srclist.map(function (srcline){
+          return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
+        })
+
+        for (var i = 0; i < srclist.length; i++) {
+          assert.equal(src[i], resolutions[i]);
+        }
+      });
+
+      it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
+        assert.equal(srcset.split(',').length, 31);
+      });
+
+      it('should not exceed the bounds of [100, 8192]', function testSpec() {
+        var srcsetSplit = srcset.split(",");
+        var min = Number.parseFloat(
+          srcsetSplit[0]
+          .split(" ")[1]
+          .slice(0, -1)
+        );
+        var max = Number.parseFloat(
+          srcsetSplit[srcsetSplit.length-1]
+          .split(" ")[1]
+          .slice(0, -1)
+        );
+        assert(min >= 100);
+        assert(max <= 8192);
+      });
+
+      // a 17% testing threshold is used to account for rounding
+      it('should not increase more than 17% every iteration', function testSpec() {
+        var INCREMENT_ALLOWED = 0.17;
+        
+        var srcsetWidths = function() {
+          return srcset.split(",")
+          .map(function (srcsetSplit) {
+            return srcsetSplit.split(" ")[1];
+          })
+          .map(function (width) {
+            return width.slice(0, -1);
+          })
+          .map(Number.parseFloat)
+        }();
+  
+        let prev = srcsetWidths[0];
+  
+        for (let index = 1; index < srcsetWidths.length; index++) {
+          var element = srcsetWidths[index];
+          assert((element / prev) < (1 + INCREMENT_ALLOWED));
+          prev = element;
+        }
+      });
+
+      it('should correctly sign each URL', function testSpec() {
+        var path = '/image.jpg';
+        var param, signatureBase, expected_signature;
+  
+        srcset.split(",")
+        .map(function (srcsetSplit) {
+          // split the url portion of each srcset entry
+          return srcsetSplit.split(" ")[0];
+        }).map(function (src) {
+          // asserts that the expected 's=' parameter is being generated per entry
+          assert(src.includes("s="));
+          
+          // param will have all params except for '&s=...'
+          param = src.slice(src.indexOf('?'), src.length);
+          param = param.slice(0, param.indexOf('s=')-1);
+          generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+          signatureBase = 'MYT0KEN' + path + param;
+          expected_signature = md5(signatureBase);
+          
+          assert.equal(expected_signature, generated_signature);
+        });
+      });
+    });
+
     describe('with a width parameter provided', function describeSuite() {
       var srcset = new ImgixClient({
         domain: 'testing.imgix.net',
@@ -361,14 +451,34 @@ describe('Imgix client:', function describeSuite() {
       });
 
       it('should correctly sign each URL', function testSpec() {
-        var expected_signature = "s=b95cfd915f4a198442bff4ce5befe5b8";
-  
+        var path = '/image.jpg';
+        var param, signatureBase, expected_signature;
+
         srcset.split(",")
         .map(function (srcsetSplit) {
           return srcsetSplit.split(" ")[0];
         }).map(function (src) {
-          assert(src.includes(expected_signature));
+          // asserts that the expected 's=' parameter is being generated per entry
+          assert(src.includes("s="));
+          
+          // param will have all params except for '&s=...'
+          param = src.slice(src.indexOf('?'), src.indexOf('s=')-1);
+          generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+          signatureBase = 'MYT0KEN' + path + param;
+          expected_signature = md5(signatureBase);
+          
+          assert.equal(expected_signature, generated_signature);
         });
+      });
+
+      it('should include a dpr param per specified src', function testSpec() {
+        
+        srclist = srcset.split(",");
+        for(var i = 0; i < srclist.length; i++)
+        {
+          src = srclist[i].split(" ")[0];
+          assert(src.includes(`dpr=${i+1}`));
+        }
       });
     });
 
@@ -379,14 +489,31 @@ describe('Imgix client:', function describeSuite() {
         secureURLToken: 'MYT0KEN'
       }).buildSrcSet('image.jpg', {h:100});
 
+      it('should generate the expected default srcset pair values', function testSpec(){
+        resolutions = [100, 116, 134, 156, 182, 210, 244, 282,
+                       328, 380, 442, 512, 594, 688, 798, 926,
+                       1074, 1246, 1446, 1678, 1946, 2258, 2618,
+                       3038, 3524, 4088, 4742, 5500, 6380, 7400, 8192];
+        srclist = srcset.split(",");
+        src = srclist.map(function (srcline){
+          return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
+        })
+
+        for (var i = 0; i < srclist.length; i++) {
+          assert.equal(src[i], resolutions[i]);
+        }
+      });
+
       it('should respect the height parameter', function testSpec(){
         srcset.split(',').map(function (src) {
           assert(src.includes('h='));
         });
       });
+
       it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
         assert.equal(srcset.split(',').length, 31);
       });
+
       it('should not exceed the bounds of [100, 8192]', function testSpec() {
         var srcsetSplit = srcset.split(",");
         var min = Number.parseFloat(
@@ -402,8 +529,10 @@ describe('Imgix client:', function describeSuite() {
         assert(min >= 100);
         assert(max <= 8192);
       });
-      it('should not increase more than 18% every iteration', function testSpec() {
-        var INCREMENT_ALLOWED = 0.18;
+
+      // a 17% testing threshold is used to account for rounding
+      it('should not increase more than 17% every iteration', function testSpec() {
+        var INCREMENT_ALLOWED = 0.17;
         
         var srcsetWidths = function() {
           return srcset.split(",")
@@ -424,9 +553,10 @@ describe('Imgix client:', function describeSuite() {
           prev = element;
         }
       });
+
       it('should correctly sign each URL', function testSpec() {
         var path = '/image.jpg';
-        var param, signatureBase, signature;
+        var param, signatureBase, expected_signature;
   
         srcset.split(",")
         .map(function (srcsetSplit) {
@@ -455,7 +585,7 @@ describe('Imgix client:', function describeSuite() {
         secureURLToken: 'MYT0KEN'
       }).buildSrcSet('image.jpg', {w:100,h:100});
 
-      it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {        
+      it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
         assert(srcset.split(",").length == 5);
   
         var devicePixelRatios = srcset.split(",")
@@ -470,15 +600,35 @@ describe('Imgix client:', function describeSuite() {
         assert(devicePixelRatios[4] == '5x');
       });
 
-      it('should correctly sign each URL', function testSpec() {  
-        var expected_signature = "s=fb081a45c449b28f69e012d474943df3";
+      it('should correctly sign each URL', function testSpec() {
+        var path = '/image.jpg';
+        var param, signatureBase, expected_signature;
   
         srcset.split(",")
         .map(function (srcsetSplit) {
           return srcsetSplit.split(" ")[0];
         }).map(function (src) {
-          assert(src.includes(expected_signature));
+          // asserts that the expected 's=' parameter is being generated per entry
+          assert(src.includes("s="));
+          
+          // param will have all params except for '&s=...'
+          param = src.slice(src.indexOf('?'), src.indexOf('s=')-1);
+          generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+          signatureBase = 'MYT0KEN' + path + param;
+          expected_signature = md5(signatureBase);
+          
+          assert.equal(expected_signature, generated_signature);
         });
+      });
+
+      it('should include a dpr param per specified src', function testSpec() {
+        
+        srclist = srcset.split(",");
+        for(var i = 0; i < srclist.length; i++)
+        {
+          src = srclist[i].split(" ")[0];
+          assert(src.includes(`dpr=${i+1}`));
+        }
       });
     });
 
@@ -492,6 +642,22 @@ describe('Imgix client:', function describeSuite() {
       it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
         assert.equal(srcset.split(',').length, 31);
       });
+
+      it('should generate the expected default srcset pair values', function testSpec(){
+        resolutions = [100, 116, 134, 156, 182, 210, 244, 282,
+                       328, 380, 442, 512, 594, 688, 798, 926,
+                       1074, 1246, 1446, 1678, 1946, 2258, 2618,
+                       3038, 3524, 4088, 4742, 5500, 6380, 7400, 8192];
+        srclist = srcset.split(",");
+        src = srclist.map(function (srcline){
+          return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
+        })
+
+        for (var i = 0; i < srclist.length; i++) {
+          assert.equal(src[i], resolutions[i]);
+        }
+      });
+
       it('should not exceed the bounds of [100, 8192]', function testSpec() {
         var srcsetSplit = srcset.split(",");
         var min = Number.parseFloat(
@@ -507,8 +673,10 @@ describe('Imgix client:', function describeSuite() {
         assert(min >= 100);
         assert(max <= 8192);
       });
-      it('should not increase more than 18% every iteration', function testSpec() {
-        var INCREMENT_ALLOWED = 0.18;
+
+      // a 17% testing threshold is used to account for rounding
+      it('should not increase more than 17% every iteration', function testSpec() {
+        var INCREMENT_ALLOWED = 0.17;
         
         var srcsetWidths = function() {
           return srcset.split(",")
@@ -529,9 +697,10 @@ describe('Imgix client:', function describeSuite() {
           prev = element;
         }
       });
+
       it('should correctly sign each URL', function testSpec() {
         var path = '/image.jpg';
-        var param, signatureBase, signature;
+        var param, signatureBase, expected_signature;
   
         srcset.split(",")
         .map(function (srcsetSplit) {
@@ -576,14 +745,34 @@ describe('Imgix client:', function describeSuite() {
       });
 
       it('should correctly sign each URL', function testSpec() {
-        var expected_signature = "s=14244344b49d2933eb9dc227af37c24a";
+        var path = '/image.jpg';
+        var param, signatureBase, expected_signature;
   
         srcset.split(",")
         .map(function (srcsetSplit) {
           return srcsetSplit.split(" ")[0];
         }).map(function (src) {
-          assert(src.includes(expected_signature));
+          // asserts that the expected 's=' parameter is being generated per entry
+          assert(src.includes("s="));
+          
+          // param will have all params except for '&s=...'
+          param = src.slice(src.indexOf('?'), src.indexOf('s=')-1);
+          generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+          signatureBase = 'MYT0KEN' + path + param;
+          expected_signature = md5(signatureBase);
+          
+          assert.equal(expected_signature, generated_signature);
         });
+      });
+
+      it('should include a dpr param per specified src', function testSpec() {
+        
+        srclist = srcset.split(",");
+        for(var i = 0; i < srclist.length; i++)
+        {
+          src = srclist[i].split(" ")[0];
+          assert(src.includes(`dpr=${i+1}`));
+        }
       });
     });
 
@@ -610,14 +799,34 @@ describe('Imgix client:', function describeSuite() {
       });
 
       it('should correctly sign each URL', function testSpec() {
-        var expected_signature = "s=84db8cb226483fc0130b4fb58e1e6ff2";
+        var path = '/image.jpg';
+        var param, signatureBase, expected_signature;
   
         srcset.split(",")
         .map(function (srcsetSplit) {
           return srcsetSplit.split(" ")[0];
         }).map(function (src) {
-          assert(src.includes(expected_signature));
+          // asserts that the expected 's=' parameter is being generated per entry
+          assert(src.includes("s="));
+          
+          // param will have all params except for '&s=...'
+          param = src.slice(src.indexOf('?'), src.indexOf('s=')-1);
+          generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+          signatureBase = 'MYT0KEN' + path + param;
+          expected_signature = md5(signatureBase);
+          
+          assert.equal(expected_signature, generated_signature);
         });
+      });
+
+      it('should include a dpr param per specified src', function testSpec() {
+        
+        srclist = srcset.split(",");
+        for(var i = 0; i < srclist.length; i++)
+        {
+          src = srclist[i].split(" ")[0];
+          assert(src.includes(`dpr=${i+1}`));
+        }
       });
     });
   });
