@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.1.1"></a>
+## [2.1.1](https://github.com/imgix/imgix-core-js/compare/2.1.0...2.1.1) (2019-07-28)
+
+* fix: include dpr parameter when generating fixed-width srcset ([#59](https://github.com/imgix/imgix-core-js/pull/59))
+
 <a name="2.1.0"></a>
 ## [2.1.0](https://github.com/imgix/imgix-core-js/compare/1.2.1...2.1.0) (2019-07-28)
 
