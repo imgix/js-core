@@ -94,14 +94,14 @@ describe('Imgix client:', function describeSuite() {
         var expectation = '/',
             result = client._sanitizePath(path);
 
-        assert.equal(expectation, result.substr(0, 1));
+        assert.equal(expectation, result.substring(0, 1));
       });
 
       it('otherwise returns the same exact path', function testSpec() {
         var expectation = path,
             result = client._sanitizePath(path);
 
-        assert.equal(expectation, result.substr(1));
+        assert.equal(expectation, result.substring(1));
       });
     });
 
@@ -112,14 +112,14 @@ describe('Imgix client:', function describeSuite() {
         var expectation = '/',
             result = client._sanitizePath(path);
 
-        assert.equal(expectation, result.substr(0, 1));
+        assert.equal(expectation, result.substring(0, 1));
       });
 
       it('otherwise returns the same exact path', function testSpec() {
-        var expectation = path.substr(1),
+        var expectation = path.substring(1),
             result = client._sanitizePath(path);
 
-        assert.equal(expectation, result.substr(1));
+        assert.equal(expectation, result.substring(1));
       });
     });
 
@@ -130,14 +130,47 @@ describe('Imgix client:', function describeSuite() {
         var expectation = '/',
             result = client._sanitizePath(path);
 
-        assert.equal(expectation, result.substr(0, 1));
+        assert.equal(expectation, result.substring(0, 1));
       });
 
       it('otherwise returns the same path, except with the characters encoded properly', function testSpec() {
         var expectation = encodeURI(path),
             result = client._sanitizePath(path);
 
-        assert.equal(expectation, result.substr(1));
+        assert.equal(expectation, result.substring(1));
+      });
+    });
+
+    describe('with a path that contains a hash character', function describeSuite() {
+      var path = '#blessed.png';
+
+      it('properly encodes the hash character', function testSpec() {
+        var expectation = path.replace(/^#/, '%23'),
+            result = client._sanitizePath(path);
+
+        assert.equal(expectation, result.substring(1));
+      });
+    });
+
+    describe('with a path that contains a question mark', function describeSuite() {
+      var path = '?what.png';
+
+      it('properly encodes the question mark', function testSpec() {
+        var expectation = path.replace(/^\?/, '%3F'),
+            result = client._sanitizePath(path);
+
+        assert.equal(expectation, result.substring(1));
+      });
+    });
+
+    describe('with a path that contains a colon', function describeSuite() {
+      var path = ':emoji.png';
+
+      it('properly encodes the colon', function testSpec() {
+        var expectation = path.replace(/^\:/, '%3A'),
+            result = client._sanitizePath(path);
+
+        assert.equal(expectation, result.substring(1));
       });
     });
 
@@ -148,14 +181,14 @@ describe('Imgix client:', function describeSuite() {
         var expectation = '/',
             result = client._sanitizePath(path);
 
-        assert.equal(expectation, result.substr(0, 1));
+        assert.equal(expectation, result.substring(0, 1));
       });
 
       it('otherwise returns a fully-encoded version of the given URL', function testSpec() {
         var expectation = encodeURIComponent(path),
             result = client._sanitizePath(path);
 
-        assert.equal(expectation, result.substr(1));
+        assert.equal(expectation, result.substring(1));
       });
     });
 
@@ -166,14 +199,14 @@ describe('Imgix client:', function describeSuite() {
         var expectation = '/',
             result = client._sanitizePath(path);
 
-        assert.equal(expectation, result.substr(0, 1));
+        assert.equal(expectation, result.substring(0, 1));
       });
 
       it('otherwise returns a fully-encoded version of the given URL', function testSpec() {
         var expectation = encodeURIComponent(path),
             result = client._sanitizePath(path);
 
-        assert.equal(expectation, result.substr(1));
+        assert.equal(expectation, result.substring(1));
       });
     });
 
@@ -184,14 +217,14 @@ describe('Imgix client:', function describeSuite() {
         var expectation = '/',
             result = client._sanitizePath(path);
 
-        assert.equal(expectation, result.substr(0, 1));
+        assert.equal(expectation, result.substring(0, 1));
       });
 
       it('otherwise returns a fully-encoded version of the given URL', function testSpec() {
-        var expectation = encodeURIComponent(path.substr(1)),
+        var expectation = encodeURIComponent(path.substring(1)),
             result = client._sanitizePath(path);
 
-        assert.equal(expectation, result.substr(1));
+        assert.equal(expectation, result.substring(1));
       });
     });
 
@@ -202,14 +235,14 @@ describe('Imgix client:', function describeSuite() {
         var expectation = '/',
             result = client._sanitizePath(path);
 
-        assert.equal(expectation, result.substr(0, 1));
+        assert.equal(expectation, result.substring(0, 1));
       });
 
       it('otherwise returns a fully-encoded version of the given URL', function testSpec() {
         var expectation = encodeURIComponent(path),
             result = client._sanitizePath(path);
 
-        assert.equal(expectation, result.substr(1));
+        assert.equal(expectation, result.substring(1));
       });
 
       it('double-encodes the original encoded characters', function testSpec() {
