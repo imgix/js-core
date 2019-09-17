@@ -141,6 +141,39 @@ describe('Imgix client:', function describeSuite() {
       });
     });
 
+    describe('with a path that contains a hash character', function describeSuite() {
+      var path = '#blessed.png';
+
+      it('properly encodes the hash character', function testSpec() {
+        var expectation = path.replace(/^#/, '%23'),
+            result = client._sanitizePath(path);
+
+        assert.equal(expectation, result.substring(1));
+      });
+    });
+
+    describe('with a path that contains a question mark', function describeSuite() {
+      var path = '?what.png';
+
+      it('properly encodes the question mark', function testSpec() {
+        var expectation = path.replace(/^\?/, '%3F'),
+            result = client._sanitizePath(path);
+
+        assert.equal(expectation, result.substring(1));
+      });
+    });
+
+    describe('with a path that contains a colon', function describeSuite() {
+      var path = ':emoji.png';
+
+      it('properly encodes the colon', function testSpec() {
+        var expectation = path.replace(/^\:/, '%3A'),
+            result = client._sanitizePath(path);
+
+        assert.equal(expectation, result.substring(1));
+      });
+    });
+
     describe('with a full HTTP URL', function describeSuite() {
       var path = 'http://example.com/images/1.png';
 

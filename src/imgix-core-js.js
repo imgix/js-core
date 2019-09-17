@@ -103,7 +103,7 @@
       } else {
         // Use de/encodeURI if we think the path is just a path,
         // so it leaves legal characters like '/' and '@' alone
-        path = encodeURI(path);
+        path = encodeURI(path).replace(/[#?:]/g, encodeURIComponent);
       }
 
       return '/' + path;
