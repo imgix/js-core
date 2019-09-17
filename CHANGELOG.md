@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.1.2"></a>
+## [2.1.2](https://github.com/imgix/imgix-core-js/compare/2.1.1...2.1.2) (2019-09-17)
+
+* fix: ensure URL-legal, path-illegal characters are encoded ([#61](https://github.com/imgix/imgix-core-js/pull/61))
+
 <a name="2.1.1"></a>
 ## [2.1.1](https://github.com/imgix/imgix-core-js/compare/2.1.0...2.1.1) (2019-07-28)
 
