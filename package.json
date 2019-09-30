@@ -5,7 +5,7 @@
   "repository": "https://github.com/imgix/imgix-core-js",
   "scripts": {
     "assert_version": "node assert_version.js",
-    "compile": "mkdir -p dist && uglifyjs ./src/imgix-core-js.js -o ./dist/imgix-core-js.min.js && cp ./src/imgix-core-js.js ./dist/imgix-core-js.js",
+    "compile": "mkdir -p dist && uglifyjs ./src/imgix-core-js.js -o ./dist/imgix-core-js.min.js && tsc -p src",
     "prepublish": "npm run compile && npm run assert_version",
     "test": "mocha"
   },
@@ -16,9 +16,11 @@
   },
   "license": "BSD-2-Clause",
   "devDependencies": {
+    "@types/node": "^12.7.8",
     "mocha": "6.2.1",
     "phantomjs": "2.1.7",
     "sinon": "7.5.0",
+    "typescript": "^3.6.3",
     "uglify-js": "3.6.0"
   }
 }
