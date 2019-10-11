@@ -1,12 +1,5 @@
 // Type definitions for imgix-core-js.js
 
-// export as namespace ImgixClient;
-
-/*~ This declaration specifies that the class constructor function
- *~ is the exported object from the file
- */
-
-/*~ Write your module's methods and properties in this class */
 declare class ImgixClient {
     domain: string;
     useHTTPS: boolean;
