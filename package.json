@@ -19,6 +19,6 @@
     "mocha": "6.2.1",
     "phantomjs": "2.1.7",
     "sinon": "7.5.0",
-    "uglify-js": "3.6.1"
+    "uglify-js": "3.6.2"
   }
 }
