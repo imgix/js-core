@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "target": "es2015",
+        "module": "umd",
+        "types": [
+            "node"
+         ]
+    },
+    "files": [
+        "src/imgix-core-js.d.ts"
+    ]
+}

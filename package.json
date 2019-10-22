@@ -5,14 +5,17 @@
   "repository": "https://github.com/imgix/imgix-core-js",
   "scripts": {
     "assert_version": "node assert_version.js",
-    "compile": "mkdir -p dist && uglifyjs ./src/imgix-core-js.js -o ./dist/imgix-core-js.min.js && cp ./src/imgix-core-js.js ./dist/imgix-core-js.js",
+    "compile": "mkdir -p dist && uglifyjs ./src/imgix-core-js.js -o ./dist/imgix-core-js.min.js && cp ./src/imgix-core-js.js ./dist/imgix-core-js.js && cp ./src/imgix-core-js.d.ts ./dist/imgix-core-js.d.ts && tsc",
     "prepublish": "npm run compile && npm run assert_version",
     "test": "mocha"
   },
   "main": "dist/imgix-core-js.js",
+  "types": "dist/imgix-core-js.d.ts",
   "dependencies": {
     "js-base64": "^2.1.9",
-    "md5": "^2.2.1"
+    "md5": "^2.2.1",
+    "typescript": "^3.6.3",
+    "@types/node": "^12.7.8"
   },
   "license": "BSD-2-Clause",
   "devDependencies": {
