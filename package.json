@@ -10,7 +10,7 @@
     "test": "mocha"
   },
   "main": "dist/imgix-core-js.js",
-  "types": "src/",
+  "types": "dist/imgix-core-js.d.ts",
   "dependencies": {
     "js-base64": "^2.1.9",
     "md5": "^2.2.1",
