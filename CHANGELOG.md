@@ -2,10 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.2.1"></a>
+## [2.2.1](https://github.com/imgix/imgix-core-js/compare/2.2.0...2.2.1) (2019-11-27)
+
+* build(deps): remove typescript as runtime dependency ([#77](https://github.com/imgix/imgix-core-js/pull/77))
+
 <a name="2.2.0"></a>
 ## [2.2.0](https://github.com/imgix/imgix-core-js/compare/2.1.2...2.2.0) (2019-10-22)
 
-* feat: add typescript declaration file for `ImgixClient`  ([#64](https://github.com/imgix/imgix-core-js/pull/64))
+* feat: add typescript declaration file for `ImgixClient` ([#64](https://github.com/imgix/imgix-core-js/pull/64))
 
 <a name="2.1.2"></a>
 ## [2.1.2](https://github.com/imgix/imgix-core-js/compare/2.1.1...2.1.2) (2019-09-17)
