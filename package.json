@@ -22,7 +22,7 @@
     "sinon": "7.5.0",
     "uglify-js": "3.7.2",
     "typescript": "3.7.3",
-    "@types/node": "12.12.16"
+    "@types/node": "12.12.17"
   },
   "peerDependencies": {
     "typescript": "^3.6.3",
