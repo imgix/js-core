@@ -1,7 +1,7 @@
 <!-- ix-docs-ignore -->
 ![imgix logo](https://assets.imgix.net/sdk-imgix-logo.svg)
 
-`imgix-core-js` is a client library for generating image URLs with [imgix](https://www.imgix.com/).
+`imgix-core-js` is a JavaScript library for generating image URLs with [imgix](https://www.imgix.com/) that can be used in browser or server-side settings.
 
 [![NPM Version](https://badge.fury.io/js/imgix-core-js.svg)](https://www.npmjs.com/package/imgix-core-js)
 [![Build Status](https://travis-ci.org/imgix/imgix-core-js.svg?branch=master)](https://travis-ci.org/imgix/imgix-core-js)
