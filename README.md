@@ -4,7 +4,7 @@
 `imgix-core-js` is a client library for generating image URLs with [imgix](https://www.imgix.com/).
 
 [![NPM Version](https://badge.fury.io/js/imgix-core-js.svg)](https://www.npmjs.com/package/imgix-core-js)
-[![Build Status](https://travis-ci.org/imgix/imgix-core-js.png?branch=master)](https://travis-ci.org/imgix/imgix-core-js)
+[![Build Status](https://travis-ci.org/imgix/imgix-core-js.svg?branch=master)](https://travis-ci.org/imgix/imgix-core-js)
 [![Monthly Downloads](https://img.shields.io/npm/dm/imgix-core-js.svg)](https://www.npmjs.com/package/imgix-core-js)
 [![Minified Size](https://img.shields.io/bundlephobia/min/imgix-core-js)](https://bundlephobia.com/result?p=imgix-core-js)
 [![License](https://img.shields.io/github/license/imgix/imgix-core-js)](https://github.com/imgix/imgix-core-js/blob/master/LICENSE.md)
