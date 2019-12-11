@@ -1,11 +1,25 @@
-# imgix-core-js
+<!-- ix-docs-ignore -->
+![imgix logo](https://assets.imgix.net/sdk-imgix-logo.svg)
 
-[![Build Status](https://travis-ci.org/imgix/imgix-core-js.png?branch=master)](https://travis-ci.org/imgix/imgix-core-js)
+`imgix-core-js` is a JavaScript library for generating image URLs with [imgix](https://www.imgix.com/) that can be used in browser or server-side settings.
 
-imgix-core-js is an npm and Bower package that provides the common boilerplate for [imgix](https://imgix.com) server and client-side JavaScript-based functionality.
+[![NPM Version](https://badge.fury.io/js/imgix-core-js.svg)](https://www.npmjs.com/package/imgix-core-js)
+[![Build Status](https://travis-ci.org/imgix/imgix-core-js.svg?branch=master)](https://travis-ci.org/imgix/imgix-core-js)
+[![Monthly Downloads](https://img.shields.io/npm/dm/imgix-core-js.svg)](https://www.npmjs.com/package/imgix-core-js)
+[![Minified Size](https://img.shields.io/bundlephobia/min/imgix-core-js)](https://bundlephobia.com/result?p=imgix-core-js)
+[![License](https://img.shields.io/github/license/imgix/imgix-core-js)](https://github.com/imgix/imgix-core-js/blob/master/LICENSE.md)
 
-imgix-core-js adheres to the [imgix-blueprint](https://github.com/imgix/imgix-blueprint) for definitions of its functionality.
+---
+<!-- /ix-docs-ignore -->
 
+- [Installing](#installing)
+- [Usage](#usage)
+  - [CommonJS](#commonjs)
+  - [ES6 Modules](#es6-modules)
+  - [In-browser](#in-browser)
+- [Srcset Generation](#srcset-generation)
+- [What is the ixlib param on every request?](#what-is-the-ixlib-param-on-every-request)
+- [Testing](#testing)
 
 ## Installing
 
@@ -134,14 +148,3 @@ imgix-core-js uses mocha for testing. Here’s how to run those tests:
 ```
 npm test
 ```
-
-
-## Publishing a new version
-
-To publish a new version of the NPM package:
-
-```bash
-$ npm publish
-```
-
-The Bower package will be automatically updated when you create a new release in GitHub.
