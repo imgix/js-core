@@ -21,7 +21,7 @@
     "phantomjs": "2.1.7",
     "sinon": "7.5.0",
     "uglify-js": "3.7.2",
-    "typescript": "3.7.3",
+    "typescript": "3.7.4",
     "@types/node": "12.12.21"
   },
   "peerDependencies": {
