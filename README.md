@@ -3,7 +3,7 @@
 
 `imgix-core-js` is a JavaScript library for generating image URLs with [imgix](https://www.imgix.com/) that can be used in browser or server-side settings.
 
-[![NPM Version](https://badge.fury.io/js/imgix-core-js.svg)](https://www.npmjs.com/package/imgix-core-js)
+[![NPM Version](https://img.shields.io/npm/v/imgix-core-js.svg)](https://www.npmjs.com/package/imgix-core-js)
 [![Build Status](https://travis-ci.org/imgix/imgix-core-js.svg?branch=master)](https://travis-ci.org/imgix/imgix-core-js)
 [![Monthly Downloads](https://img.shields.io/npm/dm/imgix-core-js.svg)](https://www.npmjs.com/package/imgix-core-js)
 [![Minified Size](https://img.shields.io/bundlephobia/min/imgix-core-js)](https://bundlephobia.com/result?p=imgix-core-js)
@@ -25,16 +25,15 @@
 
 imgix-core-js can be installed as either via npm or via bower:
 
-```
-$ npm install --save imgix-core-js
+```bash
+npm install --save imgix-core-js
 ```
 
 or
 
+```bash
+bower install --save imgix-core-js
 ```
-$ bower install --save imgix-core-js
-```
-
 
 ## Usage
 
@@ -42,7 +41,7 @@ Depending on your module system, using imgix-core-js is done a few different way
 
 ### CommonJS
 
-``` javascript
+```js
 var ImgixClient = require('imgix-core-js');
 
 var client = new ImgixClient({
@@ -58,7 +57,7 @@ console.log(url); // => "https://my-social-network.imgix.net/users/1.png?w=400&h
 
 ### ES6 Modules
 
-``` javascript
+```js
 import ImgixClient from 'imgix-core-js'
 
 let client = new ImgixClient({
@@ -72,7 +71,7 @@ console.log(url); // => 'https://my-social-network.imgix.net/users/1.png?w=400&h
 
 ### In-browser
 
-``` javascript
+```js
 var client = new ImgixClient({
   domain: 'my-social-network.imgix.net'
   // Do not use signed URLs with `secureURLToken` on the client side,
@@ -140,11 +139,10 @@ new ImgixClient({
 });
 ```
 
-
 ## Testing
 
 imgix-core-js uses mocha for testing. Here’s how to run those tests:
 
-```
+```bash
 npm test
 ```
