@@ -19,7 +19,7 @@
   "devDependencies": {
     "mocha": "6.2.2",
     "phantomjs": "2.1.7",
-    "sinon": "8.1.0",
+    "sinon": "8.1.1",
     "uglify-js": "3.7.6",
     "typescript": "3.7.5",
     "@types/node": "12.12.21"
