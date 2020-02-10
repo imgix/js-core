@@ -28,20 +28,20 @@
   function _generateTargetWidths(minWidth, maxWidth) {
     var resolutions = [];
     var INCREMENT_PERCENTAGE = 8;
-    var minSize = minWidth;
-    var maxSize = maxWidth;
+    var minWidth = Math.floor(minWidth);
+    var maxWidth = Math.floor(maxWidth);
 
     var ensureEven = function(n){
       return 2 * Math.round(n / 2);
     };
 
-    var prev = minSize;
-    while (prev < maxSize) {
+    var prev = minWidth;
+    while (prev < maxWidth) {
       resolutions.push(ensureEven(prev));
       prev *= 1 + (INCREMENT_PERCENTAGE / 100) * 2;
     }
 
-    resolutions.push(maxSize);
+    resolutions.push(maxWidth);
     return resolutions;
   };
 
@@ -208,8 +208,8 @@
         return srcset.slice(0,-2);
     };
 
-    validateRange = function(minSrcset, maxSrcset) {
-      if (!(typeof minSrcset == 'number' && typeof maxSrcset == 'number') || (minSrcset < 0 || maxSrcset < 0)) {
+    function validateRange(min, max) {
+      if (!(typeof min == 'number' && typeof max == 'number') || (min < 0 || max < 0)) {
           throw new Error('The min and max srcset widths must be passed positive Number values');
       }
     };
