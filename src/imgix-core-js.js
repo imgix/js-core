@@ -17,25 +17,34 @@
   var VERSION = '2.2.1';
   // regex pattern used to determine if a domain is valid
   var DOMAIN_REGEX = /^(?:[a-z\d\-_]{1,62}\.){0,125}(?:[a-z\d](?:\-(?=\-*[a-z\d])|[a-z]|\d){0,62}\.)[a-z\d]{1,63}$/i;
+  // minimum generated srcset width
+  var MIN_SRCSET_WIDTH = 100;
+  // maximum generated srcset width
+  var MAX_SRCSET_WIDTH = 8192;
+  // returns an array of width values used during srcset generation
+  var DEFAULT_SRCSET_WIDTHS = _generateTargetWidths(MIN_SRCSET_WIDTH, MAX_SRCSET_WIDTH);
+
   // returns an array of width values used during scrset generation
-  var TARGET_WIDTHS = (function() {
+  function _generateTargetWidths(minWidth, maxWidth) {
     var resolutions = [];
-    var prev = 100;
     var INCREMENT_PERCENTAGE = 8;
-    var MAX_SIZE = 8192;
-  
+    var minWidth = Math.floor(minWidth);
+    var maxWidth = Math.floor(maxWidth);
+
     var ensureEven = function(n){
       return 2 * Math.round(n / 2);
     };
-  
-    while (prev <= MAX_SIZE) {
+
+    var prev = minWidth;
+    while (prev < maxWidth) {
       resolutions.push(ensureEven(prev));
       prev *= 1 + (INCREMENT_PERCENTAGE / 100) * 2;
     }
-  
-    resolutions.push(MAX_SIZE);
+
+    resolutions.push(maxWidth);
     return resolutions;
-  })();
+  };
+
   // default ImgixClient settings passed in during instantiation
   var DEFAULTS = {
     domain: null,
@@ -146,26 +155,38 @@
       }
     };
 
-    ImgixClient.prototype.buildSrcSet = function (path, params) {
+    ImgixClient.prototype.buildSrcSet = function (path, params, options) {
       var params = params || {};
       var width = params.w;
       var height = params.h;
       var aspectRatio = params.ar;
+      var options = options || {};
 
       if ((width) || (height && aspectRatio)) {
         return this._buildDPRSrcSet(path, params);
       }
       else {
-        return this._buildSrcSetPairs(path, params);
+        return this._buildSrcSetPairs(path, params, options);
       }
     };
 
-    ImgixClient.prototype._buildSrcSetPairs = function(path, params) {
+    ImgixClient.prototype._buildSrcSetPairs = function(path, params, options) {
       var srcset = '';
       var currentWidth;
+      var targetWidths;
+      var minWidth = options["minWidth"] || MIN_SRCSET_WIDTH;
+      var maxWidth = options["maxWidth"] || MAX_SRCSET_WIDTH;
 
-      for(var i = 0; i < TARGET_WIDTHS.length; i++) {
-        currentWidth = TARGET_WIDTHS[i];
+      if (minWidth != MIN_SRCSET_WIDTH || maxWidth != MAX_SRCSET_WIDTH) {
+        validateRange(minWidth, maxWidth);
+        targetWidths = _generateTargetWidths(minWidth, maxWidth);
+      }
+      else {
+        targetWidths = DEFAULT_SRCSET_WIDTHS;
+      }
+
+      for (var i = 0; i < targetWidths.length; i++) {
+        currentWidth = targetWidths[i];
         params.w = currentWidth;
         srcset += this.buildURL(path, params) + ' ' + currentWidth + 'w,\n';
       }
@@ -178,13 +199,19 @@
         var targetRatios = [1, 2, 3, 4, 5];
         var currentRatio;
 
-        for(var i = 0; i < targetRatios.length; i++) {
+        for (var i = 0; i < targetRatios.length; i++) {
           currentRatio = targetRatios[i];
           params.dpr = currentRatio;
           srcset += this.buildURL(path, params) + ' ' + currentRatio + 'x,\n'
         }
 
         return srcset.slice(0,-2);
+    };
+
+    function validateRange(min, max) {
+      if (!(typeof min == 'number' && typeof max == 'number') || (min < 0 || max < 0)) {
+          throw new Error('The min and max srcset widths must be passed positive Number values');
+      }
     };
 
     ImgixClient.VERSION = VERSION;
