@@ -133,7 +133,7 @@ For more information to better understand `srcset`, we highly recommend [Eric Po
 
 ### Width Tolerance
 
-The `srcset` width tolerance dictates the maximum tolerated size difference between an image's downloaded size and its rendered size. For example: setting this value to 0.1 means that an image will not render more than 10% larger or smaller than its native size. In practice, the image URLs generated for a width-based srcset attribute will grow by twice this rate. A lower tolerance means images will render closer to their native size (thereby reducing rendering artifacts), but a large srcset list will be generated and consequently users may experience lower rates of cache-hit for pre-rendered images on your site.
+The `srcset` width tolerance dictates the maximum tolerated size difference between an image's downloaded size and its rendered size. For example: setting this value to 0.1 means that an image will not render more than 10% larger or smaller than its native size. In practice, the image URLs generated for a width-based srcset attribute will grow by twice this rate. A lower tolerance means images will render closer to their native size (thereby increasing perceived image quality), but a large srcset list will be generated and consequently users may experience lower rates of cache-hit for pre-rendered images on your site.
 
 By default this rate is set to 8 percent, which we consider to be the ideal rate for maximizing cache hits without sacrificing visual quality. Users can specify their own width tolerance by providing a positive scalar value as `widthTolerance` to the third options object:
 
@@ -142,7 +142,7 @@ var client = new ImgixClient({
   domain:'testing.imgix.net',
   includeLibraryParam: false
   })
-var srcset = client.buildSrcSet('image.jpg', {}, {widthTolerance: .20})
+var srcset = client.buildSrcSet('image.jpg', {}, {widthTolerance: 0.20})
 
 console.log(srcset);
 ```
