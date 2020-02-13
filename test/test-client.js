@@ -946,6 +946,85 @@ describe('Imgix client:', function describeSuite() {
           assert.equal('https://testing.imgix.net/image.jpg?w=8192 8192w', srcset);
         })
       });
+
+      describe('with a widthTolerance parameter provided', function describeSuite() {
+        var WIDTH_TOLERANCE = .20;
+        var srcset = new ImgixClient({
+          domain: 'testing.imgix.net',
+          includeLibraryParam: false
+        }).buildSrcSet('image.jpg', {}, {widthTolerance: WIDTH_TOLERANCE});
+
+        it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
+          assert.equal(srcset.split(',').length, 15);
+        });
+
+        it('should generate the expected default srcset pair values', function testSpec(){
+          resolutions = [100, 140, 196, 274, 384, 538, 752, 1054, 1476, 2066, 2892, 4050, 5670, 7938, 8192];
+          srclist = srcset.split(",");
+          src = srclist.map(function (srcline){
+            return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
+          })
+
+          for (var i = 0; i < srclist.length; i++) {
+            assert.equal(src[i], resolutions[i]);
+          }
+        });
+
+        it('should not exceed the bounds of [100, 8192]', function testSpec() {
+          var srcsetSplit = srcset.split(",");
+          var min = Number.parseFloat(
+            srcsetSplit[0]
+            .split(" ")[1]
+            .slice(0, -1)
+          );
+          var max = Number.parseFloat(
+            srcsetSplit[srcsetSplit.length-1]
+            .split(" ")[1]
+            .slice(0, -1)
+          );
+          assert(min >= 100);
+          assert(max <= 8192);
+        });
+
+        it('should not increase more than (2 * widthTolerance) + 1 every iteration', function testSpec() {
+          var INCREMENT_ALLOWED = (WIDTH_TOLERANCE * 2) + 1;
+
+          var srcsetWidths = function() {
+            return srcset.split(",")
+            .map(function (srcsetSplit) {
+              return srcsetSplit.split(" ")[1];
+            })
+            .map(function (width) {
+              return width.slice(0, -1);
+            })
+            .map(Number.parseFloat)
+          }();
+
+          let prev = srcsetWidths[0];
+
+          for (let index = 1; index < srcsetWidths.length; index++) {
+            var element = srcsetWidths[index];
+            assert((element / prev) < (1 + INCREMENT_ALLOWED));
+            prev = element;
+          }
+        });
+
+        it('errors with non-Number widthTolerance', function testSpec() {
+          assert.throws(function() {
+            new ImgixClient({
+              domain: 'testing.imgix.net'
+            }).buildSrcSet('image.jpg', {}, {widthTolerance: 'abc'});
+          }, Error);
+        });
+
+        it('errors with negative widthTolerance', function testSpec() {
+          assert.throws(function() {
+            new ImgixClient({
+              domain: 'testing.imgix.net'
+            }).buildSrcSet('image.jpg', {}, {widthTolerance: -0.10});
+          }, Error);
+        });
+      });
     });
   });
 });
