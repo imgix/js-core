@@ -179,8 +179,13 @@
       var widthTolerance = options["widthTolerance"] || DEFAULT_SRCSET_WIDTH_TOLERANCE;
       var minWidth = options["minWidth"] || MIN_SRCSET_WIDTH;
       var maxWidth = options["maxWidth"] || MAX_SRCSET_WIDTH;
+      var customWidths = options["widths"];
 
-      if (widthTolerance != DEFAULT_SRCSET_WIDTH_TOLERANCE || minWidth != MIN_SRCSET_WIDTH || maxWidth != MAX_SRCSET_WIDTH) {
+      if (customWidths) {
+        validateWidths(customWidths);
+        targetWidths = customWidths;
+      }
+      else if (widthTolerance != DEFAULT_SRCSET_WIDTH_TOLERANCE || minWidth != MIN_SRCSET_WIDTH || maxWidth != MAX_SRCSET_WIDTH) {
         validateRange(minWidth, maxWidth);
         validateWidthTolerance(widthTolerance);
         targetWidths = _generateTargetWidths(widthTolerance, minWidth, maxWidth);
@@ -213,7 +218,7 @@
     };
 
     function validateRange(min, max) {
-      if (!(typeof min == 'number' && typeof max == 'number') || (min < 0 || max < 0)) {
+      if (!(Number.isInteger(min) && Number.isInteger(max)) || (min < 0 || max < 0)) {
           throw new Error('The min and max srcset widths must be passed positive Number values');
       }
     };
@@ -221,6 +226,22 @@
     function validateWidthTolerance(widthTolerance) {
       if (typeof widthTolerance != 'number' || widthTolerance < 0) {
         throw new Error('The srcset widthTolerance argument must be passed a positive scalar number');
+      }
+    }
+
+    function validateWidths(customWidths) {
+      if (!Array.isArray(customWidths) || !customWidths.length) {
+        throw new Error('The widths argument must be passed a valid non-empty array of integers');
+      }
+      else {
+        allPositiveIntegers = customWidths.every(
+          function(width) {
+            return Number.isInteger(width) && width > 0
+          }
+        );
+        if (!allPositiveIntegers) {
+          throw new Error('A custom widths argument can only contain positive integer values');
+        }
       }
     }
 
