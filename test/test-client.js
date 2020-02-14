@@ -1025,6 +1025,55 @@ describe('Imgix client:', function describeSuite() {
           }, Error);
         });
       });
+
+      describe('with a custom list of widths provided', function describeSuite() {
+        var CUSTOM_WIDTHS = [100, 500, 1000, 1800];
+        var srcset = new ImgixClient({
+          domain: 'testing.imgix.net',
+          includeLibraryParam: false,
+          secureURLToken: 'MYT0KEN'
+        }).buildSrcSet('image.jpg', {}, {widths:CUSTOM_WIDTHS});
+
+        it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
+          assert.equal(srcset.split(',').length, 4);
+        });
+
+        it('should generate the expected default srcset pair values', function testSpec(){
+          resolutions = CUSTOM_WIDTHS;
+          srclist = srcset.split(",");
+          src = srclist.map(function (srcline){
+            return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
+          })
+
+          for (var i = 0; i < srclist.length; i++) {
+            assert.equal(src[i], resolutions[i]);
+          }
+        });
+
+        it('errors with non-array argument', function testSpec() {
+          assert.throws(function() {
+            new ImgixClient({
+              domain: 'testing.imgix.net'
+            }).buildSrcSet('image.jpg', {}, {widths: 'abc'});
+          }, Error);
+        });
+
+        it('errors with non-positive value passed in to the argument', function testSpec() {
+          assert.throws(function() {
+            new ImgixClient({
+              domain: 'testing.imgix.net'
+            }).buildSrcSet('image.jpg', {}, {widths: [100, -200]});
+          }, Error);
+        });
+
+        it('errors with non-integer value passed in to the argument', function testSpec() {
+          assert.throws(function() {
+            new ImgixClient({
+              domain: 'testing.imgix.net'
+            }).buildSrcSet('image.jpg', {}, {widths: [100, false]});
+          }, Error);
+        });
+      });
     });
   });
 });
