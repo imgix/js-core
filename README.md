@@ -19,6 +19,7 @@
   - [In-browser](#in-browser)
 - [Srcset Generation](#srcset-generation)
   - [Fixed image rendering](#fixed-image-rendering)
+  - [Custom Widths](#custom-widths)
   - [Width Tolerance](#width-tolerance)
   - [Minimum and Maximum Width Ranges](#minimum-and-maximum-width-ranges)
 - [What is the `ixlib` param on every request?](#what-is-the-ixlib-param-on-every-request)
@@ -130,6 +131,31 @@ https://testing.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=5&s=7c4b8adb733d
 ```
 
 For more information to better understand `srcset`, we highly recommend [Eric Portis' "Srcset and sizes" article](https://ericportis.com/posts/2014/srcset-sizes/) which goes into depth about the subject.
+
+### Custom Widths
+
+In situations where specific widths are desired when generating `srcset` pairs, a user can specify them by passing an array of positive integers as `widths` to the third options object:
+
+```js
+var client = new ImgixClient({
+  domain:'testing.imgix.net',
+  includeLibraryParam: false
+  })
+var srcset = client.buildSrcSet('image.jpg', {}, {widths: [100, 500, 1000, 1800]})
+
+console.log(srcset);
+```
+
+Will generate the following `srcset` of width pairs:
+
+```html
+https://testing.imgix.net/image.jpg?w=100 100w,
+https://testing.imgix.net/image.jpg?w=500 500w,
+https://testing.imgix.net/image.jpg?w=1000 1000w,
+https://testing.imgix.net/image.jpg?w=1800 1800w
+```
+
+Please note that in situations where a `srcset` is being rendered as a [fixed image](#fixed-image-rendering), any custom `widths` passed in will be ignored. Additionally, if both `widths` and a `widthTolerance` are passed to the `buildSrcSet` method, the custom widths list will take precedence.
 
 ### Width Tolerance
 
