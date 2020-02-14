@@ -21,13 +21,15 @@
   var MIN_SRCSET_WIDTH = 100;
   // maximum generated srcset width
   var MAX_SRCSET_WIDTH = 8192;
+  // default tolerable percent difference between srcset pair widths
+  var DEFAULT_SRCSET_WIDTH_TOLERANCE = .08;
   // returns an array of width values used during srcset generation
-  var DEFAULT_SRCSET_WIDTHS = _generateTargetWidths(MIN_SRCSET_WIDTH, MAX_SRCSET_WIDTH);
+  var DEFAULT_SRCSET_WIDTHS = _generateTargetWidths(DEFAULT_SRCSET_WIDTH_TOLERANCE, MIN_SRCSET_WIDTH, MAX_SRCSET_WIDTH);
 
   // returns an array of width values used during scrset generation
-  function _generateTargetWidths(minWidth, maxWidth) {
+  function _generateTargetWidths(widthTolerance, minWidth, maxWidth) {
     var resolutions = [];
-    var INCREMENT_PERCENTAGE = 8;
+    var INCREMENT_PERCENTAGE = widthTolerance;
     var minWidth = Math.floor(minWidth);
     var maxWidth = Math.floor(maxWidth);
 
@@ -38,7 +40,7 @@
     var prev = minWidth;
     while (prev < maxWidth) {
       resolutions.push(ensureEven(prev));
-      prev *= 1 + (INCREMENT_PERCENTAGE / 100) * 2;
+      prev *= 1 + (INCREMENT_PERCENTAGE * 2);
     }
 
     resolutions.push(maxWidth);
@@ -174,12 +176,14 @@
       var srcset = '';
       var currentWidth;
       var targetWidths;
+      var widthTolerance = options["widthTolerance"] || DEFAULT_SRCSET_WIDTH_TOLERANCE;
       var minWidth = options["minWidth"] || MIN_SRCSET_WIDTH;
       var maxWidth = options["maxWidth"] || MAX_SRCSET_WIDTH;
 
-      if (minWidth != MIN_SRCSET_WIDTH || maxWidth != MAX_SRCSET_WIDTH) {
+      if (widthTolerance != DEFAULT_SRCSET_WIDTH_TOLERANCE || minWidth != MIN_SRCSET_WIDTH || maxWidth != MAX_SRCSET_WIDTH) {
         validateRange(minWidth, maxWidth);
-        targetWidths = _generateTargetWidths(minWidth, maxWidth);
+        validateWidthTolerance(widthTolerance);
+        targetWidths = _generateTargetWidths(widthTolerance, minWidth, maxWidth);
       }
       else {
         targetWidths = DEFAULT_SRCSET_WIDTHS;
@@ -213,6 +217,12 @@
           throw new Error('The min and max srcset widths must be passed positive Number values');
       }
     };
+
+    function validateWidthTolerance(widthTolerance) {
+      if (typeof widthTolerance != 'number' || widthTolerance < 0) {
+        throw new Error('The srcset widthTolerance argument must be passed a positive scalar number');
+      }
+    }
 
     ImgixClient.VERSION = VERSION;
 

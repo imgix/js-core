@@ -19,6 +19,7 @@
   - [In-browser](#in-browser)
 - [Srcset Generation](#srcset-generation)
   - [Fixed image rendering](#fixed-image-rendering)
+  - [Width Tolerance](#width-tolerance)
   - [Minimum and Maximum Width Ranges](#minimum-and-maximum-width-ranges)
 - [What is the `ixlib` param on every request?](#what-is-the-ixlib-param-on-every-request)
 - [Testing](#testing)
@@ -129,6 +130,32 @@ https://testing.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=5&s=7c4b8adb733d
 ```
 
 For more information to better understand `srcset`, we highly recommend [Eric Portis' "Srcset and sizes" article](https://ericportis.com/posts/2014/srcset-sizes/) which goes into depth about the subject.
+
+### Width Tolerance
+
+The `srcset` width tolerance dictates the maximum tolerated size difference between an image's downloaded size and its rendered size. For example: setting this value to 0.1 means that an image will not render more than 10% larger or smaller than its native size. In practice, the image URLs generated for a width-based srcset attribute will grow by twice this rate. A lower tolerance means images will render closer to their native size (thereby increasing perceived image quality), but a large srcset list will be generated and consequently users may experience lower rates of cache-hit for pre-rendered images on your site.
+
+By default this rate is set to 8 percent, which we consider to be the ideal rate for maximizing cache hits without sacrificing visual quality. Users can specify their own width tolerance by providing a positive scalar value as `widthTolerance` to the third options object:
+
+```js
+var client = new ImgixClient({
+  domain:'testing.imgix.net',
+  includeLibraryParam: false
+  })
+var srcset = client.buildSrcSet('image.jpg', {}, {widthTolerance: 0.20})
+
+console.log(srcset);
+```
+
+In this case, the `width_tolerance` is set to 20 percent, which will be reflected in the difference between subsequent widths in a srcset pair:
+
+```html
+https://testing.imgix.net/image.jpg?w=100 100w,
+https://testing.imgix.net/image.jpg?w=140 140w,
+https://testing.imgix.net/image.jpg?w=196 196w,
+							...
+https://testing.imgix.net/image.jpg?w=8192 8192w
+```
 
 ### Minimum and Maximum Width Ranges
 
