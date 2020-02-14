@@ -22,6 +22,7 @@
   - [Custom Widths](#custom-widths)
   - [Width Tolerance](#width-tolerance)
   - [Minimum and Maximum Width Ranges](#minimum-and-maximum-width-ranges)
+  - [Variable Qualities](#variable-qualities)
 - [What is the `ixlib` param on every request?](#what-is-the-ixlib-param-on-every-request)
 - [Testing](#testing)
 
@@ -216,6 +217,31 @@ https://testing.imgix.net/image.jpg?w=2000 2000w
 Remember that browsers will apply a device pixel ratio as a multiplier when selecting which image to download from a `srcset`. For example, even if you know your image will render no larger than 1000px, specifying `options: { max_srcset: 1000 }` will give your users with DPR higher than 1 no choice but to download and render a low-resolution version of the image. Therefore, it is vital to factor in any potential differences when choosing a minimum or maximum range.
 
 Also please note that according to the [imgix API](https://docs.imgix.com/apis/url/size/w), the maximum renderable image width is 8192 pixels.
+
+### Variable Qualities
+
+This library will automatically append a variable `q` parameter mapped to each `dpr` parameter when generating a [fixed-image](https://github.com/imgix/imgix-core-js#fixed-image-rendering) srcset. This technique is commonly used to compensate for the increased filesize of high-DPR images. Since high-DPR images are displayed at a higher pixel density on devices, image quality can be lowered to reduce overall filesize without sacrificing perceived visual quality. For more information and examples of this technique in action, see [this blog post](https://blog.imgix.com/2016/03/30/dpr-quality).
+
+This behavior will respect any overriding `q` value passed in as a parameter. Additionally, it can be disabled altogether by passing `{ disableVariableQuality: true }` to the third argument of `buildSrcSet()`.
+
+This behavior specifically occurs when a [fixed-size image](https://github.com/imgix/imgix-core-js#fixed-image-rendering) is rendered, for example:
+
+```js
+var srcset = new ImgixClient({
+          domain: 'testing.imgix.net',
+          includeLibraryParam: false
+        }).buildSrcSet('image.jpg', {w:100});
+```
+
+will generate a srcset with the following `q` to `dpr` mapping:
+
+```html
+https://testing.imgix.net/image.jpg?w=100&dpr=1&q=75 1x,
+https://testing.imgix.net/image.jpg?w=100&dpr=2&q=50 2x,
+https://testing.imgix.net/image.jpg?w=100&dpr=3&q=35 3x,
+https://testing.imgix.net/image.jpg?w=100&dpr=4&q=23 4x,
+https://testing.imgix.net/image.jpg?w=100&dpr=5&q=20 5x
+```
 
 ## What is the `ixlib` param on every request?
 
