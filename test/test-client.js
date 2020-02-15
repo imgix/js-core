@@ -463,6 +463,7 @@ describe('Imgix client:', function describeSuite() {
       });
 
       describe('with a width parameter provided', function describeSuite() {
+        var DPR_QUALITY = [75, 50, 35, 23, 20];
         var srcset = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
@@ -506,12 +507,52 @@ describe('Imgix client:', function describeSuite() {
         });
 
         it('should include a dpr param per specified src', function testSpec() {
-          
           srclist = srcset.split(",");
           for(var i = 0; i < srclist.length; i++)
           {
             src = srclist[i].split(" ")[0];
             assert(src.includes(`dpr=${i+1}`));
+          }
+        });
+
+        it('should include variable qualities by default', function testSpec() {
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(src.includes(`q=${DPR_QUALITY[i]}`));
+          }
+        });
+
+        it('should override the variable quality if a quality parameter is provided', function testSpec() {
+          var QUALITY_OVERRIDE = 100;
+          var srcset = new ImgixClient({domain: 'testing.imgix.net'}).buildSrcSet('image.jpg', {w:800, q:QUALITY_OVERRIDE});
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
+          }
+        });
+
+        it('should correctly disable generated variable qualities via the \'disableVariableQuality\' argument', function testSpec() {
+          var srcset = new ImgixClient({domain: 'testing.imgix.net'}).buildSrcSet('image.jpg', {w:800}, {disableVariableQuality: true});
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(!src.includes(`q=`));
+          }
+        });
+
+        it('should respect a provided quality parameter when variable qualities are disabled', function testSpec() {
+          var QUALITY_OVERRIDE = 100;
+          var srcset = new ImgixClient({domain: 'testing.imgix.net'}).buildSrcSet('image.jpg', {w:800, q:QUALITY_OVERRIDE}, {disableVariableQuality: true});
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
           }
         });
       });
@@ -613,6 +654,7 @@ describe('Imgix client:', function describeSuite() {
       });
 
       describe('with a width and height parameter provided', function describeSuite() {
+        var DPR_QUALITY = [75, 50, 35, 23, 20];
         var srcset = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
@@ -662,6 +704,47 @@ describe('Imgix client:', function describeSuite() {
           {
             src = srclist[i].split(" ")[0];
             assert(src.includes(`dpr=${i+1}`));
+          }
+        });
+
+        it('should include variable qualities by default', function testSpec() {
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(src.includes(`q=${DPR_QUALITY[i]}`));
+          }
+        });
+
+        it('should override the variable quality if a quality parameter is provided', function testSpec() {
+          var QUALITY_OVERRIDE = 100;
+          var srcset = new ImgixClient({domain: 'testing.imgix.net'}).buildSrcSet('image.jpg', {w:800, q:QUALITY_OVERRIDE});
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
+          }
+        });
+
+        it('should correctly disable generated variable qualities via the \'disableVariableQuality\' argument', function testSpec() {
+          var srcset = new ImgixClient({domain: 'testing.imgix.net'}).buildSrcSet('image.jpg', {w:800}, {disableVariableQuality: true});
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(!src.includes(`q=`));
+          }
+        });
+
+        it('should respect a provided quality parameter when variable qualities are disabled', function testSpec() {
+          var QUALITY_OVERRIDE = 100;
+          var srcset = new ImgixClient({domain: 'testing.imgix.net'}).buildSrcSet('image.jpg', {w:800, q:QUALITY_OVERRIDE}, {disableVariableQuality: true});
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
           }
         });
       });
@@ -757,6 +840,7 @@ describe('Imgix client:', function describeSuite() {
       });
 
       describe('with a width and aspect ratio parameter provided', function describeSuite() {
+        var DPR_QUALITY = [75, 50, 35, 23, 20];
         var srcset = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
@@ -808,9 +892,51 @@ describe('Imgix client:', function describeSuite() {
             assert(src.includes(`dpr=${i+1}`));
           }
         });
+
+        it('should include variable qualities by default', function testSpec() {
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(src.includes(`q=${DPR_QUALITY[i]}`));
+          }
+        });
+
+        it('should override the variable quality if a quality parameter is provided', function testSpec() {
+          var QUALITY_OVERRIDE = 100;
+          var srcset = new ImgixClient({domain: 'testing.imgix.net'}).buildSrcSet('image.jpg', {w:800, q:QUALITY_OVERRIDE});
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
+          }
+        });
+
+        it('should correctly disable generated variable qualities via the \'disableVariableQuality\' argument', function testSpec() {
+          var srcset = new ImgixClient({domain: 'testing.imgix.net'}).buildSrcSet('image.jpg', {w:800}, {disableVariableQuality: true});
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(!src.includes(`q=`));
+          }
+        });
+
+        it('should respect a provided quality parameter when variable qualities are disabled', function testSpec() {
+          var QUALITY_OVERRIDE = 100;
+          var srcset = new ImgixClient({domain: 'testing.imgix.net'}).buildSrcSet('image.jpg', {w:800, q:QUALITY_OVERRIDE}, {disableVariableQuality: true});
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
+          }
+        });
       });
   
       describe('with a height and aspect ratio parameter provided', function describeSuite() {
+        var DPR_QUALITY = [75, 50, 35, 23, 20];
         var srcset = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
@@ -860,6 +986,47 @@ describe('Imgix client:', function describeSuite() {
           {
             src = srclist[i].split(" ")[0];
             assert(src.includes(`dpr=${i+1}`));
+          }
+        });
+
+        it('should include variable qualities by default', function testSpec() {
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(src.includes(`q=${DPR_QUALITY[i]}`));
+          }
+        });
+
+        it('should override the variable quality if a quality parameter is provided', function testSpec() {
+          var QUALITY_OVERRIDE = 100;
+          var srcset = new ImgixClient({domain: 'testing.imgix.net'}).buildSrcSet('image.jpg', {w:800, q:QUALITY_OVERRIDE});
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
+          }
+        });
+
+        it('should correctly disable generated variable qualities via the \'disableVariableQuality\' argument', function testSpec() {
+          var srcset = new ImgixClient({domain: 'testing.imgix.net'}).buildSrcSet('image.jpg', {w:800}, {disableVariableQuality: true});
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(!src.includes(`q=`));
+          }
+        });
+
+        it('should respect a provided quality parameter when variable qualities are disabled', function testSpec() {
+          var QUALITY_OVERRIDE = 100;
+          var srcset = new ImgixClient({domain: 'testing.imgix.net'}).buildSrcSet('image.jpg', {w:800, q:QUALITY_OVERRIDE}, {disableVariableQuality: true});
+          srclist = srcset.split(",");
+          for(var i = 0; i < srclist.length; i++)
+          {
+            src = srclist[i].split(" ")[0];
+            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
           }
         });
       });

@@ -47,6 +47,15 @@
     return resolutions;
   };
 
+  // default quality parameter values mapped by each dpr srcset entry
+  var DPR_QUALITIES = {
+    1: 75,
+    2: 50,
+    3: 35,
+    4: 23,
+    5: 20
+  };
+
   // default ImgixClient settings passed in during instantiation
   var DEFAULTS = {
     domain: null,
@@ -86,7 +95,7 @@
       }
 
       this.settings.urlPrefix = this.settings.useHTTPS ? 'https://' : 'http://'
-    }
+    };
 
     ImgixClient.prototype.buildURL = function(path, params) {
       path = this._sanitizePath(path);
@@ -165,7 +174,7 @@
       var options = options || {};
 
       if ((width) || (height && aspectRatio)) {
-        return this._buildDPRSrcSet(path, params);
+        return this._buildDPRSrcSet(path, params, options);
       }
       else {
         return this._buildSrcSetPairs(path, params, options);
@@ -203,14 +212,25 @@
       return srcset.slice(0,-2);
     };
 
-    ImgixClient.prototype._buildDPRSrcSet = function(path, params) {
+    ImgixClient.prototype._buildDPRSrcSet = function(path, params, options) {
         var srcset = '';
         var targetRatios = [1, 2, 3, 4, 5];
         var currentRatio;
+        var disableVariableQuality = options["disableVariableQuality"] || false;
+        var quality = params["q"];
+
+        if (!disableVariableQuality) {
+          validateVariableQuality(disableVariableQuality);
+        }
 
         for (var i = 0; i < targetRatios.length; i++) {
           currentRatio = targetRatios[i];
           params.dpr = currentRatio;
+
+          if (!disableVariableQuality) {
+            params.q = quality || DPR_QUALITIES[currentRatio];
+          }
+
           srcset += this.buildURL(path, params) + ' ' + currentRatio + 'x,\n'
         }
 
@@ -219,19 +239,19 @@
 
     function validateRange(min, max) {
       if (!(Number.isInteger(min) && Number.isInteger(max)) || (min < 0 || max < 0)) {
-          throw new Error('The min and max srcset widths must be passed positive Number values');
+          throw new Error('The min and max srcset widths can only be passed positive Number values');
       }
     };
 
     function validateWidthTolerance(widthTolerance) {
       if (typeof widthTolerance != 'number' || widthTolerance < 0) {
-        throw new Error('The srcset widthTolerance argument must be passed a positive scalar number');
+        throw new Error('The srcset widthTolerance argument can only be passed a positive scalar number');
       }
-    }
+    };
 
     function validateWidths(customWidths) {
       if (!Array.isArray(customWidths) || !customWidths.length) {
-        throw new Error('The widths argument must be passed a valid non-empty array of integers');
+        throw new Error('The widths argument can only be passed a valid non-empty array of integers');
       }
       else {
         allPositiveIntegers = customWidths.every(
@@ -243,7 +263,13 @@
           throw new Error('A custom widths argument can only contain positive integer values');
         }
       }
-    }
+    };
+
+    function validateVariableQuality(disableVariableQuality) {
+      if (typeof disableVariableQuality != 'boolean') {
+        throw new Error('The disableVariableQuality argument can only be passed a Boolean value');
+      }
+    };
 
     ImgixClient.VERSION = VERSION;
 
