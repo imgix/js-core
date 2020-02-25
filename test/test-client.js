@@ -1074,7 +1074,7 @@ describe('Imgix client:', function describeSuite() {
           assert(max <= MAX);
         });
 
-        it('errors with non-Number width', function testSpec() {
+        it('errors with non-Number minWidth', function testSpec() {
           assert.throws(function() {
             new ImgixClient({
               domain: 'testing.imgix.net'
@@ -1082,12 +1082,44 @@ describe('Imgix client:', function describeSuite() {
           }, Error);
         });
 
-        it('errors with negative width', function testSpec() {
+        it('errors with negative maxWidth', function testSpec() {
           assert.throws(function() {
             new ImgixClient({
               domain: 'testing.imgix.net'
             }).buildSrcSet('image.jpg', {}, {maxWidth: -100});
           }, Error);
+        });
+
+        it('errors with zero maxWidth', function testSpec() {
+          assert.throws(function() {
+            new ImgixClient({
+              domain: 'testing.imgix.net'
+            }).buildSrcSet('image.jpg', {}, {maxWidth: 0});
+          }, Error);
+        });
+
+        it('errors with two invalid widths', function testSpec() {
+          assert.throws(function() {
+            new ImgixClient({
+              domain: 'testing.imgix.net'
+            }).buildSrcSet('image.jpg', {}, {minWidth: 0, maxWidth: 0});
+          }, Error);
+        });
+
+        it('errors when the maxWidth is less than the minWidth', function testSpec() {
+          assert.throws(function() {
+            new ImgixClient({
+              domain: 'testing.imgix.net'
+            }).buildSrcSet('image.jpg', {}, {minWidth: 1000, maxWidth: 500});
+          }, Error);
+        });
+
+        it('generates a single srcset entry if minWidth and maxWidth are equal', function testSpec() {
+            var srcset = new ImgixClient({
+              domain: 'testing.imgix.net',
+              includeLibraryParam: false
+            }).buildSrcSet('image.jpg', {}, {minWidth: 1000, maxWidth: 1000});
+            assert(srcset, 'https://testing.imgix.net/image.jpg?w=1000 1000w');
         });
 
         it('does not include a minWidth or maxWidth URL parameter', function testSpec() {
@@ -1189,6 +1221,14 @@ describe('Imgix client:', function describeSuite() {
             new ImgixClient({
               domain: 'testing.imgix.net'
             }).buildSrcSet('image.jpg', {}, {widthTolerance: -0.10});
+          }, Error);
+        });
+
+        it('errors with zero widthTolerance', function testSpec() {
+          assert.throws(function() {
+            new ImgixClient({
+              domain: 'testing.imgix.net'
+            }).buildSrcSet('image.jpg', {}, {widthTolerance: 0});
           }, Error);
         });
       });
