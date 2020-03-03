@@ -23,29 +23,6 @@
   var MAX_SRCSET_WIDTH = 8192;
   // default tolerable percent difference between srcset pair widths
   var DEFAULT_SRCSET_WIDTH_TOLERANCE = .08;
-  // returns an array of width values used during srcset generation
-  var DEFAULT_SRCSET_WIDTHS = _generateTargetWidths(DEFAULT_SRCSET_WIDTH_TOLERANCE, MIN_SRCSET_WIDTH, MAX_SRCSET_WIDTH);
-
-  // returns an array of width values used during scrset generation
-  function _generateTargetWidths(widthTolerance, minWidth, maxWidth) {
-    var resolutions = [];
-    var INCREMENT_PERCENTAGE = widthTolerance;
-    var minWidth = Math.floor(minWidth);
-    var maxWidth = Math.floor(maxWidth);
-
-    var ensureEven = function(n){
-      return 2 * Math.round(n / 2);
-    };
-
-    var prev = minWidth;
-    while (prev < maxWidth) {
-      resolutions.push(ensureEven(prev));
-      prev *= 1 + (INCREMENT_PERCENTAGE * 2);
-    }
-
-    resolutions.push(maxWidth);
-    return resolutions;
-  };
 
   // default quality parameter values mapped by each dpr srcset entry
   var DPR_QUALITIES = {
@@ -191,10 +168,10 @@
       if (customWidths) {
         validateWidths(customWidths);
         targetWidths = customWidths;
-      } else if (widthTolerance != DEFAULT_SRCSET_WIDTH_TOLERANCE || minWidth != MIN_SRCSET_WIDTH || maxWidth != MAX_SRCSET_WIDTH) {
-        targetWidths = _generateTargetWidths(widthTolerance, minWidth, maxWidth);
       } else {
-        targetWidths = DEFAULT_SRCSET_WIDTHS;
+        validateRange(minWidth, maxWidth);
+        validateWidthTolerance(widthTolerance);
+        targetWidths = this._generateTargetWidths(widthTolerance, minWidth, maxWidth);
       }
 
       for (var i = 0; i < targetWidths.length; i++) {
@@ -229,6 +206,38 @@
         }
 
         return srcset.slice(0,-2);
+    };
+
+    // a cache to store memoized srcset width-pairs
+    ImgixClient.prototype.targetWidthsCache = {};
+
+    // returns an array of width values used during scrset generation
+    ImgixClient.prototype._generateTargetWidths = function(widthTolerance, minWidth, maxWidth) {
+      var resolutions = [];
+      var INCREMENT_PERCENTAGE = widthTolerance;
+      var minWidth = Math.floor(minWidth);
+      var maxWidth = Math.floor(maxWidth);
+      var cacheKey = INCREMENT_PERCENTAGE + '/' + minWidth + '/' + maxWidth;
+
+      if (cacheKey in this.targetWidthsCache) {
+        return this.targetWidthsCache[cacheKey];
+      }
+
+      var ensureEven = function(n){
+        return 2 * Math.round(n / 2);
+      };
+
+      var prev = minWidth;
+      while (prev < maxWidth) {
+        resolutions.push(ensureEven(prev));
+        prev *= 1 + (INCREMENT_PERCENTAGE * 2);
+      }
+
+      resolutions.push(maxWidth);
+
+      this.targetWidthsCache[cacheKey] = resolutions;
+
+      return resolutions;
     };
 
     function validateAndDestructureOptions(options) {

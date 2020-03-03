@@ -37,7 +37,7 @@ describe('Imgix client:', function describeSuite() {
       assert.throws(function() {
         new ImgixClient({
           domain: 'my-host1.imgix.net/',
-        })
+        });
       }, Error);
     });
 
@@ -45,7 +45,7 @@ describe('Imgix client:', function describeSuite() {
       assert.throws(function() {
         new ImgixClient({
           domain: 'https://my-host1.imgix.net',
-        })
+        });
       }, Error);
     });
 
@@ -53,7 +53,7 @@ describe('Imgix client:', function describeSuite() {
       assert.throws(function() {
         new ImgixClient({
           domain: 'my-host1.imgix.net-',
-        })
+        });
       }, Error);
     });
 
@@ -373,12 +373,20 @@ describe('Imgix client:', function describeSuite() {
   describe('Calling buildSrcSet()', function describeSuite() {
     describe('using image parameters', function describeSuite(){
       describe('with no parameters', function describeSuite() {
-        var srcset = new ImgixClient({
+        var client = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
           secureURLToken: 'MYT0KEN'
-        }).buildSrcSet('image.jpg');
+        });
+        var srcset = client.buildSrcSet('image.jpg');
         
+        it('memoizes default srcset width pairs', function testSpec() {
+          var key = [.08, 100, 8192].join('/');
+          var cachedValue = client.targetWidthsCache[key];
+
+          assert(cachedValue !== undefined || cachedValue.length == 10);
+        });
+
         it('should generate the expected default srcset pair values', function testSpec(){
           resolutions = [100, 116, 134, 156, 182, 210, 244, 282,
                          328, 380, 442, 512, 594, 688, 798, 926,
@@ -387,7 +395,7 @@ describe('Imgix client:', function describeSuite() {
           srclist = srcset.split(",");
           src = srclist.map(function (srcline){
             return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
-          })
+          });
 
           for (var i = 0; i < srclist.length; i++) {
             assert.equal(src[i], resolutions[i]);
@@ -426,7 +434,7 @@ describe('Imgix client:', function describeSuite() {
             .map(function (width) {
               return width.slice(0, -1);
             })
-            .map(Number.parseFloat)
+            .map(Number.parseFloat);
           }();
 
           let prev = srcsetWidths[0];
@@ -453,7 +461,7 @@ describe('Imgix client:', function describeSuite() {
             // param will have all params except for '&s=...'
             param = src.slice(src.indexOf('?'), src.length);
             param = param.slice(0, param.indexOf('s=')-1);
-            generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+            generated_signature = src.slice(src.indexOf('s=')+2, src.length);
             signatureBase = 'MYT0KEN' + path + param;
             expected_signature = md5(signatureBase);
             
@@ -476,7 +484,7 @@ describe('Imgix client:', function describeSuite() {
           var devicePixelRatios = srcset.split(",")
           .map(function (srcsetSplit){
             return srcsetSplit.split(" ")[1];
-          })
+          });
           
           assert(devicePixelRatios[0] == '1x');
           assert(devicePixelRatios[1] == '2x');
@@ -498,7 +506,7 @@ describe('Imgix client:', function describeSuite() {
             
             // param will have all params except for '&s=...'
             param = src.slice(src.indexOf('?'), src.indexOf('s=')-1);
-            generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+            generated_signature = src.slice(src.indexOf('s=')+2, src.length);
             signatureBase = 'MYT0KEN' + path + param;
             expected_signature = md5(signatureBase);
             
@@ -572,7 +580,7 @@ describe('Imgix client:', function describeSuite() {
           srclist = srcset.split(",");
           src = srclist.map(function (srcline){
             return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
-          })
+          });
 
           for (var i = 0; i < srclist.length; i++) {
             assert.equal(src[i], resolutions[i]);
@@ -617,7 +625,7 @@ describe('Imgix client:', function describeSuite() {
             .map(function (width) {
               return width.slice(0, -1);
             })
-            .map(Number.parseFloat)
+            .map(Number.parseFloat);
           }();
 
           let prev = srcsetWidths[0];
@@ -644,7 +652,7 @@ describe('Imgix client:', function describeSuite() {
             // param will have all params except for '&s=...'
             param = src.slice(src.indexOf('?'), src.length);
             param = param.slice(0, param.indexOf('s=')-1);
-            generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+            generated_signature = src.slice(src.indexOf('s=')+2, src.length);
             signatureBase = 'MYT0KEN' + path + param;
             expected_signature = md5(signatureBase);
             
@@ -667,7 +675,7 @@ describe('Imgix client:', function describeSuite() {
           var devicePixelRatios = srcset.split(",")
           .map(function (srcsetSplit){
             return srcsetSplit.split(" ")[1];
-          })
+          });
           
           assert(devicePixelRatios[0] == '1x');
           assert(devicePixelRatios[1] == '2x');
@@ -689,7 +697,7 @@ describe('Imgix client:', function describeSuite() {
 
             // param will have all params except for '&s=...'
             param = src.slice(src.indexOf('?'), src.indexOf('s=')-1);
-            generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+            generated_signature = src.slice(src.indexOf('s=')+2, src.length);
             signatureBase = 'MYT0KEN' + path + param;
             expected_signature = md5(signatureBase);
             
@@ -768,7 +776,7 @@ describe('Imgix client:', function describeSuite() {
           srclist = srcset.split(",");
           src = srclist.map(function (srcline){
             return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
-          })
+          });
 
           for (var i = 0; i < srclist.length; i++) {
             assert.equal(src[i], resolutions[i]);
@@ -803,7 +811,7 @@ describe('Imgix client:', function describeSuite() {
             .map(function (width) {
               return width.slice(0, -1);
             })
-            .map(Number.parseFloat)
+            .map(Number.parseFloat);
           }();
 
           let prev = srcsetWidths[0];
@@ -830,7 +838,7 @@ describe('Imgix client:', function describeSuite() {
             // param will have all params except for '&s=...'
             param = src.slice(src.indexOf('?'), src.length);
             param = param.slice(0, param.indexOf('s=')-1);
-            generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+            generated_signature = src.slice(src.indexOf('s=')+2, src.length);
             signatureBase = 'MYT0KEN' + path + param;
             expected_signature = md5(signatureBase);
 
@@ -853,7 +861,7 @@ describe('Imgix client:', function describeSuite() {
           var devicePixelRatios = srcset.split(",")
           .map(function (srcsetSplit){
             return srcsetSplit.split(" ")[1];
-          })
+          });
 
           assert(devicePixelRatios[0] == '1x');
           assert(devicePixelRatios[1] == '2x');
@@ -875,7 +883,7 @@ describe('Imgix client:', function describeSuite() {
 
             // param will have all params except for '&s=...'
             param = src.slice(src.indexOf('?'), src.indexOf('s=')-1);
-            generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+            generated_signature = src.slice(src.indexOf('s=')+2, src.length);
             signatureBase = 'MYT0KEN' + path + param;
             expected_signature = md5(signatureBase);
             
@@ -949,7 +957,7 @@ describe('Imgix client:', function describeSuite() {
           var devicePixelRatios = srcset.split(",")
           .map(function (srcsetSplit){
             return srcsetSplit.split(" ")[1];
-          })
+          });
 
           assert(devicePixelRatios[0] == '1x');
           assert(devicePixelRatios[1] == '2x');
@@ -971,7 +979,7 @@ describe('Imgix client:', function describeSuite() {
 
             // param will have all params except for '&s=...'
             param = src.slice(src.indexOf('?'), src.indexOf('s=')-1);
-            generated_signature = src.slice(src.indexOf('s=')+2, src.length)
+            generated_signature = src.slice(src.indexOf('s=')+2, src.length);
             signatureBase = 'MYT0KEN' + path + param;
             expected_signature = md5(signatureBase);
 
@@ -1036,11 +1044,12 @@ describe('Imgix client:', function describeSuite() {
       describe('with a minWidth and/or maxWidth provided', function describeSuite() {
         var MIN = 500;
         var MAX = 2000;
-        var srcset = new ImgixClient({
+        var client = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
           secureURLToken: 'MYT0KEN'
-        }).buildSrcSet('image.jpg', {}, {minWidth: MIN, maxWidth: MAX});
+        });
+        var srcset = client.buildSrcSet('image.jpg', {}, {minWidth: MIN, maxWidth: MAX});
 
         it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
           assert.equal(srcset.split(',').length, 11);
@@ -1051,7 +1060,7 @@ describe('Imgix client:', function describeSuite() {
           srclist = srcset.split(",");
           src = srclist.map(function (srcline){
             return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
-          })
+          });
 
           for (var i = 0; i < srclist.length; i++) {
             assert.equal(src[i], resolutions[i]);
@@ -1123,35 +1132,44 @@ describe('Imgix client:', function describeSuite() {
         });
 
         it('does not include a minWidth or maxWidth URL parameter', function testSpec() {
-          assert(!srcset.includes('minWidth='))
-          assert(!srcset.includes('maxWidth='))
+          assert(!srcset.includes('minWidth='));
+          assert(!srcset.includes('maxWidth='));
         });
 
         it('only includes one entry if maxWidth is equal to 100', function testSpec() {
           var srcset = new ImgixClient({
             domain: 'testing.imgix.net',
             includeLibraryParam: false
-          }).buildSrcSet('image.jpg', {}, {maxWidth: 100})
+          }).buildSrcSet('image.jpg', {}, {maxWidth: 100});
 
           assert.equal('https://testing.imgix.net/image.jpg?w=100 100w', srcset);
-        })
+        });
 
         it('only includes one entry if minWidth is equal to 8192', function testSpec() {
           var srcset = new ImgixClient({
             domain: 'testing.imgix.net',
             includeLibraryParam: false
-          }).buildSrcSet('image.jpg', {}, {minWidth: 8192})
+          }).buildSrcSet('image.jpg', {}, {minWidth: 8192});
 
           assert.equal('https://testing.imgix.net/image.jpg?w=8192 8192w', srcset);
-        })
+        });
+
+        it('memoizes generated srcset width pairs', function testSpec() {
+          var DEFAULT_WIDTH_TOLERANCE = 0.08;
+          var key = [DEFAULT_WIDTH_TOLERANCE, MIN, MAX].join('/');
+          var cachedValue = client.targetWidthsCache[key];
+
+          assert(cachedValue !== undefined || cachedValue.length == 10);
+        });
       });
 
       describe('with a widthTolerance parameter provided', function describeSuite() {
         var WIDTH_TOLERANCE = .20;
-        var srcset = new ImgixClient({
+        var client = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false
-        }).buildSrcSet('image.jpg', {}, {widthTolerance: WIDTH_TOLERANCE});
+        })
+        var srcset = client.buildSrcSet('image.jpg', {}, {widthTolerance: WIDTH_TOLERANCE});
 
         it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
           assert.equal(srcset.split(',').length, 15);
@@ -1162,7 +1180,7 @@ describe('Imgix client:', function describeSuite() {
           srclist = srcset.split(",");
           src = srclist.map(function (srcline){
             return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
-          })
+          });
 
           for (var i = 0; i < srclist.length; i++) {
             assert.equal(src[i], resolutions[i]);
@@ -1196,7 +1214,7 @@ describe('Imgix client:', function describeSuite() {
             .map(function (width) {
               return width.slice(0, -1);
             })
-            .map(Number.parseFloat)
+            .map(Number.parseFloat);
           }();
 
           let prev = srcsetWidths[0];
@@ -1231,6 +1249,15 @@ describe('Imgix client:', function describeSuite() {
             }).buildSrcSet('image.jpg', {}, {widthTolerance: 0});
           }, Error);
         });
+
+        it('memoizes generated srcset width pairs', function testSpec() {
+          var DEFAULT_MIN_WIDTH = 100;
+          var DEFAULT_MAX_WIDTH = 8192;
+          var key = [WIDTH_TOLERANCE, DEFAULT_MIN_WIDTH, DEFAULT_MAX_WIDTH].join('/');
+          var cachedValue = client.targetWidthsCache[key];
+
+          assert(cachedValue !== undefined || cachedValue.length == 10);
+        });
       });
 
       describe('with a custom list of widths provided', function describeSuite() {
@@ -1250,7 +1277,7 @@ describe('Imgix client:', function describeSuite() {
           srclist = srcset.split(",");
           src = srclist.map(function (srcline){
             return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
-          })
+          });
 
           for (var i = 0; i < srclist.length; i++) {
             assert.equal(src[i], resolutions[i]);
