@@ -13,8 +13,8 @@ declare class ImgixClient {
     _sanitizePath(path: string): string;
     _buildParams(params: {}): string;
     _signParams(path: string, queryParams?: {}): string;
-    buildSrcSet(path: string, params?: {}): string;
-    _buildSrcSetPairs(path: string, params?: {}): string;
-    _buildDPRSrcSet(path: string, params?: {}): string;
+    buildSrcSet(path: string, params?: {}, options?: {}): string;
+    _buildSrcSetPairs(path: string, params?: {}, options?: {}): string;
+    _buildDPRSrcSet(path: string, params?: {}, options?: {}): string;
 }
 export = ImgixClient;
