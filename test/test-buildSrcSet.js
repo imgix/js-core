@@ -17,7 +17,7 @@ describe('SrcSet Builder:', function describeSuite() {
                     var key = [.08, 100, 8192].join('/');
                     var cachedValue = client.targetWidthsCache[key];
 
-                    assert(cachedValue !== undefined || cachedValue.length == 10);
+                    assert(cachedValue !== undefined && cachedValue.length == 31);
                 });
 
                 it('should generate the expected default srcset pair values', function testSpec(){
@@ -789,7 +789,7 @@ describe('SrcSet Builder:', function describeSuite() {
                     var key = [DEFAULT_WIDTH_TOLERANCE, MIN, MAX].join('/');
                     var cachedValue = client.targetWidthsCache[key];
 
-                    assert(cachedValue !== undefined || cachedValue.length == 10);
+                    assert(cachedValue !== undefined && cachedValue.length == 11);
                 });
             });
 
@@ -886,7 +886,7 @@ describe('SrcSet Builder:', function describeSuite() {
                     var key = [WIDTH_TOLERANCE, DEFAULT_MIN_WIDTH, DEFAULT_MAX_WIDTH].join('/');
                     var cachedValue = client.targetWidthsCache[key];
 
-                    assert(cachedValue !== undefined || cachedValue.length == 10);
+                    assert(cachedValue !== undefined && cachedValue.length == 15);
                 });
             });
 

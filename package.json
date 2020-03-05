@@ -7,7 +7,9 @@
     "assert_version": "node assert_version.js",
     "compile": "mkdir -p dist && uglifyjs ./src/imgix-core-js.js -o ./dist/imgix-core-js.min.js && cp ./src/imgix-core-js.js ./dist/imgix-core-js.js && cp ./src/imgix-core-js.d.ts ./dist/imgix-core-js.d.ts && tsc",
     "prepublish": "npm run compile && npm run assert_version",
-    "test": "mocha"
+    "test": "mocha",
+    "test:watch": "mocha --watch",
+    "test:performance": "mocha test/performance/*.js"
   },
   "main": "dist/imgix-core-js.js",
   "types": "dist/imgix-core-js.d.ts",

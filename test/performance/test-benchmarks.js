@@ -1,5 +1,5 @@
 var Benchmark = require('benchmark');
-var ImgixClient = require('../src/imgix-core-js');
+var ImgixClient = require('../../src/imgix-core-js');
 
 var client = new ImgixClient({
     domain: 'testing.imgix.net',
@@ -65,4 +65,4 @@ suite.add('with minWidth and maxWidth defined', function() {
     client.buildSrcSet('image.jpg', {}, { minWidth:1800, maxWidth: 3000 });
 });
 
-suite.run({ 'async': true });
+suite.run({ 'async': false });
