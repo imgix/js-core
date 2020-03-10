@@ -243,13 +243,13 @@
     function validateAndDestructureOptions(options) {
       if (options.widthTolerance !== undefined) {
         validateWidthTolerance(options.widthTolerance);
-        widthTolerance = options.widthTolerance;
+        var widthTolerance = options.widthTolerance;
       } else {
-        widthTolerance = DEFAULT_SRCSET_WIDTH_TOLERANCE;
+        var widthTolerance = DEFAULT_SRCSET_WIDTH_TOLERANCE;
       }
 
-      minWidth = options.minWidth === undefined ? MIN_SRCSET_WIDTH : options.minWidth;
-      maxWidth = options.maxWidth === undefined ? MAX_SRCSET_WIDTH : options.maxWidth;
+      var minWidth = options.minWidth === undefined ? MIN_SRCSET_WIDTH : options.minWidth;
+      var maxWidth = options.maxWidth === undefined ? MAX_SRCSET_WIDTH : options.maxWidth;
 
       // Validate the range unless we're using defaults for both
       if (minWidth != MIN_SRCSET_WIDTH || maxWidth != MAX_SRCSET_WIDTH) {
@@ -275,7 +275,7 @@
       if (!Array.isArray(customWidths) || !customWidths.length) {
         throw new Error('The widths argument can only be passed a valid non-empty array of integers');
       } else {
-        allPositiveIntegers = customWidths.every(
+        var allPositiveIntegers = customWidths.every(
           function(width) {
             return Number.isInteger(width) && width > 0
           }
