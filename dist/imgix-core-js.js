@@ -14,7 +14,7 @@
   var Base64 = _jsBase64.Base64 || _jsBase64;
 
   // package version used in the ix-lib parameter
-  var VERSION = '2.3.0';
+  var VERSION = '2.3.1';
   // regex pattern used to determine if a domain is valid
   var DOMAIN_REGEX = /^(?:[a-z\d\-_]{1,62}\.){0,125}(?:[a-z\d](?:\-(?=\-*[a-z\d])|[a-z]|\d){0,62}\.)[a-z\d]{1,63}$/i;
   // minimum generated srcset width
@@ -243,13 +243,13 @@
     function validateAndDestructureOptions(options) {
       if (options.widthTolerance !== undefined) {
         validateWidthTolerance(options.widthTolerance);
-        widthTolerance = options.widthTolerance;
+        var widthTolerance = options.widthTolerance;
       } else {
-        widthTolerance = DEFAULT_SRCSET_WIDTH_TOLERANCE;
+        var widthTolerance = DEFAULT_SRCSET_WIDTH_TOLERANCE;
       }
 
-      minWidth = options.minWidth === undefined ? MIN_SRCSET_WIDTH : options.minWidth;
-      maxWidth = options.maxWidth === undefined ? MAX_SRCSET_WIDTH : options.maxWidth;
+      var minWidth = options.minWidth === undefined ? MIN_SRCSET_WIDTH : options.minWidth;
+      var maxWidth = options.maxWidth === undefined ? MAX_SRCSET_WIDTH : options.maxWidth;
 
       // Validate the range unless we're using defaults for both
       if (minWidth != MIN_SRCSET_WIDTH || maxWidth != MAX_SRCSET_WIDTH) {
@@ -275,7 +275,7 @@
       if (!Array.isArray(customWidths) || !customWidths.length) {
         throw new Error('The widths argument can only be passed a valid non-empty array of integers');
       } else {
-        allPositiveIntegers = customWidths.every(
+        var allPositiveIntegers = customWidths.every(
           function(width) {
             return Number.isInteger(width) && width > 0
           }

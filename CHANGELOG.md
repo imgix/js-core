@@ -2,15 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.1](https://github.com/imgix/imgix-core-js/compare/2.3.0...2.3.1) (2019-03-10)
+
+* fix: add missing variable declarations ([#121](https://github.com/imgix/imgix-core-js/pull/121))
+
 ## [2.3.0](https://github.com/imgix/imgix-core-js/compare/2.2.1...2.3.0) (2019-03-04)
 
-* feat: add srcset option parameter to buildSrcSet() method signature (#118)
-* perf(srcset): memoize generated srcset width-pairs (#115)
-* fix: throw error when certain srcset modifiers are passed zero (#114)
-* feat: append variable qualities to dpr srcsets (#111)
-* feat: add support for defining a custom srcset width array (#110)
-* feat: add support for defining a custom srcset width tolerance (#109)
-* feat: add support for defining a min and max srcset width (#108)
+* feat: add srcset option parameter to buildSrcSet() method signature ([#118](https://github.com/imgix/imgix-core-js/pull/118))
+* perf(srcset): memoize generated srcset width-pairs ([#115](https://github.com/imgix/imgix-core-js/pull/115))
+* fix: throw error when certain srcset modifiers are passed zero ([#114](https://github.com/imgix/imgix-core-js/pull/114))
+* feat: append variable qualities to dpr srcsets ([#111](https://github.com/imgix/imgix-core-js/pull/111))
+* feat: add support for defining a custom srcset width array ([#110](https://github.com/imgix/imgix-core-js/pull/110))
+* feat: add support for defining a custom srcset width tolerance ([#109](https://github.com/imgix/imgix-core-js/pull/109))
+* feat: add support for defining a min and max srcset width ([#108](https://github.com/imgix/imgix-core-js/pull/108))
 
 ## [2.2.1](https://github.com/imgix/imgix-core-js/compare/2.2.0...2.2.1) (2019-11-27)
 
