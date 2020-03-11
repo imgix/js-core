@@ -20,7 +20,7 @@
   "license": "BSD-2-Clause",
   "devDependencies": {
     "@types/node": "12.12.21",
-    "benchmark": "^2.1.4",
+    "benchmark": "2.1.4",
     "mocha": "6.2.2",
     "phantomjs": "2.1.7",
     "sinon": "9.0.1",
