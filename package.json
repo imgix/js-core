@@ -19,7 +19,7 @@
   },
   "license": "BSD-2-Clause",
   "devDependencies": {
-    "@types/node": "12.12.21",
+    "@types/node": "12.12.31",
     "benchmark": "2.1.4",
     "mocha": "6.2.2",
     "phantomjs": "2.1.7",
