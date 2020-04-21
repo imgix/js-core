@@ -22,7 +22,6 @@
     "@types/node": "12.12.31",
     "benchmark": "2.1.4",
     "mocha": "6.2.2",
-    "phantomjs": "2.1.7",
     "sinon": "9.0.2",
     "typescript": "3.8.3",
     "uglify-js": "3.9.1"
