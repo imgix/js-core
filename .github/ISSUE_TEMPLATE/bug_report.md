@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+Please provide the following information and someone from @imgix/imgix-sdk-team will respond to your issue shortly.
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 
