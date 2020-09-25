@@ -14,6 +14,8 @@
 
 <!-- /ix-docs-ignore -->
 
+<!-- NB: Run `npx markdown-toc README.md --maxdepth 4 | sed -e 's/[[:space:]]\{2\}/    /g' | pbcopy` to generate TOC :) -->
+
 <!-- prettier-ignore-start -->
 
 - [Installing](#installing)
@@ -25,12 +27,12 @@
 - [API](#api)
     * [`ImgixClient.buildURL(path, params)`](#imgixclientbuildurlpath-params)
     * [`ImgixClient.buildSrcSet(path, params, options)`](#imgixclientbuildsrcsetpath-params-options)
-        + [Fixed image rendering](#fixed-image-rendering)
+        + [Fixed Image Rendering](#fixed-image-rendering)
         + [Custom Widths](#custom-widths)
         + [Width Tolerance](#width-tolerance)
         + [Minimum and Maximum Width Ranges](#minimum-and-maximum-width-ranges)
         + [Variable Qualities](#variable-qualities)
-- [What is the `ixlib` param on every request?](#what-is-the-ixlib-param-on-every-request)
+- [What is the `Ixlib` Param on Every Request?](#what-is-the-ixlib-param-on-every-request)
 - [Testing](#testing)
 
 <!-- prettier-ignore-end -->
@@ -173,7 +175,7 @@ https://testing.imgix.net/image.jpg?w=8192&s=59eb881b618fed314fe30cf9e3ec7b00 81
 
 <!-- prettier-ignore-end -->
 
-#### Fixed image rendering
+#### Fixed Image Rendering
 
 In cases where enough information is provided about an image's dimensions, `buildSrcSet()` will instead build a `srcset` that will allow for an image to be served at different resolutions. The parameters taken into consideration when determining if an image is fixed-width are `w`, `h`, and `ar`. By invoking `buildSrcSet()` with either a width **or** the height and aspect ratio (along with `fit=crop`, typically) provided, a different `srcset` will be generated for a fixed-size image instead.
 
@@ -331,7 +333,7 @@ https://testing.imgix.net/image.jpg?w=100&dpr=4&q=23 4x,
 https://testing.imgix.net/image.jpg?w=100&dpr=5&q=20 5x
 ```
 
-## What is the `ixlib` param on every request?
+## What is the `Ixlib` Param on Every Request?
 
 For security and diagnostic purposes, we sign all requests with the language and version of library used to generate the URL.
 
