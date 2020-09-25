@@ -1,4 +1,5 @@
 <!-- ix-docs-ignore -->
+
 ![imgix logo](https://assets.imgix.net/sdk-imgix-logo.svg)
 
 `imgix-core-js` is a JavaScript library for generating image URLs with [imgix](https://www.imgix.com/) that can be used in browser or server-side settings.
@@ -10,7 +11,10 @@
 [![License](https://img.shields.io/github/license/imgix/imgix-core-js)](https://github.com/imgix/imgix-core-js/blob/main/LICENSE.md)
 
 ---
+
 <!-- /ix-docs-ignore -->
+
+<!-- prettier-ignore-start -->
 
 - [Installing](#installing)
 - [Usage](#usage)
@@ -28,6 +32,8 @@
         + [Variable Qualities](#variable-qualities)
 - [What is the `ixlib` param on every request?](#what-is-the-ixlib-param-on-every-request)
 - [Testing](#testing)
+
+<!-- prettier-ignore-end -->
 
 ## Installing
 
@@ -53,12 +59,12 @@ Depending on your module system, using imgix-core-js is done a few different way
 var ImgixClient = require('imgix-core-js');
 
 var client = new ImgixClient({
-  domain: "testing.imgix.net",
-  secureURLToken: "<SECURE TOKEN>"
+  domain: 'testing.imgix.net',
+  secureURLToken: '<SECURE TOKEN>',
 });
-var url = client.buildURL("/path/to/image.png", {
+var url = client.buildURL('/path/to/image.png', {
   w: 400,
-  h: 300
+  h: 300,
 });
 console.log(url); // => "https://testing.imgix.net/users/1.png?w=400&h=300&s=…"
 ```
@@ -66,11 +72,11 @@ console.log(url); // => "https://testing.imgix.net/users/1.png?w=400&h=300&s=…
 ### ES6 Modules
 
 ```js
-import ImgixClient from 'imgix-core-js'
+import ImgixClient from 'imgix-core-js';
 
 let client = new ImgixClient({
   domain: 'testing.imgix.net',
-  secureURLToken: '<SECURE TOKEN>'
+  secureURLToken: '<SECURE TOKEN>',
 });
 
 let url = client.buildURL('/path/to/image.png', { w: 400, h: 300 });
@@ -81,7 +87,7 @@ console.log(url); // => 'https://testing.imgix.net/users/1.png?w=400&h=300&s=…
 
 ```js
 var client = new ImgixClient({
-  domain: 'testing.imgix.net'
+  domain: 'testing.imgix.net',
   // Do not use signed URLs with `secureURLToken` on the client side,
   // as this would leak your token to the world. Signed URLs should
   // be generated on the server.
@@ -111,10 +117,10 @@ Construct a single image URL by passing in the image `path` and any rendering AP
 
 ```js
 var client = new ImgixClient({
-  domain: 'testing.imgix.net'
+  domain: 'testing.imgix.net',
 });
 var url = client.buildURL('folder/image.jpg', {
-  w: 1000
+  w: 1000,
 });
 ```
 
@@ -126,21 +132,26 @@ https://testing.imgix.net/folder/image.jpg?w=1000&ixlib=js-...
 
 ### `ImgixClient.buildSrcSet(path, params, options)`
 
+<!-- prettier-ignore-start -->
+
 - **`path`:** String, required. A full, unencoded path to the image. This includes any additional directory information required to [locate the image](https://docs.imgix.com/setup/serving-images) within a source.
 - **`params`:** Object. Any number of imgix rendering API [parameters](https://docs.imgix.com/apis/url).
 - **`options`:** Object. Any number of srcset modifiers, described below:
-    * [**`widths`**](#custom-widths)
-    * [**`widthTolerance`**](#width-tolerance)
-    * [**`minWidth`**](#minimum-and-maximum-width-ranges)
-    * [**`maxWidth`**](#minimum-and-maximum-width-ranges)
-    * [**`disableVariableQuality`**](#variable-qualities)
+  - [**`widths`**](#custom-widths)
+  - [**`widthTolerance`**](#width-tolerance)
+  - [**`minWidth`**](#minimum-and-maximum-width-ranges)
+  - [**`maxWidth`**](#minimum-and-maximum-width-ranges)
+  - [**`disableVariableQuality`**](#variable-qualities)
+
+<!-- prettier-ignore-end -->
 
 The imgix-core-js module allows for generation of custom `srcset` attributes, which can be invoked through `buildSrcSet()`. By default, the `srcset` generated will allow for responsive size switching by building a list of image-width mappings.
 
 ```js
 var client = new ImgixClient({
-  domain:'testing.imgix.net', secureURLToken:'my-token',
-  includeLibraryParam:false
+  domain: 'testing.imgix.net',
+  secureURLToken: 'my-token',
+  includeLibraryParam: false,
 });
 var srcset = client.buildSrcSet('image.jpg');
 
@@ -148,6 +159,8 @@ console.log(srcset);
 ```
 
 **Returns**: A `srcset` attribute value as a string.
+
+<!-- prettier-ignore-start -->
 
 ```html
 https://testing.imgix.net/image.jpg?w=100&s=e2e581a39c917bdee50b2f8689c30893 100w,
@@ -158,26 +171,30 @@ https://testing.imgix.net/image.jpg?w=7400&s=91779d82a0e1ac16db04c522fa4017e5 74
 https://testing.imgix.net/image.jpg?w=8192&s=59eb881b618fed314fe30cf9e3ec7b00 8192w
 ```
 
+<!-- prettier-ignore-end -->
+
 #### Fixed image rendering
 
 In cases where enough information is provided about an image's dimensions, `buildSrcSet()` will instead build a `srcset` that will allow for an image to be served at different resolutions. The parameters taken into consideration when determining if an image is fixed-width are `w`, `h`, and `ar`. By invoking `buildSrcSet()` with either a width **or** the height and aspect ratio (along with `fit=crop`, typically) provided, a different `srcset` will be generated for a fixed-size image instead.
 
 ```js
 var client = new ImgixClient({
-  domain:'testing.imgix.net',
-  secureURLToken:'my-token',
-  includeLibraryParam:false
+  domain: 'testing.imgix.net',
+  secureURLToken: 'my-token',
+  includeLibraryParam: false,
 });
 var srcset = client.buildSrcSet('image.jpg', {
-  h:800,
-  ar:'3:2',
-  fit:'crop'
+  h: 800,
+  ar: '3:2',
+  fit: 'crop',
 });
 
 console.log(srcset);
 ```
 
 Will produce the following attribute value:
+
+<!-- prettier-ignore-start -->
 
 ```html
 https://testing.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=1&s=3d754a157458402fd3e26977107ade74 1x,
@@ -187,6 +204,8 @@ https://testing.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=4&s=df7b67aa0439
 https://testing.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=5&s=7c4b8adb733db37d00240da4ca65d410 5x
 ```
 
+<!-- prettier-ignore-end -->
+
 For more information to better understand `srcset`, we highly recommend [Eric Portis' "Srcset and sizes" article](https://ericportis.com/posts/2014/srcset-sizes/) which goes into depth about the subject.
 
 #### Custom Widths
@@ -195,8 +214,8 @@ In situations where specific widths are desired when generating `srcset` pairs, 
 
 ```js
 var client = new ImgixClient({
-  domain:'testing.imgix.net',
-  includeLibraryParam: false
+  domain: 'testing.imgix.net',
+  includeLibraryParam: false,
 });
 var srcset = client.buildSrcSet(
   'image.jpg',
@@ -226,19 +245,17 @@ By default this rate is set to 8 percent, which we consider to be the ideal rate
 
 ```js
 var client = new ImgixClient({
-  domain:'testing.imgix.net',
-  includeLibraryParam: false
-  });
-var srcset = client.buildSrcSet(
-  'image.jpg',
-  {},
-  { widthTolerance: 0.20 }
-);
+  domain: 'testing.imgix.net',
+  includeLibraryParam: false,
+});
+var srcset = client.buildSrcSet('image.jpg', {}, { widthTolerance: 0.2 });
 
 console.log(srcset);
 ```
 
 In this case, the `width_tolerance` is set to 20 percent, which will be reflected in the difference between subsequent widths in a srcset pair:
+
+<!-- prettier-ignore-start -->
 
 ```html
 https://testing.imgix.net/image.jpg?w=100 100w,
@@ -248,19 +265,21 @@ https://testing.imgix.net/image.jpg?w=196 196w,
 https://testing.imgix.net/image.jpg?w=8192 8192w
 ```
 
+<!-- prettier-ignore-end -->
+
 #### Minimum and Maximum Width Ranges
 
 In certain circumstances, you may want to limit the minimum or maximum value of the non-fixed `srcset` generated by the `buildSrcSet()` method. To do this, you can pass in an options object as a third argument, providing positive integers as `minWidth` and/or `maxWidth` attributes:
 
 ```js
 var client = new ImgixClient({
-  domain:'testing.imgix.net',
-  includeLibraryParam: false
+  domain: 'testing.imgix.net',
+  includeLibraryParam: false,
 });
 var srcset = client.buildSrcSet(
   'image.jpg',
   {},
-  { minWidth:500, maxWidth: 2000 }
+  { minWidth: 500, maxWidth: 2000 }
 );
 
 console.log(srcset);
@@ -268,7 +287,7 @@ console.log(srcset);
 
 Will result in a smaller, more tailored srcset.
 
-``` html
+```html
 https://testing.imgix.net/image.jpg?w=500 500w,
 https://testing.imgix.net/image.jpg?w=580 580w,
 https://testing.imgix.net/image.jpg?w=672 672w,
@@ -297,9 +316,9 @@ This behavior specifically occurs when a [fixed-size image](https://github.com/i
 ```js
 var client = new ImgixClient({
   domain: 'testing.imgix.net',
-  includeLibraryParam: false
+  includeLibraryParam: false,
 });
-var srcset = client.buildSrcSet('image.jpg', { w:100 });
+var srcset = client.buildSrcSet('image.jpg', { w: 100 });
 ```
 
 will generate a srcset with the following `q` to `dpr` mapping:
@@ -318,10 +337,10 @@ For security and diagnostic purposes, we sign all requests with the language and
 
 This can be disabled by passing a falsy value for the `includeLibraryParam` option to `new ImgixClient`:
 
-``` javascript
+```js
 new ImgixClient({
   domain: 'my-source.imgix.net',
-  includeLibraryParam: false
+  includeLibraryParam: false,
 });
 ```
 
