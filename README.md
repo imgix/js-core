@@ -32,6 +32,7 @@
         + [Width Tolerance](#width-tolerance)
         + [Minimum and Maximum Width Ranges](#minimum-and-maximum-width-ranges)
         + [Variable Qualities](#variable-qualities)
+    * [Web Proxy Sources](#web-proxy-sources)
 - [What is the `Ixlib` Param on Every Request?](#what-is-the-ixlib-param-on-every-request)
 - [Testing](#testing)
 
@@ -331,6 +332,22 @@ https://testing.imgix.net/image.jpg?w=100&dpr=2&q=50 2x,
 https://testing.imgix.net/image.jpg?w=100&dpr=3&q=35 3x,
 https://testing.imgix.net/image.jpg?w=100&dpr=4&q=23 4x,
 https://testing.imgix.net/image.jpg?w=100&dpr=5&q=20 5x
+```
+
+### Web Proxy Sources
+
+If you are using a [Web Proxy Source](https://docs.imgix.com/setup/creating-sources/web-proxy), all you need to do is pass the full image URL you would like to proxy to `imgix-core-js` as the path, and include a `secureURLToken` when creating the client. `imgix-core-js` will then encode this full URL into a format that imgix will understand, thus creating a proxy URL for you.
+
+```js
+import ImgixClient from 'imgix-core-js';
+
+const client = new ImgixClient({
+  domain: 'my-proxy-domain.imgix.net',
+  secureURLToken: '<token>',
+});
+
+client.buildURL('https://example.com/image-to-proxy.jpg', {});
+client.buildSrcSet('https://example.com/image-to-proxy.jpg', {});
 ```
 
 ## What is the `Ixlib` Param on Every Request?
