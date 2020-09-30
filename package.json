@@ -11,6 +11,9 @@
     "test:watch": "mocha --watch",
     "test:performance": "mocha test/performance/*.js"
   },
+  "source": "src/es/imgix-core-js.js",
+  "module": "dist/imgix-core-js.module.js",
+  "unpkg": "dist/imgix-core-js.umd.js",
   "main": "dist/imgix-core-js.js",
   "types": "dist/imgix-core-js.d.ts",
   "dependencies": {
