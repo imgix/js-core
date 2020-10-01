@@ -387,6 +387,21 @@ describe('SrcSet Builder:', function describeSuite() {
                         assert(src.includes(`q=${QUALITY_OVERRIDE}`));
                     }
                 });
+
+                it('should not modify input params and should be idempotent', function testSpec() {
+                    var client = new ImgixClient({ domain: 'test.imgix.net' });
+                    var params = {};
+                    var srcsetOptions = { widths: [100] };
+                    var srcset1 = client.buildSrcSet('', params, srcsetOptions);
+                    var srcset2 = client.buildSrcSet('', params, srcsetOptions);
+
+                    // Show idempotent, ie. calling buildSrcSet produces the same result given
+                    // the same input-parameters.
+                    assert(srcset1 == srcset2);
+
+                    // Assert that the object remains unchanged.
+                    assert(Object.keys(params).length === 0 && params.constructor === Object);
+                });
             });
 
             describe('with an aspect ratio parameter provided', function describeSuite() {
