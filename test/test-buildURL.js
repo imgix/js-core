@@ -227,7 +227,7 @@ describe('URL Builder:', function describeSuite() {
             var params = {
                     w: 400
                 },
-                expectation = '?w=400&ixlib=test',
+                expectation = '?ixlib=test&w=400',
                 result;
 
             client.settings.libraryParam = 'test';
