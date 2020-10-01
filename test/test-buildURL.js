@@ -1,6 +1,7 @@
 var assert = require('assert');
 var ImgixClient = require('../src/imgix-core-js');
 var md5 = require("md5");
+const { restore } = require('sinon');
 
 describe('URL Builder:', function describeSuite() {
     describe('Calling _sanitizePath()', function describeSuite() {
@@ -223,6 +224,26 @@ describe('URL Builder:', function describeSuite() {
             assert.equal(expectation, result);
         });
 
+        it('does not modify its input-argument', function testSpec() {
+            var params = {
+                    w: 400,
+                    h: 300
+                },
+                expectation = '?w=400&h=300',
+                result = client._buildParams(params);
+
+            assert.equal(params.w, 400);
+            assert.equal(params.h, 300);
+            assert.equal(expectation, result);
+
+            var emptyParams = {};
+            var emptyResult = client._buildParams(emptyParams);
+
+            // Ensure the result is empty.
+            assert.equal(emptyResult, '');
+            assert(Object.keys(emptyParams).length === 0 && emptyParams.constructor === Object);
+        });
+
         it('includes an `ixlib` param if the `libraryParam` setting is truthy', function testSpec() {
             var params = {
                     w: 400
@@ -292,6 +313,63 @@ describe('URL Builder:', function describeSuite() {
                 result = client._signParams(path, '?w=400');
 
             assert.equal(expectation, result);
+        });
+    });
+
+    describe('Calling buildURL()', function describeSuite() {
+        var client,
+            path = 'images/1.png';
+
+        beforeEach(function setupClient() {
+            client = new ImgixClient({
+            domain: 'test.imgix.net',
+            includeLibraryParam: false
+            });
+        });
+
+        it('is an idempotent operation with empty args', function testSpec() {
+            var result1 = client.buildURL('', {});
+            var result2 = client.buildURL('', {});
+            assert.equal(result1, result2);
+        });
+
+
+        it('is an idempotent operation with args', function testSpec() {
+            var path = '/image/stöked.png';
+            var params = {w: 100};
+            var result1 = client.buildURL(path, params);
+            var result2 = client.buildURL(path, params);
+            var expected = 'https://test.imgix.net/image/st%C3%B6ked.png?w=100'
+            assert.equal(result1, expected);
+            assert.equal(result2, expected)
+        });
+
+
+        it('does not modify empty args', function testSpec() {
+            var path = '';
+            var params = {};
+            var result1 = client.buildURL(path, params);
+            var result2 = client.buildURL(path, params);
+            var expected = 'https://test.imgix.net/';
+
+
+            assert.equal(path, '');
+            assert.equal(expected, result1);
+            assert.equal(expected, result2)
+            assert(Object.keys(params).length === 0 && params.constructor === Object);
+        });
+
+        it('does not modify its args', function testSpec() {
+            var path = 'image/1.png';
+            var params = {w: 100};
+            var result1 = client.buildURL(path, params);
+            var result2 = client.buildURL(path, params);
+            var expected = 'https://test.imgix.net/image/1.png?w=100';
+
+            assert.equal(path, 'image/1.png');
+            assert.equal(result1, result2, expected);
+            assert(Object.keys(params).length === 1 && params.constructor === Object);
+            assert.equal(params.w, 100);
         });
     });
 });
