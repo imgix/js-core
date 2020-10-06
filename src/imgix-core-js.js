@@ -158,7 +158,7 @@
     };
 
     ImgixClient.prototype._buildSrcSetPairs = function(path, params, options) {
-      var srcset = '';
+      var srcset = [];
       var currentWidth;
       var targetWidths;
       var customWidths = options.widths;
@@ -183,14 +183,14 @@
       for (var i = 0; i < targetWidths.length; i++) {
         currentWidth = targetWidths[i];
         queryParams.w = currentWidth;
-        srcset += this.buildURL(path, queryParams) + ' ' + currentWidth + 'w,\n';
+        srcset.push(this.buildURL(path, queryParams) + ' ' + currentWidth + 'w')
       }
 
-      return srcset.slice(0,-2);
+      return srcset.join(',\n')
     };
 
     ImgixClient.prototype._buildDPRSrcSet = function(path, params, options) {
-        var srcset = '';
+        var srcset = [];
         var targetRatios = [1, 2, 3, 4, 5];
         var disableVariableQuality = options.disableVariableQuality || false;
 
@@ -213,11 +213,10 @@
           if (!disableVariableQuality) {
             queryParams.q = quality || DPR_QUALITIES[currentRatio];
           }
-
-          srcset += this.buildURL(path, queryParams) + ' ' + currentRatio + 'x,\n'
+          srcset.push(this.buildURL(path, queryParams) + ' ' + currentRatio + 'x')
         }
 
-        return srcset.slice(0,-2);
+        return srcset.join(',\n');
     };
 
     // a cache to store memoized srcset width-pairs
