@@ -230,17 +230,11 @@ describe('URL Builder:', function describeSuite() {
         });
 
         it('includes an `ixlib` param if the `libraryParam` setting is truthy', function testSpec() {
-            var params = {
-                    w: 400
-                },
-                expectation = '?ixlib=test&w=400',
-                result;
-
             client.settings.libraryParam = 'test';
 
-            result = client._buildParams(params);
+            var result = client._buildParams({});
 
-            assert.equal(expectation, result);
+            assert(result.match(/ixlib=test/));
         });
 
         it('url-encodes parameter keys properly', function testSpec() {
