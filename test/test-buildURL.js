@@ -224,23 +224,9 @@ describe('URL Builder:', function describeSuite() {
         });
 
         it('does not modify its input-argument', function testSpec() {
-            var params = {
-                    w: 400,
-                    h: 300
-                },
-                expectation = '?w=400&h=300',
-                result = client._buildParams(params);
-
-            assert.equal(params.w, 400);
-            assert.equal(params.h, 300);
-            assert.equal(expectation, result);
-
             var emptyParams = {};
             var emptyResult = client._buildParams(emptyParams);
-
-            // Ensure the result is empty.
-            assert.equal(emptyResult, '');
-            assert(Object.keys(emptyParams).length === 0 && emptyParams.constructor === Object);
+            assert(Object.keys(emptyParams).length === 0);
         });
 
         it('includes an `ixlib` param if the `libraryParam` setting is truthy', function testSpec() {
