@@ -1,12 +1,8 @@
 {
-    "compilerOptions": {
-        "target": "es2015",
-        "module": "umd",
-        "types": [
-            "node"
-        ]
-    },
-    "files": [
-        "src/imgix-core-js.d.ts"
-    ]
+  "compilerOptions": {
+    "target": "es5",
+    "module": "umd"
+  },
+  "files": ["src/imgix-core-js.d.ts"],
+  "exclude": ["node_modules/**", "../../node_modules/**"]
 }
