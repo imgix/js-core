@@ -14,7 +14,7 @@
   var Base64 = _jsBase64.Base64 || _jsBase64;
 
   // package version used in the ix-lib parameter
-  var VERSION = '2.3.1';
+  var VERSION = '2.3.2';
   // regex pattern used to determine if a domain is valid
   var DOMAIN_REGEX = /^(?:[a-z\d\-_]{1,62}\.){0,125}(?:[a-z\d](?:\-(?=\-*[a-z\d])|[a-z]|\d){0,62}\.)[a-z\d]{1,63}$/i;
   // minimum generated srcset width
@@ -107,11 +107,11 @@
     };
 
     ImgixClient.prototype._buildParams = function(params) {
+      var queryParams = [];
       if (this.settings.libraryParam) {
-        params.ixlib = this.settings.libraryParam
+        queryParams.push('ixlib=' + this.settings.libraryParam)
       }
 
-      var queryParams = [];
       var key, val, encodedKey, encodedVal;
       for (key in params) {
         val = params[key];
@@ -158,7 +158,7 @@
     };
 
     ImgixClient.prototype._buildSrcSetPairs = function(path, params, options) {
-      var srcset = '';
+      var srcset = [];
       var currentWidth;
       var targetWidths;
       var customWidths = options.widths;
@@ -174,38 +174,49 @@
         targetWidths = this._generateTargetWidths(widthTolerance, minWidth, maxWidth);
       }
 
-      for (var i = 0; i < targetWidths.length; i++) {
-        currentWidth = targetWidths[i];
-        params.w = currentWidth;
-        srcset += this.buildURL(path, params) + ' ' + currentWidth + 'w,\n';
+      var key;
+      var queryParams = {};
+      for (key in params) {
+        queryParams[key] = params[key];
       }
 
-      return srcset.slice(0,-2);
+      for (var i = 0; i < targetWidths.length; i++) {
+        currentWidth = targetWidths[i];
+        queryParams.w = currentWidth;
+        srcset.push(this.buildURL(path, queryParams) + ' ' + currentWidth + 'w')
+      }
+
+      return srcset.join(',\n')
     };
 
     ImgixClient.prototype._buildDPRSrcSet = function(path, params, options) {
-        var srcset = '';
+        var srcset = [];
         var targetRatios = [1, 2, 3, 4, 5];
-        var currentRatio;
         var disableVariableQuality = options.disableVariableQuality || false;
-        var quality = params.q;
+
+        var key;
+        var queryParams = {};
+        for (key in params) {
+          queryParams[key] = params[key];
+        }
+
+        var quality = queryParams.q;
 
         if (!disableVariableQuality) {
           validateVariableQuality(disableVariableQuality);
         }
 
         for (var i = 0; i < targetRatios.length; i++) {
-          currentRatio = targetRatios[i];
-          params.dpr = currentRatio;
+          var currentRatio = targetRatios[i];
+          queryParams.dpr = currentRatio;
 
           if (!disableVariableQuality) {
-            params.q = quality || DPR_QUALITIES[currentRatio];
+            queryParams.q = quality || DPR_QUALITIES[currentRatio];
           }
-
-          srcset += this.buildURL(path, params) + ' ' + currentRatio + 'x,\n'
+          srcset.push(this.buildURL(path, queryParams) + ' ' + currentRatio + 'x')
         }
 
-        return srcset.slice(0,-2);
+        return srcset.join(',\n');
     };
 
     // a cache to store memoized srcset width-pairs

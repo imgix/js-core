@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.2](https://github.com/imgix/imgix-core-js/compare/2.3.1...2.3.2) (2020-10-12)
+
+* fix(buildURL): ensure operation is idempotent ([#168](https://github.com/imgix/imgix-core-js/pull/168))
+
 ## [2.3.1](https://github.com/imgix/imgix-core-js/compare/2.3.0...2.3.1) (2019-03-10)
 
 * fix: add missing variable declarations ([#121](https://github.com/imgix/imgix-core-js/pull/121))
