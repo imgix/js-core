@@ -23,6 +23,6 @@
     "mocha": "6.2.2",
     "sinon": "9.2.0",
     "typescript": "4.0.3",
-    "uglify-js": "3.11.3"
+    "uglify-js": "3.11.4"
   }
 }
