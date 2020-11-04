@@ -243,10 +243,26 @@
         return 2 * Math.round(n / 2);
       };
 
+      // Calculate the (probably non-integer) number of increments we'd make
+      // with the requested width tolerance to get from minWidth to maxWidth,
+      // and round it up to ensure the tolerance will be met or beaten.
+      // This formula is found by solving for numSteps the following identity:
+      //   minWidth * INCREMENT_RATIO ** numSteps == maxWidth
+      var numSteps = Math.ceil(Math.log(maxWidth / minWidth) / Math.log(INCREMENT_RATIO));
+
+      // Calculate an adjusted value for INCREMENT_RATIO
+      // such that numSteps would be an integer without the rounding used above.
+      // This is found by solving the same identity as above,
+      // but this time for INCREMENT_RATIO.
+      var adjustedIncrementRatio = Math.pow(maxWidth / minWidth, 1 / numSteps);
+      // Note that this will be NaN if numSteps was zero,
+      // but this is only when minWidth and maxWidth are equal,
+      // in which case adjustedIncrementRatio will not be used.
+
       var exact = minWidth;
       while (resolutions[resolutions.length - 1] < maxWidth) {
-        exact *= INCREMENT_RATIO;
-        resolutions.push(Math.min(ensureEven(exact), maxWidth));
+        exact *= adjustedIncrementRatio;
+        resolutions.push(Math.round(exact) === maxWidth ? maxWidth : ensureEven(exact));
       }
 
       this.targetWidthsCache[cacheKey] = resolutions;

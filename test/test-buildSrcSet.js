@@ -21,10 +21,10 @@ describe('SrcSet Builder:', function describeSuite() {
                 });
 
                 it('should generate the expected default srcset pair values', function testSpec(){
-                    resolutions = [100, 116, 134, 156, 182, 210, 244, 282,
-                                    328, 380, 442, 512, 594, 688, 798, 926,
-                                    1074, 1246, 1446, 1678, 1946, 2258, 2618,
-                                    3038, 3524, 4088, 4742, 5500, 6380, 7400, 8192];
+                    resolutions = [100, 116, 134, 156, 180, 208, 242, 280,
+                                    324, 374, 434, 504, 582, 674, 782, 906,
+                                    1048, 1214, 1406, 1628, 1886, 2184, 2530,
+                                    2930, 3394, 3930, 4552, 5272, 6108, 7074, 8192];
                     srclist = srcset.split(",");
                     src = srclist.map(function (srcline){
                         return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
@@ -206,10 +206,10 @@ describe('SrcSet Builder:', function describeSuite() {
                 }).buildSrcSet('image.jpg', {h:100});
 
                 it('should generate the expected default srcset pair values', function testSpec(){
-                    resolutions = [100, 116, 134, 156, 182, 210, 244, 282,
-                                    328, 380, 442, 512, 594, 688, 798, 926,
-                                    1074, 1246, 1446, 1678, 1946, 2258, 2618,
-                                    3038, 3524, 4088, 4742, 5500, 6380, 7400, 8192];
+                    resolutions = [100, 116, 134, 156, 180, 208, 242, 280,
+                                    324, 374, 434, 504, 582, 674, 782, 906,
+                                    1048, 1214, 1406, 1628, 1886, 2184, 2530,
+                                    2930, 3394, 3930, 4552, 5272, 6108, 7074, 8192];
                     srclist = srcset.split(",");
                     src = srclist.map(function (srcline){
                         return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
@@ -416,10 +416,10 @@ describe('SrcSet Builder:', function describeSuite() {
                 });
 
                 it('should generate the expected default srcset pair values', function testSpec(){
-                    resolutions = [100, 116, 134, 156, 182, 210, 244, 282,
-                                    328, 380, 442, 512, 594, 688, 798, 926,
-                                    1074, 1246, 1446, 1678, 1946, 2258, 2618,
-                                    3038, 3524, 4088, 4742, 5500, 6380, 7400, 8192];
+                    resolutions = [100, 116, 134, 156, 180, 208, 242, 280,
+                                    324, 374, 434, 504, 582, 674, 782, 906,
+                                    1048, 1214, 1406, 1628, 1886, 2184, 2530,
+                                    2930, 3394, 3930, 4552, 5272, 6108, 7074, 8192];
                     srclist = srcset.split(",");
                     src = srclist.map(function (srcline){
                         return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
@@ -701,7 +701,7 @@ describe('SrcSet Builder:', function describeSuite() {
                 });
 
                 it('should generate the expected default srcset pair values', function testSpec(){
-                    resolutions = [500, 580, 672, 780, 906, 1050, 1218, 1414, 1640, 1902, 2000];
+                    resolutions = [500, 574, 660, 758, 870, 1000, 1148, 1320, 1516, 1742, 2000];
                     srclist = srcset.split(",");
                     src = srclist.map(function (srcline){
                         return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
@@ -821,7 +821,7 @@ describe('SrcSet Builder:', function describeSuite() {
                 });
 
                 it('should generate the expected default srcset pair values', function testSpec(){
-                    resolutions = [100, 140, 196, 274, 384, 538, 752, 1054, 1476, 2066, 2892, 4050, 5670, 7938, 8192];
+                    resolutions = [100, 136, 188, 258, 352, 482, 660, 906, 1240, 1698, 2326, 3186, 4366, 5980, 8192];
                     srclist = srcset.split(",");
                     src = srclist.map(function (srcline){
                         return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
@@ -959,12 +959,34 @@ describe('SrcSet Builder:', function describeSuite() {
                     domain: 'testing.imgix.net',
                     includeLibraryParam: false
                 })
-                var srcset = client.buildSrcSet('image.jpg', {}, {widthTolerance: 0.0999, minWidth: 1000, maxWidth: 1200});
 
                 it('should not repeat the largest width', function testSpec() {
+                    // This failed before the increment ratio logic changed
+                    var srcset = client.buildSrcSet('image.jpg', {}, {widthTolerance: 0.0999, minWidth: 1000, maxWidth: 1200});
                     var srclist = srcset.split(",");
                     assert.equal(parseInt(srclist[srclist.length - 1].split(" ")[1].slice(0,-1), 10), 1200);
                     assert.notEqual(srclist[srclist.length - 2], srclist[srclist.length - 1]);
+
+                    // The following case leads to 1439.999... being produced at
+                    // the last step (presumably due to floating point error),
+                    // and so would fail if rounding is not performed during the
+                    // check against maxWidth
+                    srcset = client.buildSrcSet('image.jpg', {}, {widthTolerance: 0.1, minWidth: 320, maxWidth: 1440});
+                    srclist = srcset.split(",");
+                    assert.equal(parseInt(srclist[srclist.length - 1].split(" ")[1].slice(0,-1), 10), 1440);
+                    assert.notEqual(srclist[srclist.length - 2], srclist[srclist.length - 1]);
+                });
+
+                it('correctly handles an odd maxWidth', function testSpec() {
+                    var srcset = client.buildSrcSet('image.jpg', {}, {minWidth: 1000, maxWidth: 1001});
+                    resolutions = [1000, 1001];
+                    var srclist = srcset.split(",");
+                    src = srclist.map(function (srcline){
+                        return parseInt(srcline.split(" ")[1].slice(0,-1), 10);
+                    });
+                    for (var i = 0; i < srclist.length; i++) {
+                        assert.equal(src[i], resolutions[i]);
+                    }
                 });
             });
         });

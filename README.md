@@ -170,7 +170,7 @@ https://testing.imgix.net/image.jpg?w=100&s=e2e581a39c917bdee50b2f8689c30893 100
 https://testing.imgix.net/image.jpg?w=116&s=836e0bc15da2ad74af8130d93a0ebda6 116w,
 https://testing.imgix.net/image.jpg?w=134&s=688416d933381acda1f57068709aab79 134w,
                                             ...
-https://testing.imgix.net/image.jpg?w=7400&s=91779d82a0e1ac16db04c522fa4017e5 7400w,
+https://testing.imgix.net/image.jpg?w=7074&s=91779d82a0e1ac16db04c522fa4017e5 7074w,
 https://testing.imgix.net/image.jpg?w=8192&s=59eb881b618fed314fe30cf9e3ec7b00 8192w
 ```
 
@@ -259,11 +259,10 @@ console.log(srcset);
 In this case, the `width_tolerance` is set to 20 percent, which will be reflected in the difference between subsequent widths in a srcset pair:
 
 <!-- prettier-ignore-start -->
-
 ```html
 https://testing.imgix.net/image.jpg?w=100 100w,
-https://testing.imgix.net/image.jpg?w=140 140w,
-https://testing.imgix.net/image.jpg?w=196 196w,
+https://testing.imgix.net/image.jpg?w=136 136w,
+https://testing.imgix.net/image.jpg?w=188 188w,
 							...
 https://testing.imgix.net/image.jpg?w=8192 8192w
 ```
@@ -292,16 +291,16 @@ Will result in a smaller, more tailored srcset.
 
 ```html
 https://testing.imgix.net/image.jpg?w=500 500w,
-https://testing.imgix.net/image.jpg?w=580 580w,
-https://testing.imgix.net/image.jpg?w=672 672w,
-https://testing.imgix.net/image.jpg?w=780 780w,
-https://testing.imgix.net/image.jpg?w=906 906w,
-https://testing.imgix.net/image.jpg?w=1050 1050w,
-https://testing.imgix.net/image.jpg?w=1218 1218w,
-https://testing.imgix.net/image.jpg?w=1414 1414w,
-https://testing.imgix.net/image.jpg?w=1640 1640w,
-https://testing.imgix.net/image.jpg?w=1902 1902w,
-https://testing.imgix.net/image.jpg?w=2000 2000w
+https://testing.imgix.net/image.jpg?w=574 574w,
+https://testing.imgix.net/image.jpg?w=660 660w,
+https://testing.imgix.net/image.jpg?w=758 758w,
+https://testing.imgix.net/image.jpg?w=870 870w,
+https://testing.imgix.net/image.jpg?w=1000 1000w,
+https://testing.imgix.net/image.jpg?w=1148 1148w,
+https://testing.imgix.net/image.jpg?w=1320 1320w,
+https://testing.imgix.net/image.jpg?w=1516 1516w,
+https://testing.imgix.net/image.jpg?w=1742 1742w,
+https://testing.imgix.net/image.jpg?w=2000 2000w,
 ```
 
 Remember that browsers will apply a device pixel ratio as a multiplier when selecting which image to download from a `srcset`. For example, even if you know your image will render no larger than 1000px, specifying `options: { max_srcset: 1000 }` will give your users with DPR higher than 1 no choice but to download and render a low-resolution version of the image. Therefore, it is vital to factor in any potential differences when choosing a minimum or maximum range.
