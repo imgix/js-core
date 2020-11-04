@@ -12,11 +12,11 @@ Please use the checklist that is most closely related to your PR, and delete the
 
 ## Checklist: Fixing typos/Doc change
 
-- [ ] Each commit follows the [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/#summary) format: e.g. `chore(readme): fixed typo`. See the end of this file for more information.
+- [ ] Each commit follows the [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/#summary) format: e.g. `chore(readme): fix typo`. See the end of this file for more information.
 
 ## Checklist: Bug Fix
 
-- [ ] Each commit follows the [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/#summary) format: e.g. `chore(readme): fixed typo`. See the end of this file for more information.
+- [ ] Each commit follows the [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/#summary) format: e.g. `chore(readme): fix typo`. See the end of this file for more information.
 - [ ] All existing unit tests are still passing (if applicable)
 - [ ] Add new passing unit tests to cover the code introduced by your PR
 - [ ] Update the readme
@@ -25,7 +25,7 @@ Please use the checklist that is most closely related to your PR, and delete the
 
 ## Checklist: New Feature
 
-- [ ] Each commit follows the [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/#summary) format: e.g. `chore(readme): fixed typo`. See the end of this file for more information.
+- [ ] Each commit follows the [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/#summary) format: e.g. `chore(readme): fix typo`. See the end of this file for more information.
 - [ ] Any breaking changes are specified on the commit on which they are introduced with `BREAKING CHANGE` in the body of the commit.
 - [ ] If this is a big feature with breaking changes, consider [opening an issue](https://github.com/imgix/imgix-core-js/issues/new?assignees=&labels=&template=feature_request.md&title=) to discuss first. This is completely up to you, but please keep in mind that your PR might not be accepted.
 - [ ] Run unit tests to ensure all existing tests are still passing
