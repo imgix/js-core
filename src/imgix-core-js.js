@@ -225,7 +225,7 @@
     // returns an array of width values used during scrset generation
     ImgixClient.prototype._generateTargetWidths = function(widthTolerance, minWidth, maxWidth) {
       var resolutions = [minWidth];
-      var INCREMENT_PERCENTAGE = widthTolerance;
+      var INCREMENT_RATIO = 1 + (widthTolerance * 2);
       var minWidth = Math.floor(minWidth);
       var maxWidth = Math.floor(maxWidth);
 
@@ -233,7 +233,7 @@
         return resolutions;
       }
 
-      var cacheKey = INCREMENT_PERCENTAGE + '/' + minWidth + '/' + maxWidth;
+      var cacheKey = widthTolerance + '/' + minWidth + '/' + maxWidth;
 
       if (cacheKey in this.targetWidthsCache) {
         return this.targetWidthsCache[cacheKey];
@@ -245,7 +245,7 @@
 
       var exact = minWidth;
       while (resolutions[resolutions.length - 1] < maxWidth) {
-        exact *= 1 + (INCREMENT_PERCENTAGE * 2);
+        exact *= INCREMENT_RATIO;
         resolutions.push(Math.min(ensureEven(exact), maxWidth));
       }
 
