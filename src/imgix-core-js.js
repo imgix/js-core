@@ -244,10 +244,10 @@
         return 2 * Math.round(n / 2);
       };
 
-      var exact = minWidth;
+      var tempWidth = minWidth;
       while (resolutions[resolutions.length - 1] < maxWidth) {
-        exact *= 1 + (INCREMENT_PERCENTAGE * 2);
-        resolutions.push(Math.min(ensureEven(exact), maxWidth));
+        tempWidth *= 1 + (INCREMENT_PERCENTAGE * 2);
+        resolutions.push(Math.min(ensureEven(tempWidth), maxWidth));
       }
 
       this.targetWidthsCache[cacheKey] = resolutions;
