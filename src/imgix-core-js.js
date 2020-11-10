@@ -224,10 +224,11 @@
 
     // returns an array of width values used during scrset generation
     ImgixClient.prototype._generateTargetWidths = function(widthTolerance, minWidth, maxWidth) {
-      var resolutions = [minWidth];
       var INCREMENT_PERCENTAGE = widthTolerance;
       var minWidth = Math.floor(minWidth);
       var maxWidth = Math.floor(maxWidth);
+
+      var resolutions = [minWidth];
 
       if (minWidth === maxWidth) {
         return resolutions;
