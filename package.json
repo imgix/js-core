@@ -1,28 +1,33 @@
 {
   "name": "imgix-core-js",
-  "description": "Common boilerplate for all imgix JavaScript-based functionality.",
-  "version": "2.3.2",
+  "description": "Core imgix URL and srcset builder library.",
+  "version": "3.0.0",
   "repository": "https://github.com/imgix/imgix-core-js",
-  "scripts": {
-    "assert_version": "node assert_version.js",
-    "compile": "mkdir -p dist && uglifyjs ./src/imgix-core-js.js -o ./dist/imgix-core-js.min.js && cp ./src/imgix-core-js.js ./dist/imgix-core-js.js && cp ./src/imgix-core-js.d.ts ./dist/imgix-core-js.d.ts && tsc",
-    "prepublish": "npm run compile && npm run assert_version",
-    "test": "mocha",
-    "test:watch": "mocha --watch",
-    "test:performance": "mocha test/performance/*.js"
-  },
-  "main": "dist/imgix-core-js.js",
-  "types": "dist/imgix-core-js.d.ts",
+  "license": "BSD-2-Clause",
+  "main": "dist/imgix-core-js.cjs.js",
+  "module": "dist/imgix-core-js.esm.js",
+  "browser": "dist/imgix-core-js.umd.js",
+  "type": "module",
   "dependencies": {
-    "js-base64": "^2.1.9",
+    "js-base64": "~2.6.0",
     "md5": "^2.2.1"
   },
-  "license": "BSD-2-Clause",
   "devDependencies": {
-    "benchmark": "2.1.4",
-    "mocha": "6.2.2",
-    "sinon": "9.2.1",
-    "typescript": "4.0.5",
-    "uglify-js": "3.11.6"
-  }
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "mocha": "^8.2.1",
+    "rollup": "^1.0.0",
+    "rollup-plugin-babel": "^4.2.0",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^4.0.0"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "mocha",
+    "pretest": "npm run build"
+  },
+  "files": [
+    "dist"
+  ]
 }
