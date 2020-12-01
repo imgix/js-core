@@ -953,6 +953,20 @@ describe('SrcSet Builder:', function describeSuite() {
                     }, Error);
                 });
             });
+
+            describe('with widthTolerance, minWidth, and maxWidth values which have caused duplicate values in the past', function describeSuite() {
+                var client = new ImgixClient({
+                    domain: 'testing.imgix.net',
+                    includeLibraryParam: false
+                })
+                var srcset = client.buildSrcSet('image.jpg', {}, {widthTolerance: 0.0999, minWidth: 1000, maxWidth: 1200});
+
+                it('should not repeat the largest width when a running value just below maxWidth is reached', function testSpec() {
+                    var srclist = srcset.split(",");
+                    assert.equal(parseInt(srclist[srclist.length - 1].split(" ")[1].slice(0,-1), 10), 1200);
+                    assert.notEqual(srclist[srclist.length - 2], srclist[srclist.length - 1]);
+                });
+            });
         });
     });
 });
