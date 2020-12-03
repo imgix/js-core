@@ -5,15 +5,16 @@ import {
 } from './constants.js';
 
 export function validateAndDestructureOptions(options) {
+  let widthTolerance;
   if (options.widthTolerance !== undefined) {
     validateWidthTolerance(options.widthTolerance);
-    var widthTolerance = options.widthTolerance;
+    widthTolerance = options.widthTolerance;
   } else {
-    var widthTolerance = DEFAULT_SRCSET_WIDTH_TOLERANCE;
+    widthTolerance = DEFAULT_SRCSET_WIDTH_TOLERANCE;
   }
 
-  var minWidth = options.minWidth === undefined ? MIN_SRCSET_WIDTH : options.minWidth;
-  var maxWidth = options.maxWidth === undefined ? MAX_SRCSET_WIDTH : options.maxWidth;
+  const minWidth = options.minWidth === undefined ? MIN_SRCSET_WIDTH : options.minWidth;
+  const maxWidth = options.maxWidth === undefined ? MAX_SRCSET_WIDTH : options.maxWidth;
 
   // Validate the range unless we're using defaults for both
   if (minWidth != MIN_SRCSET_WIDTH || maxWidth != MAX_SRCSET_WIDTH) {
@@ -39,7 +40,7 @@ export function validateWidths(customWidths) {
   if (!Array.isArray(customWidths) || !customWidths.length) {
     throw new Error('The widths argument can only be passed a valid non-empty array of integers');
   } else {
-    var allPositiveIntegers = customWidths.every(
+    const allPositiveIntegers = customWidths.every(
       function (width) {
         return Number.isInteger(width) && width > 0
       }
