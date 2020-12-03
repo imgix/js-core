@@ -1,7 +1,7 @@
 {
   "name": "imgix-core-js",
   "description": "Core imgix URL and srcset builder library.",
-  "version": "3.0.0",
+  "version": "2.3.2",
   "repository": "https://github.com/imgix/imgix-core-js",
   "license": "BSD-2-Clause",
   "main": "dist/imgix-core-js.cjs.js",
