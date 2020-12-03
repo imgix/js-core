@@ -18,7 +18,7 @@ import {
 
 export default class ImgixClient {
   constructor(opts = {}) {
-    let settings = Object.assign({}, DEFAULT_OPTIONS);
+    const settings = Object.assign({}, DEFAULT_OPTIONS);
     this.settings = Object.assign(settings, opts);
     // a cache to store memoized srcset width-pairs
     this.targetWidthsCache = {};
@@ -43,25 +43,25 @@ export default class ImgixClient {
   buildURL(path = '', params = {}) {
     const sanitizedPath = this._sanitizePath(path);
 
-    let queryParams = this._buildParams(params);
+    const queryParams = this._buildParams(params);
     if (!!this.settings.secureURLToken) {
-      let securedParams = this._signParams(sanitizedPath, queryParams);
+      const securedParams = this._signParams(sanitizedPath, queryParams);
       return this.settings.urlPrefix + this.settings.domain + sanitizedPath + securedParams;
     }
     return this.settings.urlPrefix + this.settings.domain + sanitizedPath + queryParams;
   }
 
   _buildParams(params = {}) {
-    let queryParams = [];
+    const queryParams = [];
     if (this.settings.libraryParam) {
       queryParams.push('ixlib=' + this.settings.libraryParam)
     }
 
-    let key, val, encodedKey, encodedVal;
-    for (key in params) {
-      val = params[key];
-      encodedKey = encodeURIComponent(key);
+    for (const key in params) {
+      const val = params[key];
+      const encodedKey = encodeURIComponent(key);
 
+      let encodedVal;
       if (key.substr(-2) === '64') {
         encodedVal = Base64.encodeURI(val);
       } else {
@@ -77,8 +77,8 @@ export default class ImgixClient {
   }
 
   _signParams(path, queryParams) {
-    var signatureBase = this.settings.secureURLToken + path + queryParams;
-    var signature = md5(signatureBase);
+    const signatureBase = this.settings.secureURLToken + path + queryParams;
+    const signature = md5(signatureBase);
 
     if (queryParams.length > 0) {
       return queryParams = queryParams + "&s=" + signature;
@@ -105,11 +105,11 @@ export default class ImgixClient {
   }
 
   buildSrcSet(path, params, options) {
-    let _options = options || {};
-    let _params = params || {};
-    let width = _params.w;
-    let height = _params.h;
-    let aspectRatio = _params.ar;
+    const _options = options || {};
+    const _params = params || {};
+    const width = _params.w;
+    const height = _params.h;
+    const aspectRatio = _params.ar;
 
     if ((width) || (height && aspectRatio)) {
       return this._buildDPRSrcSet(path, _params, _options);
@@ -119,13 +119,13 @@ export default class ImgixClient {
   }
 
   _buildSrcSetPairs(path, params, options) {
-    let srcsetOptions = validateAndDestructureOptions(options);
-    let srcset = [];
-    let currentWidth;
-    let targetWidths;
-    let customWidths = options.widths;
-    let widthTolerance = srcsetOptions[0], minWidth = srcsetOptions[1], maxWidth = srcsetOptions[2];
+    const srcsetOptions = validateAndDestructureOptions(options);
+    const srcset = [];
+    const customWidths = options.widths;
+    const widthTolerance = srcsetOptions[0], minWidth = srcsetOptions[1], maxWidth = srcsetOptions[2];
 
+
+    let targetWidths;
     if (customWidths) {
       validateWidths(customWidths);
       targetWidths = customWidths;
@@ -135,14 +135,13 @@ export default class ImgixClient {
       targetWidths = this._generateTargetWidths(widthTolerance, minWidth, maxWidth);
     }
 
-    var key;
-    var queryParams = {};
-    for (key in params) {
+    let queryParams = {};
+    for (const key in params) {
       queryParams[key] = params[key];
     }
 
-    for (var i = 0; i < targetWidths.length; i++) {
-      currentWidth = targetWidths[i];
+    for (let i = 0; i < targetWidths.length; i++) {
+      const currentWidth = targetWidths[i];
       queryParams.w = currentWidth;
       srcset.push(this.buildURL(path, queryParams) + ' ' + currentWidth + 'w')
     }
@@ -151,24 +150,22 @@ export default class ImgixClient {
   };
 
   _buildDPRSrcSet(path, params, options) {
-    let srcset = [];
-    let targetRatios = [1, 2, 3, 4, 5];
-    let disableVariableQuality = options.disableVariableQuality || false;
+    const srcset = [];
+    const targetRatios = [1, 2, 3, 4, 5];
+    const disableVariableQuality = options.disableVariableQuality || false;
 
-    var key;
-    var queryParams = {};
-    for (key in params) {
+    const queryParams = {};
+    for (const key in params) {
       queryParams[key] = params[key];
     }
 
-    let quality = queryParams.q;
-
+    const quality = queryParams.q;
     if (!disableVariableQuality) {
       validateVariableQuality(disableVariableQuality);
     }
 
     for (let i = 0; i < targetRatios.length; i++) {
-      let currentRatio = targetRatios[i];
+      const currentRatio = targetRatios[i];
       queryParams.dpr = currentRatio;
 
       if (!disableVariableQuality) {
@@ -182,21 +179,21 @@ export default class ImgixClient {
 
   // returns an array of width values used during scrset generation
   _generateTargetWidths(widthTolerance, minWidth, maxWidth) {
-    let resolutions = [];
-    let INCREMENT_PERCENTAGE = widthTolerance;
-    let _minWidth = Math.floor(minWidth);
-    let _maxWidth = Math.floor(maxWidth);
-    let cacheKey = INCREMENT_PERCENTAGE + '/' + _minWidth + '/' + _maxWidth;
+    const resolutions = [];
+    const INCREMENT_PERCENTAGE = widthTolerance;
+    const _minWidth = Math.floor(minWidth);
+    const _maxWidth = Math.floor(maxWidth);
+    const cacheKey = INCREMENT_PERCENTAGE + '/' + _minWidth + '/' + _maxWidth;
 
     if (cacheKey in this.targetWidthsCache) {
       return this.targetWidthsCache[cacheKey];
     }
 
-    let ensureEven = (n) => {
+    const ensureEven = (n) => {
       return 2 * Math.round(n / 2);
     };
 
-    var prev = _minWidth;
+    let prev = _minWidth;
     while (prev < _maxWidth) {
       resolutions.push(ensureEven(prev));
       prev *= 1 + (INCREMENT_PERCENTAGE * 2);
