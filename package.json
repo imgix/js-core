@@ -28,6 +28,8 @@
     "pretest": "npm run build"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "src"
   ]
 }
