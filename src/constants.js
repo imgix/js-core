@@ -18,7 +18,7 @@ export const DPR_QUALITIES = {
   5: 20
 };
 
-export const DEFAULTS = {
+export const DEFAULT_OPTIONS = {
   domain: null,
   useHTTPS: true,
   includeLibraryParam: true,

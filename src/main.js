@@ -4,7 +4,7 @@ import { Base64 } from 'js-base64';
 import {
   VERSION,
   DOMAIN_REGEX,
-  DEFAULTS,
+  DEFAULT_OPTIONS,
   DPR_QUALITIES
 } from './constants.js';
 
@@ -18,7 +18,7 @@ import {
 
 export default class ImgixClient {
   constructor(opts = {}) {
-    let settings = Object.assign({}, DEFAULTS);
+    let settings = Object.assign({}, DEFAULT_OPTIONS);
     this.settings = Object.assign(settings, opts);
     // a cache to store memoized srcset width-pairs
     this.targetWidthsCache = {};

@@ -586,7 +586,7 @@
     4: 23,
     5: 20
   };
-  var DEFAULTS = {
+  var DEFAULT_OPTIONS = {
     domain: null,
     useHTTPS: true,
     includeLibraryParam: true,
@@ -646,7 +646,7 @@
 
       _classCallCheck(this, ImgixClient);
 
-      var settings = Object.assign({}, DEFAULTS);
+      var settings = Object.assign({}, DEFAULT_OPTIONS);
       this.settings = Object.assign(settings, opts); // a cache to store memoized srcset width-pairs
 
       this.targetWidthsCache = {};
