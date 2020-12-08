@@ -50,11 +50,13 @@ var DEFAULT_OPTIONS = {
 };
 
 function validateAndDestructureOptions(options) {
+  var widthTolerance;
+
   if (options.widthTolerance !== undefined) {
     validateWidthTolerance(options.widthTolerance);
-    var widthTolerance = options.widthTolerance;
+    widthTolerance = options.widthTolerance;
   } else {
-    var widthTolerance = DEFAULT_SRCSET_WIDTH_TOLERANCE;
+    widthTolerance = DEFAULT_SRCSET_WIDTH_TOLERANCE;
   }
 
   var minWidth = options.minWidth === undefined ? MIN_SRCSET_WIDTH : options.minWidth;
@@ -149,11 +151,10 @@ var ImgixClient = /*#__PURE__*/function () {
         queryParams.push('ixlib=' + this.settings.libraryParam);
       }
 
-      var key, val, encodedKey, encodedVal;
-
-      for (key in params) {
-        val = params[key];
-        encodedKey = encodeURIComponent(key);
+      for (var key in params) {
+        var val = params[key];
+        var encodedKey = encodeURIComponent(key);
+        var encodedVal = void 0;
 
         if (key.substr(-2) === '64') {
           encodedVal = Base64.encodeURI(val);
@@ -222,12 +223,11 @@ var ImgixClient = /*#__PURE__*/function () {
     value: function _buildSrcSetPairs(path, params, options) {
       var srcsetOptions = validateAndDestructureOptions(options);
       var srcset = [];
-      var currentWidth;
-      var targetWidths;
       var customWidths = options.widths;
       var widthTolerance = srcsetOptions[0],
           minWidth = srcsetOptions[1],
           maxWidth = srcsetOptions[2];
+      var targetWidths;
 
       if (customWidths) {
         validateWidths(customWidths);
@@ -238,15 +238,14 @@ var ImgixClient = /*#__PURE__*/function () {
         targetWidths = this._generateTargetWidths(widthTolerance, minWidth, maxWidth);
       }
 
-      var key;
       var queryParams = {};
 
-      for (key in params) {
+      for (var key in params) {
         queryParams[key] = params[key];
       }
 
       for (var i = 0; i < targetWidths.length; i++) {
-        currentWidth = targetWidths[i];
+        var currentWidth = targetWidths[i];
         queryParams.w = currentWidth;
         srcset.push(this.buildURL(path, queryParams) + ' ' + currentWidth + 'w');
       }
@@ -259,10 +258,9 @@ var ImgixClient = /*#__PURE__*/function () {
       var srcset = [];
       var targetRatios = [1, 2, 3, 4, 5];
       var disableVariableQuality = options.disableVariableQuality || false;
-      var key;
       var queryParams = {};
 
-      for (key in params) {
+      for (var key in params) {
         queryParams[key] = params[key];
       }
 
