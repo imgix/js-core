@@ -26,7 +26,7 @@
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "test": "mocha --require @babel/register",
+    "test": "mocha test/ --require @babel/register",
     "pretest": "npm run build"
   },
   "files": [
