@@ -44,5 +44,41 @@ export default [
         exclude: ['node_modules/**']
       })
     ]
+  },
+  {
+    input: 'test/test-buildURL.js',
+    external: ['md5', 'js-base64'],
+    output: [
+      { file: 'test/test-buildURL.cjs', format: 'cjs' },
+    ],
+    plugins: [
+      babel({
+        exclude: ['node_modules/**']
+      })
+    ]
+  },
+  {
+    input: 'test/test-client.js',
+    external: ['md5', 'js-base64'],
+    output: [
+      { file: 'test/test-client.cjs', format: 'cjs' },
+    ],
+    plugins: [
+      babel({
+        exclude: ['node_modules/**']
+      })
+    ]
+  },
+  {
+    input: 'test/test-validators.js',
+    external: ['md5', 'js-base64'],
+    output: [
+      { file: 'test/test-validators.cjs', format: 'cjs' },
+    ],
+    plugins: [
+      babel({
+        exclude: ['node_modules/**']
+      })
+    ]
   }
 ];
