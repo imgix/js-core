@@ -1,4 +1,4 @@
-import crypto from 'crypto-js';
+import md5 from 'md5';
 import assert from 'assert';
 import ImgixClient from '../src/main.js';
 
@@ -96,7 +96,7 @@ describe('SrcSet Builder:', function describeSuite() {
                             param = param.slice(0, param.indexOf('s=') - 1);
                             let generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
                             let signatureBase = 'MYT0KEN' + path + param;
-                            let expected_signature = crypto.MD5(signatureBase).toString();
+                            let expected_signature = md5(signatureBase).toString();
 
                             assert.strictEqual(expected_signature, generated_signature);
                         });
@@ -141,7 +141,7 @@ describe('SrcSet Builder:', function describeSuite() {
                             param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
                             let generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
                             let signatureBase = 'MYT0KEN' + path + param;
-                            let expected_signature = crypto.MD5(signatureBase).toString();
+                            let expected_signature = md5(signatureBase).toString();
 
                             assert.strictEqual(expected_signature, generated_signature);
                         });
@@ -282,7 +282,7 @@ describe('SrcSet Builder:', function describeSuite() {
                             param = param.slice(0, param.indexOf('s=') - 1);
                             let generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
                             let signatureBase = 'MYT0KEN' + path + param;
-                            let expected_signature = crypto.MD5(signatureBase).toString();
+                            let expected_signature = md5(signatureBase).toString();
 
                             assert.strictEqual(expected_signature, generated_signature);
                         });
@@ -327,7 +327,7 @@ describe('SrcSet Builder:', function describeSuite() {
                             param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
                             let generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
                             let signatureBase = 'MYT0KEN' + path + param;
-                            let expected_signature = crypto.MD5(signatureBase).toString();
+                            let expected_signature = md5(signatureBase).toString();
 
                             assert.strictEqual(expected_signature, generated_signature);
                         });
@@ -477,7 +477,7 @@ describe('SrcSet Builder:', function describeSuite() {
                             param = param.slice(0, param.indexOf('s=') - 1);
                             let generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
                             let signatureBase = 'MYT0KEN' + path + param;
-                            let expected_signature = crypto.MD5(signatureBase).toString();
+                            let expected_signature = md5(signatureBase).toString();
 
                             assert.strictEqual(expected_signature, generated_signature);
                         });
@@ -522,7 +522,7 @@ describe('SrcSet Builder:', function describeSuite() {
                             param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
                             let generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
                             let signatureBase = 'MYT0KEN' + path + param;
-                            let expected_signature = crypto.MD5(signatureBase).toString();
+                            let expected_signature = md5(signatureBase).toString();
 
                             assert.strictEqual(expected_signature, generated_signature);
                         });
@@ -611,7 +611,7 @@ describe('SrcSet Builder:', function describeSuite() {
                             let param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
                             let generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
                             let signatureBase = 'MYT0KEN' + path + param;
-                            let expected_signature = crypto.MD5(signatureBase).toString();
+                            let expected_signature = md5(signatureBase).toString();
 
                             assert.strictEqual(expected_signature, generated_signature);
                         });

@@ -2,9 +2,8 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var crypto = _interopDefault(require('crypto-js'));
-var assert = _interopDefault(require('assert'));
 var md5 = _interopDefault(require('md5'));
+var assert = _interopDefault(require('assert'));
 var jsBase64 = require('js-base64');
 
 function _classCallCheck(instance, Constructor) {
@@ -396,7 +395,7 @@ describe('SrcSet Builder:', function describeSuite() {
             param = param.slice(0, param.indexOf('s=') - 1);
             var generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
             var signatureBase = 'MYT0KEN' + path + param;
-            var expected_signature = crypto.MD5(signatureBase).toString();
+            var expected_signature = md5(signatureBase).toString();
             assert.strictEqual(expected_signature, generated_signature);
           });
         });
@@ -433,7 +432,7 @@ describe('SrcSet Builder:', function describeSuite() {
             param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
             var generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
             var signatureBase = 'MYT0KEN' + path + param;
-            var expected_signature = crypto.MD5(signatureBase).toString();
+            var expected_signature = md5(signatureBase).toString();
             assert.strictEqual(expected_signature, generated_signature);
           });
         });
@@ -569,7 +568,7 @@ describe('SrcSet Builder:', function describeSuite() {
             param = param.slice(0, param.indexOf('s=') - 1);
             var generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
             var signatureBase = 'MYT0KEN' + path + param;
-            var expected_signature = crypto.MD5(signatureBase).toString();
+            var expected_signature = md5(signatureBase).toString();
             assert.strictEqual(expected_signature, generated_signature);
           });
         });
@@ -607,7 +606,7 @@ describe('SrcSet Builder:', function describeSuite() {
             param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
             var generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
             var signatureBase = 'MYT0KEN' + path + param;
-            var expected_signature = crypto.MD5(signatureBase).toString();
+            var expected_signature = md5(signatureBase).toString();
             assert.strictEqual(expected_signature, generated_signature);
           });
         });
@@ -754,7 +753,7 @@ describe('SrcSet Builder:', function describeSuite() {
             param = param.slice(0, param.indexOf('s=') - 1);
             var generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
             var signatureBase = 'MYT0KEN' + path + param;
-            var expected_signature = crypto.MD5(signatureBase).toString();
+            var expected_signature = md5(signatureBase).toString();
             assert.strictEqual(expected_signature, generated_signature);
           });
         });
@@ -792,7 +791,7 @@ describe('SrcSet Builder:', function describeSuite() {
             param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
             var generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
             var signatureBase = 'MYT0KEN' + path + param;
-            var expected_signature = crypto.MD5(signatureBase).toString();
+            var expected_signature = md5(signatureBase).toString();
             assert.strictEqual(expected_signature, generated_signature);
           });
         });
@@ -892,7 +891,7 @@ describe('SrcSet Builder:', function describeSuite() {
             var param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
             var generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
             var signatureBase = 'MYT0KEN' + path + param;
-            var expected_signature = crypto.MD5(signatureBase).toString();
+            var expected_signature = md5(signatureBase).toString();
             assert.strictEqual(expected_signature, generated_signature);
           });
         });

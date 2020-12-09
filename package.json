@@ -9,7 +9,6 @@
   "browser": "dist/imgix-core-js.umd.js",
   "type": "module",
   "dependencies": {
-    "crypto-js": "^4.0.0",
     "js-base64": "~2.6.0",
     "md5": "^2.2.1"
   },
