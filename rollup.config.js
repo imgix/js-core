@@ -37,7 +37,7 @@ export default [
     input: 'test/test-buildSrcSet.js',
     external: ['md5', 'js-base64'],
     output: [
-      { file: 'test/test-buildSrcSet.cjs', format: 'cjs' },
+      { file: 'test/build/test-buildSrcSet.cjs', format: 'cjs' },
     ],
     plugins: [
       babel({
@@ -49,7 +49,7 @@ export default [
     input: 'test/test-buildURL.js',
     external: ['md5', 'js-base64'],
     output: [
-      { file: 'test/test-buildURL.cjs', format: 'cjs' },
+      { file: 'test/build/test-buildURL.cjs', format: 'cjs' },
     ],
     plugins: [
       babel({
@@ -61,7 +61,7 @@ export default [
     input: 'test/test-client.js',
     external: ['md5', 'js-base64'],
     output: [
-      { file: 'test/test-client.cjs', format: 'cjs' },
+      { file: 'test/build/test-client.cjs', format: 'cjs' },
     ],
     plugins: [
       babel({
@@ -73,7 +73,7 @@ export default [
     input: 'test/test-validators.js',
     external: ['md5', 'js-base64'],
     output: [
-      { file: 'test/test-validators.cjs', format: 'cjs' },
+      { file: 'test/build/test-validators.cjs', format: 'cjs' },
     ],
     plugins: [
       babel({
