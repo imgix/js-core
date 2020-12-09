@@ -32,5 +32,17 @@ export default [
         exclude: ['node_modules/**']
       })
     ]
+  },
+  {
+    input: 'test/test-buildSrcSet.js',
+    external: ['md5', 'js-base64'],
+    output: [
+      { file: 'test/test-buildSrcSet.cjs', format: 'cjs' },
+    ],
+    plugins: [
+      babel({
+        exclude: ['node_modules/**']
+      })
+    ]
   }
 ];
