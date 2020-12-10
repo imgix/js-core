@@ -119,10 +119,9 @@ export default class ImgixClient {
   }
 
   _buildSrcSetPairs(path, params, options) {
-    const srcsetOptions = validateAndDestructureOptions(options);
+    const [widthTolerance, minWidth, maxWidth]  = validateAndDestructureOptions(options);
     const srcset = [];
     const customWidths = options.widths;
-    const widthTolerance = srcsetOptions[0], minWidth = srcsetOptions[1], maxWidth = srcsetOptions[2];
 
 
     let targetWidths;
