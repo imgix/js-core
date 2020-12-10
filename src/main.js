@@ -18,8 +18,7 @@ import {
 
 export default class ImgixClient {
   constructor(opts = {}) {
-    const settings = Object.assign({}, DEFAULT_OPTIONS);
-    this.settings = Object.assign(settings, opts);
+    this.settings = { ...DEFAULT_OPTIONS, ...opts };
     // a cache to store memoized srcset width-pairs
     this.targetWidthsCache = {};
     if (typeof this.settings.domain != "string") {
