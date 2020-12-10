@@ -101,37 +101,6 @@ describe('Validators:', function () {
     });
   });
 
-  describe('Testing validateWidths', function () {
-    it('throws an error if any width is negative', () => {
-      assert.throws(() => {
-        validateWidths([100, 200, 300, -400])
-      })
-    });
-
-    it('throws an error if given an empty list', () => {
-      assert.throws(() => {
-        validateWidths([])
-      })
-    });
-
-    it('throws an error if given a list of non-numeric input', () => {
-      assert.throws(() => {
-        validateWidths([100, 200, 300, '400', '500'])
-      })
-    });
-
-    it('throws an error if given a list of non-integer input', () => {
-      assert.throws(() => {
-        validateWidths([399.99, 499.50])
-      })
-    });
-
-    it('succeeds silently', () => {
-      let result = validateWidths([100, 200, 300, 400, 500]);
-      assert.strictEqual(result, undefined);
-    });
-  });
-
   describe('Testing validateVariableQuality', function () {
     it('throws an error if variable quality flag is not a boolean', () => {
       assert.throws(() => {
