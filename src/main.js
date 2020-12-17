@@ -94,14 +94,12 @@ export default class ImgixClient {
   }
 
   buildSrcSet(path, params = {}, options = {}) {
-    const _options = {...options};
-    const _params = {...params};
-    const {w, h, ar} = _params;
+    const {w, h, ar} = params;
 
     if ((w) || (h && ar)) {
-      return this._buildDPRSrcSet(path, _params, _options);
+      return this._buildDPRSrcSet(path, params, options);
     } else {
-      return this._buildSrcSetPairs(path, _params, _options);
+      return this._buildSrcSetPairs(path, params, options);
     }
   }
 
