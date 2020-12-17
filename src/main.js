@@ -69,11 +69,7 @@ export default class ImgixClient {
     const signatureBase = this.settings.secureURLToken + path + queryParams;
     const signature = md5(signatureBase);
 
-    if (queryParams.length > 0) {
-      return queryParams = queryParams + "&s=" + signature;
-    } else {
-      return queryParams = "?s=" + signature;
-    }
+    return queryParams.length > 0 ? queryParams + "&s=" + signature : "?s=" + signature;
   }
 
   _sanitizePath(path) {
