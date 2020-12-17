@@ -50,28 +50,19 @@ export default class ImgixClient {
   }
 
   _buildParams(params = {}) {
-    const queryParams = [];
-    if (this.settings.libraryParam) {
-      queryParams.push('ixlib=' + this.settings.libraryParam)
-    }
+    const queryParams = [
+      // Set the libraryParam if applicable.
+      ...(this.settings.libraryParam ? [`ixlib=${this.settings.libraryParam}`] : []),
 
-    for (const key in params) {
-      const val = params[key];
-      const encodedKey = encodeURIComponent(key);
+      // Map over the key-value pairs in params while applying applicable encoding.
+      ...(Object.entries(params).map(([key, value]) => {
+        const encodedKey = encodeURIComponent(key);
+        const encodedValue = key.substr(-2) === '64' ? Base64.encodeURI(value) : encodeURIComponent(value);
+        return `${encodedKey}=${encodedValue}`;
+      })),
+    ];
 
-      let encodedVal;
-      if (key.substr(-2) === '64') {
-        encodedVal = Base64.encodeURI(val);
-      } else {
-        encodedVal = encodeURIComponent(val);
-      }
-      queryParams.push(encodedKey + "=" + encodedVal);
-    }
-
-    if (queryParams[0]) {
-      queryParams[0] = "?" + queryParams[0];
-    }
-    return queryParams.join('&');
+    return `${queryParams.length > 0 ? '?' : ''}${queryParams.join('&')}`;
   }
 
   _signParams(path, queryParams) {
