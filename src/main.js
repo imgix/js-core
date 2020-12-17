@@ -105,7 +105,6 @@ export default class ImgixClient {
 
   _buildSrcSetPairs(path, params, options) {
     const [widthTolerance, minWidth, maxWidth]  = validateAndDestructureOptions(options);
-    const srcset = [];
     const customWidths = options.widths;
 
 
@@ -119,16 +118,7 @@ export default class ImgixClient {
       targetWidths = this._generateTargetWidths(widthTolerance, minWidth, maxWidth);
     }
 
-    let queryParams = {};
-    for (const key in params) {
-      queryParams[key] = params[key];
-    }
-
-    for (let i = 0; i < targetWidths.length; i++) {
-      const currentWidth = targetWidths[i];
-      queryParams.w = currentWidth;
-      srcset.push(this.buildURL(path, queryParams) + ' ' + currentWidth + 'w')
-    }
+    const srcset = targetWidths.map(w => `${this.buildURL(path, { ...params, w })} ${w}w`);
 
     return srcset.join(',\n')
   };
