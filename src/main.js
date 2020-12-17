@@ -101,13 +101,11 @@ export default class ImgixClient {
 
   _buildSrcSetPairs(path, params, options) {
     const [widthTolerance, minWidth, maxWidth]  = validateAndDestructureOptions(options);
-    const customWidths = options.widths;
-
 
     let targetWidths;
-    if (customWidths) {
-      validateWidths(customWidths);
-      targetWidths = customWidths;
+    if (options.widths) {
+      validateWidths(options.widths);
+      targetWidths = [...options.widths];
     } else {
       validateRange(minWidth, maxWidth);
       validateWidthTolerance(widthTolerance);
