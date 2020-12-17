@@ -124,29 +124,21 @@ export default class ImgixClient {
   };
 
   _buildDPRSrcSet(path, params, options) {
-    const srcset = [];
     const targetRatios = [1, 2, 3, 4, 5];
     const disableVariableQuality = options.disableVariableQuality || false;
 
-    const queryParams = {};
-    for (const key in params) {
-      queryParams[key] = params[key];
-    }
-
-    const quality = queryParams.q;
     if (!disableVariableQuality) {
       validateVariableQuality(disableVariableQuality);
     }
 
-    for (let i = 0; i < targetRatios.length; i++) {
-      const currentRatio = targetRatios[i];
-      queryParams.dpr = currentRatio;
-
-      if (!disableVariableQuality) {
-        queryParams.q = quality || DPR_QUALITIES[currentRatio];
-      }
-      srcset.push(this.buildURL(path, queryParams) + ' ' + currentRatio + 'x')
-    }
+    const withQuality = (path, params, dpr) => {
+      return `${this.buildURL(
+        path, { ...params, dpr: dpr, q: params.q || DPR_QUALITIES[dpr] })} ${dpr}x`;
+    }; 
+   
+    const srcset = disableVariableQuality
+      ? targetRatios.map(dpr => `${this.buildURL(path, { ...params, dpr })} ${dpr}x`)
+      : targetRatios.map(dpr => withQuality(path, params, dpr));
 
     return srcset.join(',\n');
   };
