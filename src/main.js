@@ -42,12 +42,11 @@ export default class ImgixClient {
   buildURL(path = '', params = {}) {
     const sanitizedPath = this._sanitizePath(path);
 
-    const queryParams = this._buildParams(params);
+    let finalParams = this._buildParams(params);
     if (!!this.settings.secureURLToken) {
-      const securedParams = this._signParams(sanitizedPath, queryParams);
-      return this.settings.urlPrefix + this.settings.domain + sanitizedPath + securedParams;
+      finalParams = this._signParams(sanitizedPath, finalParams);
     }
-    return this.settings.urlPrefix + this.settings.domain + sanitizedPath + queryParams;
+    return this.settings.urlPrefix + this.settings.domain + sanitizedPath + finalParams;
   }
 
   _buildParams(params = {}) {
