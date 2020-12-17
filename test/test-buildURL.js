@@ -1,5 +1,5 @@
 import assert from 'assert';
-import ImgixClient from '../src/main.js';
+import ImgixClient from '../src/main';
 
 
 describe('URL Builder:', function describeSuite() {
