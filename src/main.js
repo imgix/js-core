@@ -137,7 +137,7 @@ export default class ImgixClient {
     return srcset.join(',\n');
   };
 
-  // returns an array of width values used during scrset generation
+  // returns an array of width values used during srcset generation
   _generateTargetWidths(widthTolerance, minWidth, maxWidth) {
     const resolutions = [];
     const INCREMENT_PERCENTAGE = widthTolerance;
