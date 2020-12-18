@@ -18,7 +18,7 @@ describe('Imgix client:', function describeSuite() {
     it('initializes with a token', function testSpec() {
       const expectedToken = "MYT0KEN";
 
-      let client = new ImgixClient({
+      const client = new ImgixClient({
         domain: 'test.imgix.net',
         secureURLToken: expectedToken,
       });
@@ -27,7 +27,7 @@ describe('Imgix client:', function describeSuite() {
     });
 
     it('initializes with token when using HTTP', function testSpec() {
-      let client = new ImgixClient({
+      const client = new ImgixClient({
         domain: 'my-host.imgix.net',
         secureURLToken: 'MYT0KEN',
         useHTTPS: false
