@@ -5,8 +5,7 @@ import { VERSION } from '../src/constants';
 describe('Imgix client:', function describeSuite() {
   describe('The constructor', function describeSuite() {
     it('initializes with correct defaults', function testSpec() {
-      var client = new ImgixClient({ domain: 'my-host.imgix.net' });
-      assert.strictEqual("my-host.imgix.net", client.settings.domain);
+      let client = new ImgixClient({ domain: 'test.imgix.net' });
       assert.strictEqual(null, client.settings.secureURLToken);
       assert.strictEqual(true, client.settings.useHTTPS);
     });
