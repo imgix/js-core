@@ -4,30 +4,44 @@ import { VERSION } from '../src/constants';
 
 describe('Imgix client:', function describeSuite() {
   describe('The constructor', function describeSuite() {
-    it('initializes with correct defaults', function testSpec() {
-      let client = new ImgixClient({ domain: 'test.imgix.net' });
-      assert.strictEqual(null, client.settings.secureURLToken);
-      assert.strictEqual(true, client.settings.useHTTPS);
+
+    it('uses HTTPS by default', function testSpec() {
+      const client = new ImgixClient({ domain: 'test.imgix.net' });
+      assert.strictEqual(client.settings.useHTTPS, true);
+    });
+
+    it('has no assigned token by default', function testSpec() {
+      const client = new ImgixClient({ domain: 'test.imgix.net' });
+      assert.strictEqual(client.settings.secureURLToken, null);
     });
 
     it('initializes with a token', function testSpec() {
+      const expectedToken = "MYT0KEN";
+
       let client = new ImgixClient({
         domain: 'test.imgix.net',
-        secureURLToken: 'MYT0KEN'
+        secureURLToken: expectedToken,
       });
-      assert.strictEqual("MYT0KEN", client.settings.secureURLToken);
-      assert.strictEqual(true, client.settings.useHTTPS);
+
+      assert.strictEqual(client.settings.secureURLToken, expectedToken);
     });
 
-    it('initializes in insecure mode', function testSpec() {
+    it('initializes with token when using HTTP', function testSpec() {
       let client = new ImgixClient({
         domain: 'my-host.imgix.net',
         secureURLToken: 'MYT0KEN',
         useHTTPS: false
       });
-      assert.strictEqual("my-host.imgix.net", client.settings.domain);
-      assert.strictEqual("MYT0KEN", client.settings.secureURLToken);
-      assert.strictEqual(false, client.settings.useHTTPS);
+      assert.strictEqual(client.settings.secureURLToken, "MYT0KEN");
+      assert.strictEqual(client.settings.useHTTPS, false);
+    });
+
+    it('appends ixlib param by default', function testSpec() {
+      const domain = 'test.imgix.net';
+      const expectedURL = `https://${domain}/image.jpg?ixlib=js-${VERSION}`;
+      const client = new ImgixClient({ domain: domain });
+
+      assert.strictEqual(client.buildURL('image.jpg'), expectedURL);
     });
 
     it('errors with invalid domain - appended slash', function testSpec() {
@@ -52,13 +66,6 @@ describe('Imgix client:', function describeSuite() {
           domain: 'my-host1.imgix.net-',
         });
       }, Error);
-    });
-
-    it('accepts a single domain name', function testSpec() {
-      let expectedUrl = 'https://my-host.imgix.net/image.jpg?ixlib=js-' + VERSION;
-      let client = new ImgixClient({ domain: 'my-host.imgix.net' });
-      assert.strictEqual("my-host.imgix.net", client.settings.domain);
-      assert.strictEqual(expectedUrl, client.buildURL('image.jpg'));
     });
 
     it('errors when domain is any non-string value', function testSpec() {
