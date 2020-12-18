@@ -11,17 +11,16 @@ describe('Imgix client:', function describeSuite() {
     });
 
     it('initializes with a token', function testSpec() {
-      var client = new ImgixClient({
-        domain: 'my-host.imgix.net',
+      let client = new ImgixClient({
+        domain: 'test.imgix.net',
         secureURLToken: 'MYT0KEN'
       });
-      assert.strictEqual("my-host.imgix.net", client.settings.domain);
       assert.strictEqual("MYT0KEN", client.settings.secureURLToken);
       assert.strictEqual(true, client.settings.useHTTPS);
     });
 
     it('initializes in insecure mode', function testSpec() {
-      var client = new ImgixClient({
+      let client = new ImgixClient({
         domain: 'my-host.imgix.net',
         secureURLToken: 'MYT0KEN',
         useHTTPS: false
@@ -56,8 +55,8 @@ describe('Imgix client:', function describeSuite() {
     });
 
     it('accepts a single domain name', function testSpec() {
-      var expectedUrl = 'https://my-host.imgix.net/image.jpg?ixlib=js-' + VERSION;
-      var client = new ImgixClient({ domain: 'my-host.imgix.net' });
+      let expectedUrl = 'https://my-host.imgix.net/image.jpg?ixlib=js-' + VERSION;
+      let client = new ImgixClient({ domain: 'my-host.imgix.net' });
       assert.strictEqual("my-host.imgix.net", client.settings.domain);
       assert.strictEqual(expectedUrl, client.buildURL('image.jpg'));
     });
