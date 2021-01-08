@@ -67,6 +67,10 @@ describe('Validators:', function () {
       assert.throws(() => { validateWidthTolerance(0) })
     });
 
+    it('throws if widthTolerance is less than 0', () => {
+      assert.throws(() => { validateWidthTolerance(-3) })
+    });
+
     it('does not throw on valid widthTolerance', () => {
       assert.doesNotThrow(() => { validateWidthTolerance(0.08) })
     });
