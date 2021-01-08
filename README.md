@@ -9,6 +9,7 @@
 [![Monthly Downloads](https://img.shields.io/npm/dm/imgix-core-js.svg)](https://www.npmjs.com/package/imgix-core-js)
 [![Minified Size](https://img.shields.io/bundlephobia/min/imgix-core-js)](https://bundlephobia.com/result?p=imgix-core-js)
 [![License](https://img.shields.io/github/license/imgix/imgix-core-js)](https://github.com/imgix/imgix-core-js/blob/main/LICENSE.md)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fimgix%2Fimgix-core-js.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fimgix%2Fimgix-core-js?ref=badge_shield)
 
 ---
 
@@ -35,6 +36,7 @@
     * [Web Proxy Sources](#web-proxy-sources)
 - [What is the `Ixlib` Param on Every Request?](#what-is-the-ixlib-param-on-every-request)
 - [Testing](#testing)
+- [License](#license)
 
 <!-- prettier-ignore-end -->
 
@@ -370,3 +372,7 @@ imgix-core-js uses mocha for testing. Here’s how to run those tests:
 ```bash
 npm test
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fimgix%2Fimgix-core-js.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fimgix%2Fimgix-core-js?ref=badge_large)
