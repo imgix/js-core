@@ -31,7 +31,7 @@ describe('Validators:', function () {
   });
 
   describe('Testing validateRange', function () {
-    it('throws an error if minWidth is not an integer', () => {
+    it('throws if minWidth is not an integer', () => {
       assert.throws(() => { validateRange(500.9123, 1000) })
     });
 
@@ -57,7 +57,7 @@ describe('Validators:', function () {
   });
 
   describe('Testing validateWidthTolerance', function () {
-    it('throws if typeof widthTolerance is not a number', () => {
+    it('throws if widthTolerance is not a number', () => {
       assert.throws(() => {
         validateWidthTolerance('0.08')
       })
