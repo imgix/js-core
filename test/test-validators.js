@@ -52,19 +52,19 @@ describe('Validators:', function () {
       })
     });
 
-    it('throws an error if minWidth is not <= 0', () => {
+    it('throws an error if minWidth is less than 0', () => {
       assert.throws(() => {
         validateRange(-1, 100)
       })
     });
 
-    it('throws an error if maxWidth is not <= 0', () => {
+    it('throws an error if maxWidth is less than 0', () => {
       assert.throws(() => {
         validateRange(100, -1)
       })
     });
 
-    it('throws an error if maxWidth is not >= minWidth', () => {
+    it('throws an error if maxWidth is less than minWidth', () => {
       assert.throws(() => {
         validateRange(500, 100)
       })
