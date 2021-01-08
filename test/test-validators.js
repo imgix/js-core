@@ -9,70 +9,50 @@ import {
 
 describe('Validators:', function () {
   describe('Testing validateWidths', function () {
-    it('throws an error if any width is negative', () => {
-      assert.throws(() => {
-        validateWidths([100, 200, 300, -400])
-      })
+    it('throws if a width in width list is negative', () => {
+      assert.throws(() => { validateWidths([100, 200, 300, -400]) })
     });
 
-    it('throws an error if given an empty list', () => {
-      assert.throws(() => {
-        validateWidths([])
-      })
+    it('throws if given an empty list', () => {
+      assert.throws(() => { validateWidths([]) })
     });
 
-    it('throws an error if given a list of non-numeric input', () => {
-      assert.throws(() => {
-        validateWidths([100, 200, 300, '400', '500'])
-      })
+    it('throws if given a list of non-numeric input', () => {
+      assert.throws(() => { validateWidths([100, 200, 300, '400', '500']) })
     });
 
-    it('throws an error if given a list of non-integer input', () => {
-      assert.throws(() => {
-        validateWidths([399.99, 499.50])
-      })
+    it('throws if given a list of non-integer input', () => {
+      assert.throws(() => { validateWidths([399.99, 499.50]) })
     });
 
-    it('succeeds silently', () => {
-      let result = validateWidths([100, 200, 300, 400, 500]);
-      assert.strictEqual(result, undefined);
+    it('does not throw given valid width list', () => {
+      assert.doesNotThrow(() => { validateWidths([100, 200, 300, 400, 500]) })
     });
   });
 
   describe('Testing validateRange', function () {
     it('throws an error if minWidth is not an integer', () => {
-      assert.throws(() => {
-        validateRange(500.9123, 1000)
-      })
+      assert.throws(() => { validateRange(500.9123, 1000) })
     });
 
-    it('throws an error if maxWidth is not an integer', () => {
-      assert.throws(() => {
-        validateRange(100, 500.9123)
-      })
+    it('throws if maxWidth is not an integer', () => {
+      assert.throws(() => { validateRange(100, 500.9123) })
     });
 
-    it('throws an error if minWidth is less than 0', () => {
-      assert.throws(() => {
-        validateRange(-1, 100)
-      })
+    it('throws if minWidth is less than 0', () => {
+      assert.throws(() => { validateRange(-1, 100) })
     });
 
-    it('throws an error if maxWidth is less than 0', () => {
-      assert.throws(() => {
-        validateRange(100, -1)
-      })
+    it('throws if maxWidth is less than 0', () => {
+      assert.throws(() => { validateRange(100, -1) })
     });
 
-    it('throws an error if maxWidth is less than minWidth', () => {
-      assert.throws(() => {
-        validateRange(500, 100)
-      })
+    it('throws if maxWidth is less than minWidth', () => {
+      assert.throws(() => { validateRange(500, 100) })
     });
 
-    it('succeeds silently', () => {
-      let result = validateRange(100, 8192);
-      assert.strictEqual(result, undefined);
+    it('does not throw given a valid range', () => {
+      assert.doesNotThrow(() => { validateRange(100, 8192) })
     });
   });
 
@@ -84,20 +64,15 @@ describe('Validators:', function () {
     });
 
     it('throws if widthTolerance is <= 0', () => {
-      assert.throws(() => {
-        validateWidthTolerance(0)
-      })
+      assert.throws(() => { validateWidthTolerance(0) })
     });
 
-    it('succeeds silently', () => {
-      let result = validateWidthTolerance(0.08);
-      assert.strictEqual(result, undefined);
+    it('does not throw on valid widthTolerance', () => {
+      assert.doesNotThrow(() => { validateWidthTolerance(0.08) })
     });
 
     // TODO: should fail.
-    it('succeeds silently when widthTolerance === 0.001', () => {
-      let result = validateWidthTolerance(0.001);
-      assert.strictEqual(result, undefined);
+    it('widthTolerance === 0.001', () => {
     });
   });
 
