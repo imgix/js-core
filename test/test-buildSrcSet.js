@@ -119,11 +119,11 @@ describe('SrcSet Builder:', function describeSuite() {
                             return srcsetSplit.split(" ")[1];
                         });
 
-                    assert(devicePixelRatios[0] == '1x');
-                    assert(devicePixelRatios[1] == '2x');
-                    assert(devicePixelRatios[2] == '3x');
-                    assert(devicePixelRatios[3] == '4x');
-                    assert(devicePixelRatios[4] == '5x');
+                    assert.strictEqual(devicePixelRatios[0], '1x');
+                    assert.strictEqual(devicePixelRatios[1], '2x');
+                    assert.strictEqual(devicePixelRatios[2], '3x');
+                    assert.strictEqual(devicePixelRatios[3], '4x');
+                    assert.strictEqual(devicePixelRatios[4], '5x');
                 });
 
                 it('should correctly sign each URL', function testSpec() {
@@ -305,11 +305,11 @@ describe('SrcSet Builder:', function describeSuite() {
                             return srcsetSplit.split(" ")[1];
                         });
 
-                    assert(devicePixelRatios[0] == '1x');
-                    assert(devicePixelRatios[1] == '2x');
-                    assert(devicePixelRatios[2] == '3x');
-                    assert(devicePixelRatios[3] == '4x');
-                    assert(devicePixelRatios[4] == '5x');
+                    assert.strictEqual(devicePixelRatios[0], '1x');
+                    assert.strictEqual(devicePixelRatios[1], '2x');
+                    assert.strictEqual(devicePixelRatios[2], '3x');
+                    assert.strictEqual(devicePixelRatios[3], '4x');
+                    assert.strictEqual(devicePixelRatios[4], '5x');
                 });
 
                 it('should correctly sign each URL', function testSpec() {
@@ -500,11 +500,12 @@ describe('SrcSet Builder:', function describeSuite() {
                             return srcsetSplit.split(" ")[1];
                         });
 
-                    assert(devicePixelRatios[0] == '1x');
-                    assert(devicePixelRatios[1] == '2x');
-                    assert(devicePixelRatios[2] == '3x');
-                    assert(devicePixelRatios[3] == '4x');
-                    assert(devicePixelRatios[4] == '5x');
+
+                    assert.strictEqual(devicePixelRatios[0], '1x');
+                    assert.strictEqual(devicePixelRatios[1], '2x');
+                    assert.strictEqual(devicePixelRatios[2], '3x');
+                    assert.strictEqual(devicePixelRatios[3], '4x');
+                    assert.strictEqual(devicePixelRatios[4], '5x');
                 });
 
                 it('should correctly sign each URL', function testSpec() {
@@ -590,11 +591,12 @@ describe('SrcSet Builder:', function describeSuite() {
                             return srcsetSplit.split(" ")[1];
                         });
 
-                    assert(devicePixelRatios[0] == '1x');
-                    assert(devicePixelRatios[1] == '2x');
-                    assert(devicePixelRatios[2] == '3x');
-                    assert(devicePixelRatios[3] == '4x');
-                    assert(devicePixelRatios[4] == '5x');
+
+                    assert.strictEqual(devicePixelRatios[0], '1x');
+                    assert.strictEqual(devicePixelRatios[1], '2x');
+                    assert.strictEqual(devicePixelRatios[2], '3x');
+                    assert.strictEqual(devicePixelRatios[3], '4x');
+                    assert.strictEqual(devicePixelRatios[4], '5x');
                 });
 
                 it('should correctly sign each URL', function testSpec() {
