@@ -461,23 +461,21 @@ describe('SrcSet Builder:', function describeSuite() {
                 });
 
                 it('should correctly sign each URL', function testSpec() {
-                    let path = '/image.jpg';
+                    const path = '/image.jpg';
                     let param;
 
                     srcset.split(",")
                         .map(function (srcsetSplit) {
-                            // split the url portion of each srcset entry
-                            return srcsetSplit.split(" ")[0];
-                        }).map(function (src) {
+                            const src = srcsetSplit.split(" ")[0];
                             // asserts that the expected 's=' parameter is being generated per entry
                             assert(src.includes("s="));
 
                             // param will have all params except for '&s=...'
                             param = src.slice(src.indexOf('?'), src.length);
                             param = param.slice(0, param.indexOf('s=') - 1);
-                            let generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
-                            let signatureBase = 'MYT0KEN' + path + param;
-                            let expected_signature = md5(signatureBase).toString();
+                            const generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
+                            const signatureBase = 'MYT0KEN' + path + param;
+                            const expected_signature = md5(signatureBase).toString();
 
                             assert.strictEqual(expected_signature, generated_signature);
                         });
