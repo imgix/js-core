@@ -139,11 +139,16 @@ export default class ImgixClient {
 
   // returns an array of width values used during srcset generation
   _generateTargetWidths(widthTolerance, minWidth, maxWidth) {
-    const resolutions = [];
     const INCREMENT_PERCENTAGE = widthTolerance;
     const _minWidth = Math.floor(minWidth);
     const _maxWidth = Math.floor(maxWidth);
     const cacheKey = INCREMENT_PERCENTAGE + '/' + _minWidth + '/' + _maxWidth;
+
+    const resolutions = [_minWidth];
+
+    if (minWidth === maxWidth) {
+      return resolutions;
+    }
 
     if (cacheKey in this.targetWidthsCache) {
       return this.targetWidthsCache[cacheKey];
@@ -153,13 +158,11 @@ export default class ImgixClient {
       return 2 * Math.round(n / 2);
     };
 
-    let prev = _minWidth;
-    while (prev < _maxWidth) {
-      resolutions.push(ensureEven(prev));
-      prev *= 1 + (INCREMENT_PERCENTAGE * 2);
+    let tempWidth = _minWidth;
+    while (resolutions[resolutions.length - 1] < _maxWidth) {
+      tempWidth *= 1 + (INCREMENT_PERCENTAGE * 2);
+      resolutions.push(Math.min(ensureEven(tempWidth), _maxWidth));
     }
-
-    resolutions.push(_maxWidth);
 
     this.targetWidthsCache[cacheKey] = resolutions;
 
