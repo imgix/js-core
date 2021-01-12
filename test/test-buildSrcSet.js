@@ -30,9 +30,7 @@ describe('SrcSet Builder:', function describeSuite() {
                         return parseInt(srcline.split(" ")[1].slice(0, -1), 10);
                     });
 
-                    for (let i = 0; i < srclist.length; i++) {
-                        assert.strictEqual(src[i], resolutions[i]);
-                    }
+                    srclist.map((_v, i) => assert.strictEqual(src[i], resolutions[i]));
                 });
 
                 it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
