@@ -5,7 +5,7 @@ import {
   VERSION,
   DOMAIN_REGEX,
   DEFAULT_OPTIONS,
-  DPR_QUALITIES
+  DPR_QUALITIES,
 } from './constants';
 
 import {
@@ -13,7 +13,7 @@ import {
   validateWidths,
   validateAndDestructureOptions,
   validateVariableQuality,
-  validateWidthTolerance
+  validateWidthTolerance,
 } from './validators';
 
 export default class ImgixClient {
@@ -21,19 +21,20 @@ export default class ImgixClient {
     this.settings = { ...DEFAULT_OPTIONS, ...opts };
     // a cache to store memoized srcset width-pairs
     this.targetWidthsCache = {};
-    if (typeof this.settings.domain != "string") {
+    if (typeof this.settings.domain != 'string') {
       throw new Error('ImgixClient must be passed a valid string domain');
     }
 
     if (DOMAIN_REGEX.exec(this.settings.domain) == null) {
       throw new Error(
         'Domain must be passed in as fully-qualified ' +
-        'domain name and should not include a protocol or any path ' +
-        'element, i.e. "example.imgix.net".');
+          'domain name and should not include a protocol or any path ' +
+          'element, i.e. "example.imgix.net".',
+      );
     }
 
     if (this.settings.includeLibraryParam) {
-      this.settings.libraryParam = "js-" + VERSION;
+      this.settings.libraryParam = 'js-' + VERSION;
     }
 
     this.settings.urlPrefix = this.settings.useHTTPS ? 'https://' : 'http://';
@@ -46,20 +47,30 @@ export default class ImgixClient {
     if (!!this.settings.secureURLToken) {
       finalParams = this._signParams(sanitizedPath, finalParams);
     }
-    return this.settings.urlPrefix + this.settings.domain + sanitizedPath + finalParams;
+    return (
+      this.settings.urlPrefix +
+      this.settings.domain +
+      sanitizedPath +
+      finalParams
+    );
   }
 
   _buildParams(params = {}) {
     const queryParams = [
       // Set the libraryParam if applicable.
-      ...(this.settings.libraryParam ? [`ixlib=${this.settings.libraryParam}`] : []),
+      ...(this.settings.libraryParam
+        ? [`ixlib=${this.settings.libraryParam}`]
+        : []),
 
       // Map over the key-value pairs in params while applying applicable encoding.
-      ...(Object.entries(params).map(([key, value]) => {
+      ...Object.entries(params).map(([key, value]) => {
         const encodedKey = encodeURIComponent(key);
-        const encodedValue = key.substr(-2) === '64' ? Base64.encodeURI(value) : encodeURIComponent(value);
+        const encodedValue =
+          key.substr(-2) === '64'
+            ? Base64.encodeURI(value)
+            : encodeURIComponent(value);
         return `${encodedKey}=${encodedValue}`;
-      })),
+      }),
     ];
 
     return `${queryParams.length > 0 ? '?' : ''}${queryParams.join('&')}`;
@@ -69,7 +80,9 @@ export default class ImgixClient {
     const signatureBase = this.settings.secureURLToken + path + queryParams;
     const signature = md5(signatureBase);
 
-    return queryParams.length > 0 ? queryParams + "&s=" + signature : "?s=" + signature;
+    return queryParams.length > 0
+      ? queryParams + '&s=' + signature
+      : '?s=' + signature;
   }
 
   _sanitizePath(path) {
@@ -90,9 +103,9 @@ export default class ImgixClient {
   }
 
   buildSrcSet(path, params = {}, options = {}) {
-    const {w, h, ar} = params;
+    const { w, h, ar } = params;
 
-    if ((w) || (h && ar)) {
+    if (w || (h && ar)) {
       return this._buildDPRSrcSet(path, params, options);
     } else {
       return this._buildSrcSetPairs(path, params, options);
@@ -100,7 +113,9 @@ export default class ImgixClient {
   }
 
   _buildSrcSetPairs(path, params, options) {
-    const [widthTolerance, minWidth, maxWidth]  = validateAndDestructureOptions(options);
+    const [widthTolerance, minWidth, maxWidth] = validateAndDestructureOptions(
+      options,
+    );
 
     let targetWidths;
     if (options.widths) {
@@ -109,13 +124,19 @@ export default class ImgixClient {
     } else {
       validateRange(minWidth, maxWidth);
       validateWidthTolerance(widthTolerance);
-      targetWidths = this._generateTargetWidths(widthTolerance, minWidth, maxWidth);
+      targetWidths = this._generateTargetWidths(
+        widthTolerance,
+        minWidth,
+        maxWidth,
+      );
     }
 
-    const srcset = targetWidths.map(w => `${this.buildURL(path, { ...params, w })} ${w}w`);
+    const srcset = targetWidths.map(
+      (w) => `${this.buildURL(path, { ...params, w })} ${w}w`,
+    );
 
-    return srcset.join(',\n')
-  };
+    return srcset.join(',\n');
+  }
 
   _buildDPRSrcSet(path, params, options) {
     const targetRatios = [1, 2, 3, 4, 5];
@@ -126,16 +147,21 @@ export default class ImgixClient {
     }
 
     const withQuality = (path, params, dpr) => {
-      return `${this.buildURL(
-        path, { ...params, dpr: dpr, q: params.q || DPR_QUALITIES[dpr] })} ${dpr}x`;
-    }; 
-   
+      return `${this.buildURL(path, {
+        ...params,
+        dpr: dpr,
+        q: params.q || DPR_QUALITIES[dpr],
+      })} ${dpr}x`;
+    };
+
     const srcset = disableVariableQuality
-      ? targetRatios.map(dpr => `${this.buildURL(path, { ...params, dpr })} ${dpr}x`)
-      : targetRatios.map(dpr => withQuality(path, params, dpr));
+      ? targetRatios.map(
+          (dpr) => `${this.buildURL(path, { ...params, dpr })} ${dpr}x`,
+        )
+      : targetRatios.map((dpr) => withQuality(path, params, dpr));
 
     return srcset.join(',\n');
-  };
+  }
 
   // returns an array of width values used during srcset generation
   _generateTargetWidths(widthTolerance, minWidth, maxWidth) {
@@ -160,12 +186,12 @@ export default class ImgixClient {
 
     let tempWidth = _minWidth;
     while (resolutions[resolutions.length - 1] < _maxWidth) {
-      tempWidth *= 1 + (INCREMENT_PERCENTAGE * 2);
+      tempWidth *= 1 + INCREMENT_PERCENTAGE * 2;
       resolutions.push(Math.min(ensureEven(tempWidth), _maxWidth));
     }
 
     this.targetWidthsCache[cacheKey] = resolutions;
 
     return resolutions;
-  };
+  }
 }

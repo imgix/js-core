@@ -1,7 +1,7 @@
 import {
   MIN_SRCSET_WIDTH,
   MAX_SRCSET_WIDTH,
-  DEFAULT_SRCSET_WIDTH_TOLERANCE
+  DEFAULT_SRCSET_WIDTH_TOLERANCE,
 } from './constants';
 
 export function validateAndDestructureOptions(options) {
@@ -13,8 +13,10 @@ export function validateAndDestructureOptions(options) {
     widthTolerance = DEFAULT_SRCSET_WIDTH_TOLERANCE;
   }
 
-  const minWidth = options.minWidth === undefined ? MIN_SRCSET_WIDTH : options.minWidth;
-  const maxWidth = options.maxWidth === undefined ? MAX_SRCSET_WIDTH : options.maxWidth;
+  const minWidth =
+    options.minWidth === undefined ? MIN_SRCSET_WIDTH : options.minWidth;
+  const maxWidth =
+    options.maxWidth === undefined ? MAX_SRCSET_WIDTH : options.maxWidth;
 
   // Validate the range unless we're using defaults for both
   if (minWidth != MIN_SRCSET_WIDTH || maxWidth != MAX_SRCSET_WIDTH) {
@@ -25,34 +27,47 @@ export function validateAndDestructureOptions(options) {
 }
 
 export function validateRange(min, max) {
-  if (!(Number.isInteger(min) && Number.isInteger(max)) || (min <= 0 || max <= 0) || (min > max)) {
-    throw new Error('The min and max srcset widths can only be passed positive Number values');
+  if (
+    !(Number.isInteger(min) && Number.isInteger(max)) ||
+    min <= 0 ||
+    max <= 0 ||
+    min > max
+  ) {
+    throw new Error(
+      'The min and max srcset widths can only be passed positive Number values',
+    );
   }
 }
 
 export function validateWidthTolerance(widthTolerance) {
   if (typeof widthTolerance != 'number' || widthTolerance <= 0) {
-    throw new Error('The srcset widthTolerance argument can only be passed a positive scalar number');
+    throw new Error(
+      'The srcset widthTolerance argument can only be passed a positive scalar number',
+    );
   }
 }
 
 export function validateWidths(customWidths) {
   if (!Array.isArray(customWidths) || !customWidths.length) {
-    throw new Error('The widths argument can only be passed a valid non-empty array of integers');
-  } else {
-    const allPositiveIntegers = customWidths.every(
-      function (width) {
-        return Number.isInteger(width) && width > 0
-      }
+    throw new Error(
+      'The widths argument can only be passed a valid non-empty array of integers',
     );
+  } else {
+    const allPositiveIntegers = customWidths.every(function (width) {
+      return Number.isInteger(width) && width > 0;
+    });
     if (!allPositiveIntegers) {
-      throw new Error('A custom widths argument can only contain positive integer values');
+      throw new Error(
+        'A custom widths argument can only contain positive integer values',
+      );
     }
   }
 }
 
 export function validateVariableQuality(disableVariableQuality) {
   if (typeof disableVariableQuality != 'boolean') {
-    throw new Error('The disableVariableQuality argument can only be passed a Boolean value');
+    throw new Error(
+      'The disableVariableQuality argument can only be passed a Boolean value',
+    );
   }
 }

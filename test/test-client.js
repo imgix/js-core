@@ -4,7 +4,6 @@ import { VERSION } from '../src/constants';
 
 describe('Imgix client:', function describeSuite() {
   describe('The constructor', function describeSuite() {
-
     it('uses HTTPS by default', function testSpec() {
       const client = new ImgixClient({ domain: 'test.imgix.net' });
       assert.strictEqual(client.settings.useHTTPS, true);
@@ -16,7 +15,7 @@ describe('Imgix client:', function describeSuite() {
     });
 
     it('initializes with a token', function testSpec() {
-      const expectedToken = "MYT0KEN";
+      const expectedToken = 'MYT0KEN';
 
       const client = new ImgixClient({
         domain: 'test.imgix.net',
@@ -30,9 +29,9 @@ describe('Imgix client:', function describeSuite() {
       const client = new ImgixClient({
         domain: 'my-host.imgix.net',
         secureURLToken: 'MYT0KEN',
-        useHTTPS: false
+        useHTTPS: false,
       });
-      assert.strictEqual(client.settings.secureURLToken, "MYT0KEN");
+      assert.strictEqual(client.settings.secureURLToken, 'MYT0KEN');
       assert.strictEqual(client.settings.useHTTPS, false);
     });
 
@@ -45,7 +44,7 @@ describe('Imgix client:', function describeSuite() {
     });
 
     it('errors with invalid domain - appended slash', function testSpec() {
-      assert.throws(function() {
+      assert.throws(function () {
         new ImgixClient({
           domain: 'my-host1.imgix.net/',
         });
@@ -53,7 +52,7 @@ describe('Imgix client:', function describeSuite() {
     });
 
     it('errors with invalid domain - prepended scheme ', function testSpec() {
-      assert.throws(function() {
+      assert.throws(function () {
         new ImgixClient({
           domain: 'https://my-host1.imgix.net',
         });
@@ -61,7 +60,7 @@ describe('Imgix client:', function describeSuite() {
     });
 
     it('errors with invalid domain - appended dash ', function testSpec() {
-      assert.throws(function() {
+      assert.throws(function () {
         new ImgixClient({
           domain: 'my-host1.imgix.net-',
         });
@@ -69,13 +68,15 @@ describe('Imgix client:', function describeSuite() {
     });
 
     it('errors when domain is any non-string value', function testSpec() {
-      assert.throws(function() {
-        new ImgixClient({ domain: ['my-host.imgix.net', 'another-domain.imgix.net'] });
+      assert.throws(function () {
+        new ImgixClient({
+          domain: ['my-host.imgix.net', 'another-domain.imgix.net'],
+        });
       }, Error);
     });
 
     it('errors when no domain is passed', function testSpec() {
-      assert.throws(function() {
+      assert.throws(function () {
         new ImgixClient({});
       }, Error);
     });

@@ -28,6 +28,127 @@ function _createClass(Constructor, protoProps, staticProps) {
   return Constructor;
 }
 
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    if (enumerableOnly) symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    });
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
+
+function _slicedToArray(arr, i) {
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+}
+
+function _arrayWithHoles(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
+function _iterableToArrayLimit(arr, i) {
+  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+  var _e = undefined;
+
+  try {
+    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+  return arr2;
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
 // package version used in the ix-lib parameter
 var VERSION = '2.3.2'; // regex pattern used to determine if a domain is valid
 
@@ -37,7 +158,7 @@ var MIN_SRCSET_WIDTH = 100; // maximum generated srcset width
 
 var MAX_SRCSET_WIDTH = 8192; // default tolerable percent difference between srcset pair widths
 
-var DEFAULT_SRCSET_WIDTH_TOLERANCE = .08; // default quality parameter values mapped by each dpr srcset entry
+var DEFAULT_SRCSET_WIDTH_TOLERANCE = 0.08; // default quality parameter values mapped by each dpr srcset entry
 
 var DPR_QUALITIES = {
   1: 75,
@@ -108,12 +229,11 @@ var ImgixClient = /*#__PURE__*/function () {
 
     _classCallCheck(this, ImgixClient);
 
-    var settings = Object.assign({}, DEFAULT_OPTIONS);
-    this.settings = Object.assign(settings, opts); // a cache to store memoized srcset width-pairs
+    this.settings = _objectSpread2(_objectSpread2({}, DEFAULT_OPTIONS), opts); // a cache to store memoized srcset width-pairs
 
     this.targetWidthsCache = {};
 
-    if (typeof this.settings.domain != "string") {
+    if (typeof this.settings.domain != 'string') {
       throw new Error('ImgixClient must be passed a valid string domain');
     }
 
@@ -122,7 +242,7 @@ var ImgixClient = /*#__PURE__*/function () {
     }
 
     if (this.settings.includeLibraryParam) {
-      this.settings.libraryParam = "js-" + VERSION;
+      this.settings.libraryParam = 'js-' + VERSION;
     }
 
     this.settings.urlPrefix = this.settings.useHTTPS ? 'https://' : 'http://';
@@ -136,57 +256,35 @@ var ImgixClient = /*#__PURE__*/function () {
 
       var sanitizedPath = this._sanitizePath(path);
 
-      var queryParams = this._buildParams(params);
+      var finalParams = this._buildParams(params);
 
       if (!!this.settings.secureURLToken) {
-        var securedParams = this._signParams(sanitizedPath, queryParams);
-
-        return this.settings.urlPrefix + this.settings.domain + sanitizedPath + securedParams;
+        finalParams = this._signParams(sanitizedPath, finalParams);
       }
 
-      return this.settings.urlPrefix + this.settings.domain + sanitizedPath + queryParams;
+      return this.settings.urlPrefix + this.settings.domain + sanitizedPath + finalParams;
     }
   }, {
     key: "_buildParams",
     value: function _buildParams() {
       var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      var queryParams = [];
+      var queryParams = [].concat(_toConsumableArray(this.settings.libraryParam ? ["ixlib=".concat(this.settings.libraryParam)] : []), _toConsumableArray(Object.entries(params).map(function (_ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+            key = _ref2[0],
+            value = _ref2[1];
 
-      if (this.settings.libraryParam) {
-        queryParams.push('ixlib=' + this.settings.libraryParam);
-      }
-
-      for (var key in params) {
-        var val = params[key];
         var encodedKey = encodeURIComponent(key);
-        var encodedVal = void 0;
-
-        if (key.substr(-2) === '64') {
-          encodedVal = jsBase64.Base64.encodeURI(val);
-        } else {
-          encodedVal = encodeURIComponent(val);
-        }
-
-        queryParams.push(encodedKey + "=" + encodedVal);
-      }
-
-      if (queryParams[0]) {
-        queryParams[0] = "?" + queryParams[0];
-      }
-
-      return queryParams.join('&');
+        var encodedValue = key.substr(-2) === '64' ? jsBase64.Base64.encodeURI(value) : encodeURIComponent(value);
+        return "".concat(encodedKey, "=").concat(encodedValue);
+      })));
+      return "".concat(queryParams.length > 0 ? '?' : '').concat(queryParams.join('&'));
     }
   }, {
     key: "_signParams",
     value: function _signParams(path, queryParams) {
       var signatureBase = this.settings.secureURLToken + path + queryParams;
       var signature = md5(signatureBase);
-
-      if (queryParams.length > 0) {
-        return queryParams = queryParams + "&s=" + signature;
-      } else {
-        return queryParams = "?s=" + signature;
-      }
+      return queryParams.length > 0 ? queryParams + '&s=' + signature : '?s=' + signature;
     }
   }, {
     key: "_sanitizePath",
@@ -208,91 +306,80 @@ var ImgixClient = /*#__PURE__*/function () {
     }
   }, {
     key: "buildSrcSet",
-    value: function buildSrcSet(path, params, options) {
-      var _options = options || {};
+    value: function buildSrcSet(path) {
+      var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+      var w = params.w,
+          h = params.h,
+          ar = params.ar;
 
-      var _params = params || {};
-
-      var width = _params.w;
-      var height = _params.h;
-      var aspectRatio = _params.ar;
-
-      if (width || height && aspectRatio) {
-        return this._buildDPRSrcSet(path, _params, _options);
+      if (w || h && ar) {
+        return this._buildDPRSrcSet(path, params, options);
       } else {
-        return this._buildSrcSetPairs(path, _params, _options);
+        return this._buildSrcSetPairs(path, params, options);
       }
     }
   }, {
     key: "_buildSrcSetPairs",
     value: function _buildSrcSetPairs(path, params, options) {
-      var srcsetOptions = validateAndDestructureOptions(options);
-      var srcset = [];
-      var customWidths = options.widths;
-      var widthTolerance = srcsetOptions[0],
-          minWidth = srcsetOptions[1],
-          maxWidth = srcsetOptions[2];
+      var _this = this;
+
+      var _validateAndDestructu = validateAndDestructureOptions(options),
+          _validateAndDestructu2 = _slicedToArray(_validateAndDestructu, 3),
+          widthTolerance = _validateAndDestructu2[0],
+          minWidth = _validateAndDestructu2[1],
+          maxWidth = _validateAndDestructu2[2];
+
       var targetWidths;
 
-      if (customWidths) {
-        validateWidths(customWidths);
-        targetWidths = customWidths;
+      if (options.widths) {
+        validateWidths(options.widths);
+        targetWidths = _toConsumableArray(options.widths);
       } else {
         validateRange(minWidth, maxWidth);
         validateWidthTolerance(widthTolerance);
         targetWidths = this._generateTargetWidths(widthTolerance, minWidth, maxWidth);
       }
 
-      var queryParams = {};
-
-      for (var key in params) {
-        queryParams[key] = params[key];
-      }
-
-      for (var i = 0; i < targetWidths.length; i++) {
-        var currentWidth = targetWidths[i];
-        queryParams.w = currentWidth;
-        srcset.push(this.buildURL(path, queryParams) + ' ' + currentWidth + 'w');
-      }
-
+      var srcset = targetWidths.map(function (w) {
+        return "".concat(_this.buildURL(path, _objectSpread2(_objectSpread2({}, params), {}, {
+          w: w
+        })), " ").concat(w, "w");
+      });
       return srcset.join(',\n');
     }
   }, {
     key: "_buildDPRSrcSet",
     value: function _buildDPRSrcSet(path, params, options) {
-      var srcset = [];
+      var _this2 = this;
+
       var targetRatios = [1, 2, 3, 4, 5];
       var disableVariableQuality = options.disableVariableQuality || false;
-      var queryParams = {};
-
-      for (var key in params) {
-        queryParams[key] = params[key];
-      }
-
-      var quality = queryParams.q;
 
       if (!disableVariableQuality) {
         validateVariableQuality(disableVariableQuality);
       }
 
-      for (var i = 0; i < targetRatios.length; i++) {
-        var currentRatio = targetRatios[i];
-        queryParams.dpr = currentRatio;
+      var withQuality = function withQuality(path, params, dpr) {
+        return "".concat(_this2.buildURL(path, _objectSpread2(_objectSpread2({}, params), {}, {
+          dpr: dpr,
+          q: params.q || DPR_QUALITIES[dpr]
+        })), " ").concat(dpr, "x");
+      };
 
-        if (!disableVariableQuality) {
-          queryParams.q = quality || DPR_QUALITIES[currentRatio];
-        }
-
-        srcset.push(this.buildURL(path, queryParams) + ' ' + currentRatio + 'x');
-      }
-
+      var srcset = disableVariableQuality ? targetRatios.map(function (dpr) {
+        return "".concat(_this2.buildURL(path, _objectSpread2(_objectSpread2({}, params), {}, {
+          dpr: dpr
+        })), " ").concat(dpr, "x");
+      }) : targetRatios.map(function (dpr) {
+        return withQuality(path, params, dpr);
+      });
       return srcset.join(',\n');
-    }
+    } // returns an array of width values used during srcset generation
+
   }, {
     key: "_generateTargetWidths",
-    // returns an array of width values used during scrset generation
     value: function _generateTargetWidths(widthTolerance, minWidth, maxWidth) {
-      var resolutions = [];
       var INCREMENT_PERCENTAGE = widthTolerance;
 
       var _minWidth = Math.floor(minWidth);
@@ -300,6 +387,11 @@ var ImgixClient = /*#__PURE__*/function () {
       var _maxWidth = Math.floor(maxWidth);
 
       var cacheKey = INCREMENT_PERCENTAGE + '/' + _minWidth + '/' + _maxWidth;
+      var resolutions = [_minWidth];
+
+      if (minWidth === maxWidth) {
+        return resolutions;
+      }
 
       if (cacheKey in this.targetWidthsCache) {
         return this.targetWidthsCache[cacheKey];
@@ -309,14 +401,13 @@ var ImgixClient = /*#__PURE__*/function () {
         return 2 * Math.round(n / 2);
       };
 
-      var prev = _minWidth;
+      var tempWidth = _minWidth;
 
-      while (prev < _maxWidth) {
-        resolutions.push(ensureEven(prev));
-        prev *= 1 + INCREMENT_PERCENTAGE * 2;
+      while (resolutions[resolutions.length - 1] < _maxWidth) {
+        tempWidth *= 1 + INCREMENT_PERCENTAGE * 2;
+        resolutions.push(Math.min(ensureEven(tempWidth), _maxWidth));
       }
 
-      resolutions.push(_maxWidth);
       this.targetWidthsCache[cacheKey] = resolutions;
       return resolutions;
     }
@@ -336,28 +427,27 @@ describe('SrcSet Builder:', function describeSuite() {
         });
         var srcset = client.buildSrcSet('image.jpg');
         it('memoizes default srcset width pairs', function testSpec() {
-          var key = [.08, 100, 8192].join('/');
+          var key = [0.08, 100, 8192].join('/');
           var cachedValue = client.targetWidthsCache[key];
           assert(cachedValue !== undefined && cachedValue.length == 31);
         });
         it('should generate the expected default srcset pair values', function testSpec() {
           var resolutions = [100, 116, 134, 156, 182, 210, 244, 282, 328, 380, 442, 512, 594, 688, 798, 926, 1074, 1246, 1446, 1678, 1946, 2258, 2618, 3038, 3524, 4088, 4742, 5500, 6380, 7400, 8192];
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
           var src = srclist.map(function (srcline) {
-            return parseInt(srcline.split(" ")[1].slice(0, -1), 10);
+            return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
           });
-
-          for (var i = 0; i < srclist.length; i++) {
-            assert.strictEqual(src[i], resolutions[i]);
-          }
+          srclist.map(function (_v, i) {
+            return assert.strictEqual(src[i], resolutions[i]);
+          });
         });
         it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
           assert.strictEqual(srcset.split(',').length, 31);
         });
         it('should not exceed the bounds of [100, 8192]', function testSpec() {
-          var srcsetSplit = srcset.split(",");
-          var min = Number.parseFloat(srcsetSplit[0].split(" ")[1].slice(0, -1));
-          var max = Number.parseFloat(srcsetSplit[srcsetSplit.length - 1].split(" ")[1].slice(0, -1));
+          var srcsetSplit = srcset.split(',');
+          var min = Number.parseFloat(srcsetSplit[0].split(' ')[1].slice(0, -1));
+          var max = Number.parseFloat(srcsetSplit[srcsetSplit.length - 1].split(' ')[1].slice(0, -1));
           assert(min >= 100);
           assert(max <= 8192);
         }); // a 17% testing threshold is used to account for rounding
@@ -366,8 +456,8 @@ describe('SrcSet Builder:', function describeSuite() {
           var INCREMENT_ALLOWED = 0.17;
 
           var srcsetWidths = function () {
-            return srcset.split(",").map(function (srcsetSplit) {
-              return srcsetSplit.split(" ")[1];
+            return srcset.split(',').map(function (srcsetSplit) {
+              return srcsetSplit.split(' ')[1];
             }).map(function (width) {
               return width.slice(0, -1);
             }).map(Number.parseFloat);
@@ -384,12 +474,12 @@ describe('SrcSet Builder:', function describeSuite() {
         it('should correctly sign each URL', function testSpec() {
           var path = '/image.jpg';
           var param;
-          srcset.split(",").map(function (srcsetSplit) {
+          srcset.split(',').map(function (srcsetSplit) {
             // split the url portion of each srcset entry
-            return srcsetSplit.split(" ")[0];
+            return srcsetSplit.split(' ')[0];
           }).map(function (src) {
             // asserts that the expected 's=' parameter is being generated per entry
-            assert(src.includes("s=")); // param will have all params except for '&s=...'
+            assert(src.includes('s=')); // param will have all params except for '&s=...'
 
             param = src.slice(src.indexOf('?'), src.length);
             param = param.slice(0, param.indexOf('s=') - 1);
@@ -410,24 +500,24 @@ describe('SrcSet Builder:', function describeSuite() {
           w: 100
         });
         it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
-          assert(srcset.split(",").length == 5);
-          var devicePixelRatios = srcset.split(",").map(function (srcsetSplit) {
-            return srcsetSplit.split(" ")[1];
+          assert(srcset.split(',').length == 5);
+          var devicePixelRatios = srcset.split(',').map(function (srcsetSplit) {
+            return srcsetSplit.split(' ')[1];
           });
-          assert(devicePixelRatios[0] == '1x');
-          assert(devicePixelRatios[1] == '2x');
-          assert(devicePixelRatios[2] == '3x');
-          assert(devicePixelRatios[3] == '4x');
-          assert(devicePixelRatios[4] == '5x');
+          assert.strictEqual(devicePixelRatios[0], '1x');
+          assert.strictEqual(devicePixelRatios[1], '2x');
+          assert.strictEqual(devicePixelRatios[2], '3x');
+          assert.strictEqual(devicePixelRatios[3], '4x');
+          assert.strictEqual(devicePixelRatios[4], '5x');
         });
         it('should correctly sign each URL', function testSpec() {
           var path = '/image.jpg';
           var param;
-          srcset.split(",").map(function (srcsetSplit) {
-            return srcsetSplit.split(" ")[0];
+          srcset.split(',').map(function (srcsetSplit) {
+            return srcsetSplit.split(' ')[0];
           }).map(function (src) {
             // asserts that the expected 's=' parameter is being generated per entry
-            assert(src.includes("s=")); // param will have all params except for '&s=...'
+            assert(src.includes('s=')); // param will have all params except for '&s=...'
 
             param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
             var generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
@@ -437,18 +527,18 @@ describe('SrcSet Builder:', function describeSuite() {
           });
         });
         it('should include a dpr param per specified src', function testSpec() {
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("dpr=".concat(i + 1)));
           }
         });
         it('should include variable qualities by default', function testSpec() {
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("q=".concat(DPR_QUALITY[i])));
           }
         });
@@ -460,14 +550,14 @@ describe('SrcSet Builder:', function describeSuite() {
             w: 800,
             q: QUALITY_OVERRIDE
           });
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("q=".concat(QUALITY_OVERRIDE)));
           }
         });
-        it('should correctly disable generated variable qualities via the \'disableVariableQuality\' argument', function testSpec() {
+        it("should correctly disable generated variable qualities via the 'disableVariableQuality' argument", function testSpec() {
           var srcset = new ImgixClient({
             domain: 'testing.imgix.net'
           }).buildSrcSet('image.jpg', {
@@ -475,10 +565,10 @@ describe('SrcSet Builder:', function describeSuite() {
           }, {
             disableVariableQuality: true
           });
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(!src.includes("q="));
           }
         });
@@ -492,10 +582,10 @@ describe('SrcSet Builder:', function describeSuite() {
           }, {
             disableVariableQuality: true
           });
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("q=".concat(QUALITY_OVERRIDE)));
           }
         });
@@ -510,9 +600,9 @@ describe('SrcSet Builder:', function describeSuite() {
         });
         it('should generate the expected default srcset pair values', function testSpec() {
           var resolutions = [100, 116, 134, 156, 182, 210, 244, 282, 328, 380, 442, 512, 594, 688, 798, 926, 1074, 1246, 1446, 1678, 1946, 2258, 2618, 3038, 3524, 4088, 4742, 5500, 6380, 7400, 8192];
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
           var src = srclist.map(function (srcline) {
-            return parseInt(srcline.split(" ")[1].slice(0, -1), 10);
+            return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
           });
 
           for (var i = 0; i < srclist.length; i++) {
@@ -528,9 +618,9 @@ describe('SrcSet Builder:', function describeSuite() {
           assert.equal(srcset.split(',').length, 31);
         });
         it('should not exceed the bounds of [100, 8192]', function testSpec() {
-          var srcsetSplit = srcset.split(",");
-          var min = Number.parseFloat(srcsetSplit[0].split(" ")[1].slice(0, -1));
-          var max = Number.parseFloat(srcsetSplit[srcsetSplit.length - 1].split(" ")[1].slice(0, -1));
+          var srcsetSplit = srcset.split(',');
+          var min = Number.parseFloat(srcsetSplit[0].split(' ')[1].slice(0, -1));
+          var max = Number.parseFloat(srcsetSplit[srcsetSplit.length - 1].split(' ')[1].slice(0, -1));
           assert(min >= 100);
           assert(max <= 8192);
         }); // a 17% testing threshold is used to account for rounding
@@ -539,8 +629,8 @@ describe('SrcSet Builder:', function describeSuite() {
           var INCREMENT_ALLOWED = 0.17;
 
           var srcsetWidths = function () {
-            return srcset.split(",").map(function (srcsetSplit) {
-              return srcsetSplit.split(" ")[1];
+            return srcset.split(',').map(function (srcsetSplit) {
+              return srcsetSplit.split(' ')[1];
             }).map(function (width) {
               return width.slice(0, -1);
             }).map(Number.parseFloat);
@@ -557,12 +647,12 @@ describe('SrcSet Builder:', function describeSuite() {
         it('should correctly sign each URL', function testSpec() {
           var path = '/image.jpg';
           var param;
-          srcset.split(",").map(function (srcsetSplit) {
+          srcset.split(',').map(function (srcsetSplit) {
             // split the url portion of each srcset entry
-            return srcsetSplit.split(" ")[0];
+            return srcsetSplit.split(' ')[0];
           }).map(function (src) {
             // asserts that the expected 's=' parameter is being generated per entry
-            assert(src.includes("s=")); // param will have all params except for '&s=...'
+            assert(src.includes('s=')); // param will have all params except for '&s=...'
 
             param = src.slice(src.indexOf('?'), src.length);
             param = param.slice(0, param.indexOf('s=') - 1);
@@ -584,24 +674,24 @@ describe('SrcSet Builder:', function describeSuite() {
           h: 100
         });
         it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
-          assert(srcset.split(",").length == 5);
-          var devicePixelRatios = srcset.split(",").map(function (srcsetSplit) {
-            return srcsetSplit.split(" ")[1];
+          assert(srcset.split(',').length == 5);
+          var devicePixelRatios = srcset.split(',').map(function (srcsetSplit) {
+            return srcsetSplit.split(' ')[1];
           });
-          assert(devicePixelRatios[0] == '1x');
-          assert(devicePixelRatios[1] == '2x');
-          assert(devicePixelRatios[2] == '3x');
-          assert(devicePixelRatios[3] == '4x');
-          assert(devicePixelRatios[4] == '5x');
+          assert.strictEqual(devicePixelRatios[0], '1x');
+          assert.strictEqual(devicePixelRatios[1], '2x');
+          assert.strictEqual(devicePixelRatios[2], '3x');
+          assert.strictEqual(devicePixelRatios[3], '4x');
+          assert.strictEqual(devicePixelRatios[4], '5x');
         });
         it('should correctly sign each URL', function testSpec() {
           var path = '/image.jpg';
           var param;
-          srcset.split(",").map(function (srcsetSplit) {
-            return srcsetSplit.split(" ")[0];
+          srcset.split(',').map(function (srcsetSplit) {
+            return srcsetSplit.split(' ')[0];
           }).map(function (src) {
             // asserts that the expected 's=' parameter is being generated per entry
-            assert(src.includes("s=")); // param will have all params except for '&s=...'
+            assert(src.includes('s=')); // param will have all params except for '&s=...'
 
             param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
             var generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
@@ -611,18 +701,18 @@ describe('SrcSet Builder:', function describeSuite() {
           });
         });
         it('should include a dpr param per specified src', function testSpec() {
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("dpr=".concat(i + 1)));
           }
         });
         it('should include variable qualities by default', function testSpec() {
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("q=".concat(DPR_QUALITY[i])));
           }
         });
@@ -634,14 +724,14 @@ describe('SrcSet Builder:', function describeSuite() {
             w: 800,
             q: QUALITY_OVERRIDE
           });
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("q=".concat(QUALITY_OVERRIDE)));
           }
         });
-        it('should correctly disable generated variable qualities via the \'disableVariableQuality\' argument', function testSpec() {
+        it("should correctly disable generated variable qualities via the 'disableVariableQuality' argument", function testSpec() {
           var srcset = new ImgixClient({
             domain: 'testing.imgix.net'
           }).buildSrcSet('image.jpg', {
@@ -649,10 +739,10 @@ describe('SrcSet Builder:', function describeSuite() {
           }, {
             disableVariableQuality: true
           });
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(!src.includes("q="));
           }
         });
@@ -666,10 +756,10 @@ describe('SrcSet Builder:', function describeSuite() {
           }, {
             disableVariableQuality: true
           });
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("q=".concat(QUALITY_OVERRIDE)));
           }
         });
@@ -703,9 +793,9 @@ describe('SrcSet Builder:', function describeSuite() {
         });
         it('should generate the expected default srcset pair values', function testSpec() {
           var resolutions = [100, 116, 134, 156, 182, 210, 244, 282, 328, 380, 442, 512, 594, 688, 798, 926, 1074, 1246, 1446, 1678, 1946, 2258, 2618, 3038, 3524, 4088, 4742, 5500, 6380, 7400, 8192];
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
           var src = srclist.map(function (srcline) {
-            return parseInt(srcline.split(" ")[1].slice(0, -1), 10);
+            return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
           });
 
           for (var i = 0; i < srclist.length; i++) {
@@ -713,9 +803,9 @@ describe('SrcSet Builder:', function describeSuite() {
           }
         });
         it('should not exceed the bounds of [100, 8192]', function testSpec() {
-          var srcsetSplit = srcset.split(",");
-          var min = Number.parseFloat(srcsetSplit[0].split(" ")[1].slice(0, -1));
-          var max = Number.parseFloat(srcsetSplit[srcsetSplit.length - 1].split(" ")[1].slice(0, -1));
+          var srcsetSplit = srcset.split(',');
+          var min = Number.parseFloat(srcsetSplit[0].split(' ')[1].slice(0, -1));
+          var max = Number.parseFloat(srcsetSplit[srcsetSplit.length - 1].split(' ')[1].slice(0, -1));
           assert(min >= 100);
           assert(max <= 8192);
         }); // a 17% testing threshold is used to account for rounding
@@ -724,8 +814,8 @@ describe('SrcSet Builder:', function describeSuite() {
           var INCREMENT_ALLOWED = 0.17;
 
           var srcsetWidths = function () {
-            return srcset.split(",").map(function (srcsetSplit) {
-              return srcsetSplit.split(" ")[1];
+            return srcset.split(',').map(function (srcsetSplit) {
+              return srcsetSplit.split(' ')[1];
             }).map(function (width) {
               return width.slice(0, -1);
             }).map(Number.parseFloat);
@@ -742,12 +832,10 @@ describe('SrcSet Builder:', function describeSuite() {
         it('should correctly sign each URL', function testSpec() {
           var path = '/image.jpg';
           var param;
-          srcset.split(",").map(function (srcsetSplit) {
-            // split the url portion of each srcset entry
-            return srcsetSplit.split(" ")[0];
-          }).map(function (src) {
-            // asserts that the expected 's=' parameter is being generated per entry
-            assert(src.includes("s=")); // param will have all params except for '&s=...'
+          srcset.split(',').map(function (srcsetSplit) {
+            var src = srcsetSplit.split(' ')[0]; // asserts that the expected 's=' parameter is being generated per entry
+
+            assert(src.includes('s=')); // param will have all params except for '&s=...'
 
             param = src.slice(src.indexOf('?'), src.length);
             param = param.slice(0, param.indexOf('s=') - 1);
@@ -769,24 +857,24 @@ describe('SrcSet Builder:', function describeSuite() {
           ar: '3:2'
         });
         it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
-          assert(srcset.split(",").length == 5);
-          var devicePixelRatios = srcset.split(",").map(function (srcsetSplit) {
-            return srcsetSplit.split(" ")[1];
+          assert(srcset.split(',').length == 5);
+          var devicePixelRatios = srcset.split(',').map(function (srcsetSplit) {
+            return srcsetSplit.split(' ')[1];
           });
-          assert(devicePixelRatios[0] == '1x');
-          assert(devicePixelRatios[1] == '2x');
-          assert(devicePixelRatios[2] == '3x');
-          assert(devicePixelRatios[3] == '4x');
-          assert(devicePixelRatios[4] == '5x');
+          assert.strictEqual(devicePixelRatios[0], '1x');
+          assert.strictEqual(devicePixelRatios[1], '2x');
+          assert.strictEqual(devicePixelRatios[2], '3x');
+          assert.strictEqual(devicePixelRatios[3], '4x');
+          assert.strictEqual(devicePixelRatios[4], '5x');
         });
         it('should correctly sign each URL', function testSpec() {
           var path = '/image.jpg';
           var param;
-          srcset.split(",").map(function (srcsetSplit) {
-            return srcsetSplit.split(" ")[0];
+          srcset.split(',').map(function (srcsetSplit) {
+            return srcsetSplit.split(' ')[0];
           }).map(function (src) {
             // asserts that the expected 's=' parameter is being generated per entry
-            assert(src.includes("s=")); // param will have all params except for '&s=...'
+            assert(src.includes('s=')); // param will have all params except for '&s=...'
 
             param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
             var generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
@@ -796,18 +884,18 @@ describe('SrcSet Builder:', function describeSuite() {
           });
         });
         it('should include a dpr param per specified src', function testSpec() {
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("dpr=".concat(i + 1)));
           }
         });
         it('should include variable qualities by default', function testSpec() {
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("q=".concat(DPR_QUALITY[i])));
           }
         });
@@ -819,14 +907,14 @@ describe('SrcSet Builder:', function describeSuite() {
             w: 800,
             q: QUALITY_OVERRIDE
           });
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("q=".concat(QUALITY_OVERRIDE)));
           }
         });
-        it('should correctly disable generated variable qualities via the \'disableVariableQuality\' argument', function testSpec() {
+        it("should correctly disable generated variable qualities via the 'disableVariableQuality' argument", function testSpec() {
           var srcset = new ImgixClient({
             domain: 'testing.imgix.net'
           }).buildSrcSet('image.jpg', {
@@ -834,10 +922,10 @@ describe('SrcSet Builder:', function describeSuite() {
           }, {
             disableVariableQuality: true
           });
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(!src.includes("q="));
           }
         });
@@ -851,10 +939,10 @@ describe('SrcSet Builder:', function describeSuite() {
           }, {
             disableVariableQuality: true
           });
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("q=".concat(QUALITY_OVERRIDE)));
           }
         });
@@ -870,23 +958,23 @@ describe('SrcSet Builder:', function describeSuite() {
           ar: '3:2'
         });
         it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
-          assert(srcset.split(",").length == 5);
-          var devicePixelRatios = srcset.split(",").map(function (srcsetSplit) {
-            return srcsetSplit.split(" ")[1];
+          assert(srcset.split(',').length == 5);
+          var devicePixelRatios = srcset.split(',').map(function (srcsetSplit) {
+            return srcsetSplit.split(' ')[1];
           });
-          assert(devicePixelRatios[0] == '1x');
-          assert(devicePixelRatios[1] == '2x');
-          assert(devicePixelRatios[2] == '3x');
-          assert(devicePixelRatios[3] == '4x');
-          assert(devicePixelRatios[4] == '5x');
+          assert.strictEqual(devicePixelRatios[0], '1x');
+          assert.strictEqual(devicePixelRatios[1], '2x');
+          assert.strictEqual(devicePixelRatios[2], '3x');
+          assert.strictEqual(devicePixelRatios[3], '4x');
+          assert.strictEqual(devicePixelRatios[4], '5x');
         });
         it('should correctly sign each URL', function testSpec() {
           var path = '/image.jpg';
-          srcset.split(",").map(function (srcsetSplit) {
-            return srcsetSplit.split(" ")[0];
+          srcset.split(',').map(function (srcsetSplit) {
+            return srcsetSplit.split(' ')[0];
           }).map(function (src) {
             // asserts that the expected 's=' parameter is being generated per entry
-            assert(src.includes("s=")); // param will have all params except for '&s=...'
+            assert(src.includes('s=')); // param will have all params except for '&s=...'
 
             var param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
             var generated_signature = src.slice(src.indexOf('s=') + 2, src.length);
@@ -896,18 +984,18 @@ describe('SrcSet Builder:', function describeSuite() {
           });
         });
         it('should include a dpr param per specified src', function testSpec() {
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("dpr=".concat(i + 1)));
           }
         });
         it('should include variable qualities by default', function testSpec() {
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("q=".concat(DPR_QUALITY[i])));
           }
         });
@@ -919,14 +1007,14 @@ describe('SrcSet Builder:', function describeSuite() {
             w: 800,
             q: QUALITY_OVERRIDE
           });
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("q=".concat(QUALITY_OVERRIDE)));
           }
         });
-        it('should correctly disable generated variable qualities via the \'disableVariableQuality\' argument', function testSpec() {
+        it("should correctly disable generated variable qualities via the 'disableVariableQuality' argument", function testSpec() {
           var srcset = new ImgixClient({
             domain: 'testing.imgix.net'
           }).buildSrcSet('image.jpg', {
@@ -934,10 +1022,10 @@ describe('SrcSet Builder:', function describeSuite() {
           }, {
             disableVariableQuality: true
           });
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(!src.includes("q="));
           }
         });
@@ -951,10 +1039,10 @@ describe('SrcSet Builder:', function describeSuite() {
           }, {
             disableVariableQuality: true
           });
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
 
           for (var i = 0; i < srclist.length; i++) {
-            var src = srclist[i].split(" ")[0];
+            var src = srclist[i].split(' ')[0];
             assert(src.includes("q=".concat(QUALITY_OVERRIDE)));
           }
         });
@@ -978,9 +1066,9 @@ describe('SrcSet Builder:', function describeSuite() {
         });
         it('should generate the expected default srcset pair values', function testSpec() {
           var resolutions = [500, 580, 672, 780, 906, 1050, 1218, 1414, 1640, 1902, 2000];
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
           var src = srclist.map(function (srcline) {
-            return parseInt(srcline.split(" ")[1].slice(0, -1), 10);
+            return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
           });
 
           for (var i = 0; i < srclist.length; i++) {
@@ -988,9 +1076,9 @@ describe('SrcSet Builder:', function describeSuite() {
           }
         });
         it('should not exceed the bounds of [100, 8192]', function testSpec() {
-          var srcsetSplit = srcset.split(",");
-          var min = Number.parseFloat(srcsetSplit[0].split(" ")[1].slice(0, -1));
-          var max = Number.parseFloat(srcsetSplit[srcsetSplit.length - 1].split(" ")[1].slice(0, -1));
+          var srcsetSplit = srcset.split(',');
+          var min = Number.parseFloat(srcsetSplit[0].split(' ')[1].slice(0, -1));
+          var max = Number.parseFloat(srcsetSplit[srcsetSplit.length - 1].split(' ')[1].slice(0, -1));
           assert(min >= MIN);
           assert(max <= MAX);
         });
@@ -1081,7 +1169,7 @@ describe('SrcSet Builder:', function describeSuite() {
         });
       });
       describe('with a widthTolerance parameter provided', function describeSuite() {
-        var WIDTH_TOLERANCE = .20;
+        var WIDTH_TOLERANCE = 0.2;
         var client = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false
@@ -1094,9 +1182,9 @@ describe('SrcSet Builder:', function describeSuite() {
         });
         it('should generate the expected default srcset pair values', function testSpec() {
           var resolutions = [100, 140, 196, 274, 384, 538, 752, 1054, 1476, 2066, 2892, 4050, 5670, 7938, 8192];
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
           var src = srclist.map(function (srcline) {
-            return parseInt(srcline.split(" ")[1].slice(0, -1), 10);
+            return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
           });
 
           for (var i = 0; i < srclist.length; i++) {
@@ -1104,9 +1192,9 @@ describe('SrcSet Builder:', function describeSuite() {
           }
         });
         it('should not exceed the bounds of [100, 8192]', function testSpec() {
-          var srcsetSplit = srcset.split(",");
-          var min = Number.parseFloat(srcsetSplit[0].split(" ")[1].slice(0, -1));
-          var max = Number.parseFloat(srcsetSplit[srcsetSplit.length - 1].split(" ")[1].slice(0, -1));
+          var srcsetSplit = srcset.split(',');
+          var min = Number.parseFloat(srcsetSplit[0].split(' ')[1].slice(0, -1));
+          var max = Number.parseFloat(srcsetSplit[srcsetSplit.length - 1].split(' ')[1].slice(0, -1));
           assert(min >= 100);
           assert(max <= 8192);
         });
@@ -1114,8 +1202,8 @@ describe('SrcSet Builder:', function describeSuite() {
           var INCREMENT_ALLOWED = WIDTH_TOLERANCE * 2 + 1;
 
           var srcsetWidths = function () {
-            return srcset.split(",").map(function (srcsetSplit) {
-              return srcsetSplit.split(" ")[1];
+            return srcset.split(',').map(function (srcsetSplit) {
+              return srcsetSplit.split(' ')[1];
             }).map(function (width) {
               return width.slice(0, -1);
             }).map(Number.parseFloat);
@@ -1143,7 +1231,7 @@ describe('SrcSet Builder:', function describeSuite() {
             new ImgixClient({
               domain: 'testing.imgix.net'
             }).buildSrcSet('image.jpg', {}, {
-              widthTolerance: -0.10
+              widthTolerance: -0.1
             });
           }, Error);
         });
@@ -1178,9 +1266,9 @@ describe('SrcSet Builder:', function describeSuite() {
         });
         it('should generate the expected default srcset pair values', function testSpec() {
           var resolutions = CUSTOM_WIDTHS;
-          var srclist = srcset.split(",");
+          var srclist = srcset.split(',');
           var src = srclist.map(function (srcline) {
-            return parseInt(srcline.split(" ")[1].slice(0, -1), 10);
+            return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
           });
 
           for (var i = 0; i < srclist.length; i++) {
@@ -1213,6 +1301,22 @@ describe('SrcSet Builder:', function describeSuite() {
               widths: [100, false]
             });
           }, Error);
+        });
+      });
+      describe('with widthTolerance, minWidth, and maxWidth values which have caused duplicate values in the past', function describeSuite() {
+        var client = new ImgixClient({
+          domain: 'testing.imgix.net',
+          includeLibraryParam: false
+        });
+        var srcset = client.buildSrcSet('image.jpg', {}, {
+          widthTolerance: 0.0999,
+          minWidth: 1000,
+          maxWidth: 1200
+        });
+        it('should not repeat the largest width when a running value just below maxWidth is reached', function testSpec() {
+          var srclist = srcset.split(',');
+          assert.equal(parseInt(srclist[srclist.length - 1].split(' ')[1].slice(0, -1), 10), 1200);
+          assert.notEqual(srclist[srclist.length - 2], srclist[srclist.length - 1]);
         });
       });
     });

@@ -7,7 +7,7 @@ export const MIN_SRCSET_WIDTH = 100;
 // maximum generated srcset width
 export const MAX_SRCSET_WIDTH = 8192;
 // default tolerable percent difference between srcset pair widths
-export const DEFAULT_SRCSET_WIDTH_TOLERANCE = .08;
+export const DEFAULT_SRCSET_WIDTH_TOLERANCE = 0.08;
 
 // default quality parameter values mapped by each dpr srcset entry
 export const DPR_QUALITIES = {
@@ -15,7 +15,7 @@ export const DPR_QUALITIES = {
   2: 50,
   3: 35,
   4: 23,
-  5: 20
+  5: 20,
 };
 
 export const DEFAULT_OPTIONS = {

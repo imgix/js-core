@@ -28,6 +28,127 @@ function _createClass(Constructor, protoProps, staticProps) {
   return Constructor;
 }
 
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    if (enumerableOnly) symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    });
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        _defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
+
+function _slicedToArray(arr, i) {
+  return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return _arrayLikeToArray(arr);
+}
+
+function _arrayWithHoles(arr) {
+  if (Array.isArray(arr)) return arr;
+}
+
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
+function _iterableToArrayLimit(arr, i) {
+  if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return;
+  var _arr = [];
+  var _n = true;
+  var _d = false;
+  var _e = undefined;
+
+  try {
+    for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+      _arr.push(_s.value);
+
+      if (i && _arr.length === i) break;
+    }
+  } catch (err) {
+    _d = true;
+    _e = err;
+  } finally {
+    try {
+      if (!_n && _i["return"] != null) _i["return"]();
+    } finally {
+      if (_d) throw _e;
+    }
+  }
+
+  return _arr;
+}
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return _arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen);
+}
+
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i];
+
+  return arr2;
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+function _nonIterableRest() {
+  throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
 // package version used in the ix-lib parameter
 var VERSION = '2.3.2'; // regex pattern used to determine if a domain is valid
 
@@ -37,7 +158,7 @@ var MIN_SRCSET_WIDTH = 100; // maximum generated srcset width
 
 var MAX_SRCSET_WIDTH = 8192; // default tolerable percent difference between srcset pair widths
 
-var DEFAULT_SRCSET_WIDTH_TOLERANCE = .08; // default quality parameter values mapped by each dpr srcset entry
+var DEFAULT_SRCSET_WIDTH_TOLERANCE = 0.08; // default quality parameter values mapped by each dpr srcset entry
 
 var DPR_QUALITIES = {
   1: 75,
@@ -108,12 +229,11 @@ var ImgixClient = /*#__PURE__*/function () {
 
     _classCallCheck(this, ImgixClient);
 
-    var settings = Object.assign({}, DEFAULT_OPTIONS);
-    this.settings = Object.assign(settings, opts); // a cache to store memoized srcset width-pairs
+    this.settings = _objectSpread2(_objectSpread2({}, DEFAULT_OPTIONS), opts); // a cache to store memoized srcset width-pairs
 
     this.targetWidthsCache = {};
 
-    if (typeof this.settings.domain != "string") {
+    if (typeof this.settings.domain != 'string') {
       throw new Error('ImgixClient must be passed a valid string domain');
     }
 
@@ -122,7 +242,7 @@ var ImgixClient = /*#__PURE__*/function () {
     }
 
     if (this.settings.includeLibraryParam) {
-      this.settings.libraryParam = "js-" + VERSION;
+      this.settings.libraryParam = 'js-' + VERSION;
     }
 
     this.settings.urlPrefix = this.settings.useHTTPS ? 'https://' : 'http://';
@@ -136,57 +256,35 @@ var ImgixClient = /*#__PURE__*/function () {
 
       var sanitizedPath = this._sanitizePath(path);
 
-      var queryParams = this._buildParams(params);
+      var finalParams = this._buildParams(params);
 
       if (!!this.settings.secureURLToken) {
-        var securedParams = this._signParams(sanitizedPath, queryParams);
-
-        return this.settings.urlPrefix + this.settings.domain + sanitizedPath + securedParams;
+        finalParams = this._signParams(sanitizedPath, finalParams);
       }
 
-      return this.settings.urlPrefix + this.settings.domain + sanitizedPath + queryParams;
+      return this.settings.urlPrefix + this.settings.domain + sanitizedPath + finalParams;
     }
   }, {
     key: "_buildParams",
     value: function _buildParams() {
       var params = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-      var queryParams = [];
+      var queryParams = [].concat(_toConsumableArray(this.settings.libraryParam ? ["ixlib=".concat(this.settings.libraryParam)] : []), _toConsumableArray(Object.entries(params).map(function (_ref) {
+        var _ref2 = _slicedToArray(_ref, 2),
+            key = _ref2[0],
+            value = _ref2[1];
 
-      if (this.settings.libraryParam) {
-        queryParams.push('ixlib=' + this.settings.libraryParam);
-      }
-
-      for (var key in params) {
-        var val = params[key];
         var encodedKey = encodeURIComponent(key);
-        var encodedVal = void 0;
-
-        if (key.substr(-2) === '64') {
-          encodedVal = jsBase64.Base64.encodeURI(val);
-        } else {
-          encodedVal = encodeURIComponent(val);
-        }
-
-        queryParams.push(encodedKey + "=" + encodedVal);
-      }
-
-      if (queryParams[0]) {
-        queryParams[0] = "?" + queryParams[0];
-      }
-
-      return queryParams.join('&');
+        var encodedValue = key.substr(-2) === '64' ? jsBase64.Base64.encodeURI(value) : encodeURIComponent(value);
+        return "".concat(encodedKey, "=").concat(encodedValue);
+      })));
+      return "".concat(queryParams.length > 0 ? '?' : '').concat(queryParams.join('&'));
     }
   }, {
     key: "_signParams",
     value: function _signParams(path, queryParams) {
       var signatureBase = this.settings.secureURLToken + path + queryParams;
       var signature = md5(signatureBase);
-
-      if (queryParams.length > 0) {
-        return queryParams = queryParams + "&s=" + signature;
-      } else {
-        return queryParams = "?s=" + signature;
-      }
+      return queryParams.length > 0 ? queryParams + '&s=' + signature : '?s=' + signature;
     }
   }, {
     key: "_sanitizePath",
@@ -208,91 +306,80 @@ var ImgixClient = /*#__PURE__*/function () {
     }
   }, {
     key: "buildSrcSet",
-    value: function buildSrcSet(path, params, options) {
-      var _options = options || {};
+    value: function buildSrcSet(path) {
+      var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+      var w = params.w,
+          h = params.h,
+          ar = params.ar;
 
-      var _params = params || {};
-
-      var width = _params.w;
-      var height = _params.h;
-      var aspectRatio = _params.ar;
-
-      if (width || height && aspectRatio) {
-        return this._buildDPRSrcSet(path, _params, _options);
+      if (w || h && ar) {
+        return this._buildDPRSrcSet(path, params, options);
       } else {
-        return this._buildSrcSetPairs(path, _params, _options);
+        return this._buildSrcSetPairs(path, params, options);
       }
     }
   }, {
     key: "_buildSrcSetPairs",
     value: function _buildSrcSetPairs(path, params, options) {
-      var srcsetOptions = validateAndDestructureOptions(options);
-      var srcset = [];
-      var customWidths = options.widths;
-      var widthTolerance = srcsetOptions[0],
-          minWidth = srcsetOptions[1],
-          maxWidth = srcsetOptions[2];
+      var _this = this;
+
+      var _validateAndDestructu = validateAndDestructureOptions(options),
+          _validateAndDestructu2 = _slicedToArray(_validateAndDestructu, 3),
+          widthTolerance = _validateAndDestructu2[0],
+          minWidth = _validateAndDestructu2[1],
+          maxWidth = _validateAndDestructu2[2];
+
       var targetWidths;
 
-      if (customWidths) {
-        validateWidths(customWidths);
-        targetWidths = customWidths;
+      if (options.widths) {
+        validateWidths(options.widths);
+        targetWidths = _toConsumableArray(options.widths);
       } else {
         validateRange(minWidth, maxWidth);
         validateWidthTolerance(widthTolerance);
         targetWidths = this._generateTargetWidths(widthTolerance, minWidth, maxWidth);
       }
 
-      var queryParams = {};
-
-      for (var key in params) {
-        queryParams[key] = params[key];
-      }
-
-      for (var i = 0; i < targetWidths.length; i++) {
-        var currentWidth = targetWidths[i];
-        queryParams.w = currentWidth;
-        srcset.push(this.buildURL(path, queryParams) + ' ' + currentWidth + 'w');
-      }
-
+      var srcset = targetWidths.map(function (w) {
+        return "".concat(_this.buildURL(path, _objectSpread2(_objectSpread2({}, params), {}, {
+          w: w
+        })), " ").concat(w, "w");
+      });
       return srcset.join(',\n');
     }
   }, {
     key: "_buildDPRSrcSet",
     value: function _buildDPRSrcSet(path, params, options) {
-      var srcset = [];
+      var _this2 = this;
+
       var targetRatios = [1, 2, 3, 4, 5];
       var disableVariableQuality = options.disableVariableQuality || false;
-      var queryParams = {};
-
-      for (var key in params) {
-        queryParams[key] = params[key];
-      }
-
-      var quality = queryParams.q;
 
       if (!disableVariableQuality) {
         validateVariableQuality(disableVariableQuality);
       }
 
-      for (var i = 0; i < targetRatios.length; i++) {
-        var currentRatio = targetRatios[i];
-        queryParams.dpr = currentRatio;
+      var withQuality = function withQuality(path, params, dpr) {
+        return "".concat(_this2.buildURL(path, _objectSpread2(_objectSpread2({}, params), {}, {
+          dpr: dpr,
+          q: params.q || DPR_QUALITIES[dpr]
+        })), " ").concat(dpr, "x");
+      };
 
-        if (!disableVariableQuality) {
-          queryParams.q = quality || DPR_QUALITIES[currentRatio];
-        }
-
-        srcset.push(this.buildURL(path, queryParams) + ' ' + currentRatio + 'x');
-      }
-
+      var srcset = disableVariableQuality ? targetRatios.map(function (dpr) {
+        return "".concat(_this2.buildURL(path, _objectSpread2(_objectSpread2({}, params), {}, {
+          dpr: dpr
+        })), " ").concat(dpr, "x");
+      }) : targetRatios.map(function (dpr) {
+        return withQuality(path, params, dpr);
+      });
       return srcset.join(',\n');
-    }
+    } // returns an array of width values used during srcset generation
+
   }, {
     key: "_generateTargetWidths",
-    // returns an array of width values used during scrset generation
     value: function _generateTargetWidths(widthTolerance, minWidth, maxWidth) {
-      var resolutions = [];
       var INCREMENT_PERCENTAGE = widthTolerance;
 
       var _minWidth = Math.floor(minWidth);
@@ -300,6 +387,11 @@ var ImgixClient = /*#__PURE__*/function () {
       var _maxWidth = Math.floor(maxWidth);
 
       var cacheKey = INCREMENT_PERCENTAGE + '/' + _minWidth + '/' + _maxWidth;
+      var resolutions = [_minWidth];
+
+      if (minWidth === maxWidth) {
+        return resolutions;
+      }
 
       if (cacheKey in this.targetWidthsCache) {
         return this.targetWidthsCache[cacheKey];
@@ -309,14 +401,13 @@ var ImgixClient = /*#__PURE__*/function () {
         return 2 * Math.round(n / 2);
       };
 
-      var prev = _minWidth;
+      var tempWidth = _minWidth;
 
-      while (prev < _maxWidth) {
-        resolutions.push(ensureEven(prev));
-        prev *= 1 + INCREMENT_PERCENTAGE * 2;
+      while (resolutions[resolutions.length - 1] < _maxWidth) {
+        tempWidth *= 1 + INCREMENT_PERCENTAGE * 2;
+        resolutions.push(Math.min(ensureEven(tempWidth), _maxWidth));
       }
 
-      resolutions.push(_maxWidth);
       this.targetWidthsCache[cacheKey] = resolutions;
       return resolutions;
     }
@@ -546,7 +637,7 @@ describe('URL Builder:', function describeSuite() {
     });
     it('url-encodes parameter keys properly', function testSpec() {
       var params = {
-        'w$': 400
+        w$: 400
       };
       var expectation = '?w%24=400';
 
