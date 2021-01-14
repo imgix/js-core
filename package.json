@@ -1,6 +1,6 @@
 {
   "name": "imgix-core-js",
-  "description": "Core imgix URL and srcset builder library.",
+  "description": "A JavaScript client library for generating image URLs with imgix",
   "version": "2.3.2",
   "repository": "https://github.com/imgix/imgix-core-js",
   "license": "BSD-2-Clause",
