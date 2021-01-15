@@ -1,6 +1,6 @@
 import md5 from 'md5';
 import assert from 'assert';
-import ImgixClient from '../src/main';
+import ImgixClient from '../src/main.mjs';
 
 describe('SrcSet Builder:', function describeSuite() {
   describe('Calling buildSrcSet()', function describeSuite() {
