@@ -7,7 +7,6 @@
   "main": "dist/imgix-core-js.cjs.js",
   "module": "dist/imgix-core-js.esm.js",
   "browser": "dist/imgix-core-js.umd.js",
-  "type": "module",
   "types": "dist/imgix-core-js.d.ts",
   "dependencies": {
     "js-base64": "~2.6.0",
@@ -15,9 +14,11 @@
   },
   "devDependencies": {
     "@babel/core": "7.12.10",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/preset-env": "7.12.11",
     "@babel/register": "7.12.10",
     "benchmark": "2.1.4",
+    "esm": "^3.2.25",
     "mocha": "8.2.1",
     "prettier": "2.2.1",
     "rollup": "1.32.1",
@@ -36,7 +37,7 @@
     "prepublish": "npm run build && npm run compile",
     "pretest": "npm run build",
     "pretty": "prettier --write '{src,test}/**/*.js'",
-    "test": "mocha ./test/build/*.cjs",
+    "test": "mocha --require esm --recursive './test/*.js'",
     "test:performance": "mocha test/performance/*.js"
   },
   "files": [

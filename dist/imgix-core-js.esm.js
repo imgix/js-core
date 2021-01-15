@@ -392,15 +392,11 @@ var ImgixClient = /*#__PURE__*/function () {
         return this.targetWidthsCache[cacheKey];
       }
 
-      var ensureEven = function ensureEven(n) {
-        return 2 * Math.round(n / 2);
-      };
-
       var tempWidth = _minWidth;
 
       while (resolutions[resolutions.length - 1] < _maxWidth) {
         tempWidth *= 1 + INCREMENT_PERCENTAGE * 2;
-        resolutions.push(Math.min(ensureEven(tempWidth), _maxWidth));
+        resolutions.push(Math.min(Math.round(tempWidth), _maxWidth));
       }
 
       this.targetWidthsCache[cacheKey] = resolutions;
