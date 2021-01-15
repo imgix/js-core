@@ -397,15 +397,11 @@ var ImgixClient = /*#__PURE__*/function () {
         return this.targetWidthsCache[cacheKey];
       }
 
-      var ensureEven = function ensureEven(n) {
-        return 2 * Math.round(n / 2);
-      };
-
       var tempWidth = _minWidth;
 
       while (resolutions[resolutions.length - 1] < _maxWidth) {
         tempWidth *= 1 + INCREMENT_PERCENTAGE * 2;
-        resolutions.push(Math.min(ensureEven(tempWidth), _maxWidth));
+        resolutions.push(Math.min(Math.round(tempWidth), _maxWidth));
       }
 
       this.targetWidthsCache[cacheKey] = resolutions;
@@ -432,7 +428,7 @@ describe('SrcSet Builder:', function describeSuite() {
           assert(cachedValue !== undefined && cachedValue.length == 31);
         });
         it('should generate the expected default srcset pair values', function testSpec() {
-          var resolutions = [100, 116, 134, 156, 182, 210, 244, 282, 328, 380, 442, 512, 594, 688, 798, 926, 1074, 1246, 1446, 1678, 1946, 2258, 2618, 3038, 3524, 4088, 4742, 5500, 6380, 7400, 8192];
+          var resolutions = [100, 116, 135, 156, 181, 210, 244, 283, 328, 380, 441, 512, 594, 689, 799, 927, 1075, 1247, 1446, 1678, 1946, 2257, 2619, 3038, 3524, 4087, 4741, 5500, 6380, 7401, 8192];
           var srclist = srcset.split(',');
           var src = srclist.map(function (srcline) {
             return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
@@ -599,7 +595,7 @@ describe('SrcSet Builder:', function describeSuite() {
           h: 100
         });
         it('should generate the expected default srcset pair values', function testSpec() {
-          var resolutions = [100, 116, 134, 156, 182, 210, 244, 282, 328, 380, 442, 512, 594, 688, 798, 926, 1074, 1246, 1446, 1678, 1946, 2258, 2618, 3038, 3524, 4088, 4742, 5500, 6380, 7400, 8192];
+          var resolutions = [100, 116, 135, 156, 181, 210, 244, 283, 328, 380, 441, 512, 594, 689, 799, 927, 1075, 1247, 1446, 1678, 1946, 2257, 2619, 3038, 3524, 4087, 4741, 5500, 6380, 7401, 8192];
           var srclist = srcset.split(',');
           var src = srclist.map(function (srcline) {
             return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
@@ -792,7 +788,7 @@ describe('SrcSet Builder:', function describeSuite() {
           assert.strictEqual(srcset.split(',').length, 31);
         });
         it('should generate the expected default srcset pair values', function testSpec() {
-          var resolutions = [100, 116, 134, 156, 182, 210, 244, 282, 328, 380, 442, 512, 594, 688, 798, 926, 1074, 1246, 1446, 1678, 1946, 2258, 2618, 3038, 3524, 4088, 4742, 5500, 6380, 7400, 8192];
+          var resolutions = [100, 116, 135, 156, 181, 210, 244, 283, 328, 380, 441, 512, 594, 689, 799, 927, 1075, 1247, 1446, 1678, 1946, 2257, 2619, 3038, 3524, 4087, 4741, 5500, 6380, 7401, 8192];
           var srclist = srcset.split(',');
           var src = srclist.map(function (srcline) {
             return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
@@ -1065,7 +1061,7 @@ describe('SrcSet Builder:', function describeSuite() {
           assert.strictEqual(srcset.split(',').length, 11);
         });
         it('should generate the expected default srcset pair values', function testSpec() {
-          var resolutions = [500, 580, 672, 780, 906, 1050, 1218, 1414, 1640, 1902, 2000];
+          var resolutions = [500, 580, 673, 780, 905, 1050, 1218, 1413, 1639, 1901, 2000];
           var srclist = srcset.split(',');
           var src = srclist.map(function (srcline) {
             return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
@@ -1181,7 +1177,7 @@ describe('SrcSet Builder:', function describeSuite() {
           assert.equal(srcset.split(',').length, 15);
         });
         it('should generate the expected default srcset pair values', function testSpec() {
-          var resolutions = [100, 140, 196, 274, 384, 538, 752, 1054, 1476, 2066, 2892, 4050, 5670, 7938, 8192];
+          var resolutions = [100, 140, 196, 274, 384, 538, 753, 1054, 1476, 2066, 2893, 4050, 5669, 7937, 8192];
           var srclist = srcset.split(',');
           var src = srclist.map(function (srcline) {
             return parseInt(srcline.split(' ')[1].slice(0, -1), 10);

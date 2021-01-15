@@ -180,14 +180,10 @@ export default class ImgixClient {
       return this.targetWidthsCache[cacheKey];
     }
 
-    const ensureEven = (n) => {
-      return 2 * Math.round(n / 2);
-    };
-
     let tempWidth = _minWidth;
     while (resolutions[resolutions.length - 1] < _maxWidth) {
       tempWidth *= 1 + INCREMENT_PERCENTAGE * 2;
-      resolutions.push(Math.min(ensureEven(tempWidth), _maxWidth));
+      resolutions.push(Math.min(Math.round(tempWidth), _maxWidth));
     }
 
     this.targetWidthsCache[cacheKey] = resolutions;
