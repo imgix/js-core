@@ -1,6 +1,6 @@
 import assert from 'assert';
-import ImgixClient from '../src/main';
-import { VERSION } from '../src/constants';
+import ImgixClient from '../src/main.mjs';
+import { VERSION } from '../src/constants.mjs';
 
 describe('Imgix client:', function describeSuite() {
   describe('The constructor', function describeSuite() {

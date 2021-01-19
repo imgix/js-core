@@ -6,7 +6,7 @@ import {
   DOMAIN_REGEX,
   DEFAULT_OPTIONS,
   DPR_QUALITIES,
-} from './constants';
+} from './constants.mjs';
 
 import {
   validateRange,
@@ -14,7 +14,7 @@ import {
   validateAndDestructureOptions,
   validateVariableQuality,
   validateWidthTolerance,
-} from './validators';
+} from './validators.mjs';
 
 export default class ImgixClient {
   constructor(opts = {}) {

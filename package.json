@@ -36,7 +36,7 @@
     "prepublish": "npm run build && npm run compile",
     "pretest": "npm run build",
     "pretty": "prettier --write '{src,test}/**/*.js'",
-    "test": "mocha ./test/build/*.cjs",
+    "test": "mocha ./test/*.mjs",
     "test:performance": "mocha test/performance/*.js"
   },
   "files": [

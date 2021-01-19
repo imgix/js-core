@@ -1,5 +1,5 @@
 import assert from 'assert';
-import ImgixClient from '../src/main';
+import ImgixClient from '../src/main.mjs';
 
 describe('URL Builder:', function describeSuite() {
   describe('Calling _sanitizePath()', function describeSuite() {
