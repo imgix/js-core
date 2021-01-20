@@ -1074,6 +1074,16 @@ describe('SrcSet Builder:', function describeSuite() {
           }, Error);
         });
 
+        it('produces srcset with min and max widths when widthTolerance is large', function testSpec() {
+          const srcset = new ImgixClient({
+            domain: 'testing.imgix.net',
+          }).buildSrcSet('image.jpg', {}, { widthTolerance: 999999.999 });
+
+          const actualLength = srcset.split(',').length;
+
+          assert.strictEqual(actualLength, 2);
+        });
+
         it('memoizes generated srcset width pairs', function testSpec() {
           let DEFAULT_MIN_WIDTH = 100;
           let DEFAULT_MAX_WIDTH = 8192;
