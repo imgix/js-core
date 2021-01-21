@@ -85,9 +85,9 @@ describe('Validators:', function () {
       });
     });
 
-    it('throws if widthTolerance is <= 0', () => {
+    it('throws if widthTolerance is < 0.01', () => {
       assert.throws(() => {
-        validateWidthTolerance(0);
+        validateWidthTolerance(0.00999999999);
       });
     });
 
@@ -103,8 +103,17 @@ describe('Validators:', function () {
       });
     });
 
-    // TODO: should fail.
-    it('widthTolerance === 0.001', () => {});
+    it('does not throw on valid lower bound of 0.01', () => {
+      assert.doesNotThrow(() => {
+        validateWidthTolerance(0.01);
+      });
+    });
+
+    it('does not throw when passed a large value', () => {
+      assert.doesNotThrow(() => {
+        validateWidthTolerance(99999999.99);
+      });
+    });
   });
 
   describe('Testing validateVariableQuality', function () {

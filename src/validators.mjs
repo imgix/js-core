@@ -40,9 +40,9 @@ export function validateRange(min, max) {
 }
 
 export function validateWidthTolerance(widthTolerance) {
-  if (typeof widthTolerance != 'number' || widthTolerance <= 0) {
+  if (typeof widthTolerance != 'number' || widthTolerance < 0.01) {
     throw new Error(
-      'The srcset widthTolerance argument can only be passed a positive scalar number',
+      'The srcset widthTolerance must be a number greater than or equal to 0.01',
     );
   }
 }
