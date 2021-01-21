@@ -3,7 +3,7 @@ import ImgixClient from '../src/main.mjs';
 
 describe('URL Builder:', function describeSuite() {
   describe('Calling _sanitizePath()', function describeSuite() {
-    var client;
+    let client;
 
     beforeEach(function setupClient() {
       client = new ImgixClient({
@@ -12,178 +12,179 @@ describe('URL Builder:', function describeSuite() {
     });
 
     describe('with a simple path', function describeSuite() {
-      var path = 'images/1.png';
+      const path = 'images/1.png';
 
       it('prepends a leading slash', function testSpec() {
-        let expectation = '/';
-        let result = client._sanitizePath(path);
+        const expectation = '/';
+        const result = client._sanitizePath(path);
 
-        assert.strictEqual(expectation, result.substring(0, 1));
+        assert.strictEqual(result.substring(0, 1), expectation);
       });
 
       it('otherwise returns the same exact path', function testSpec() {
-        let expectation = path;
-        let result = client._sanitizePath(path);
+        const expectation = path;
+        const result = client._sanitizePath(path);
 
-        assert.strictEqual(expectation, result.substring(1));
+        assert.strictEqual(result.substring(1), expectation);
       });
     });
 
     describe('with a path that contains a leading slash', function describeSuite() {
-      var path = '/images/1.png';
+      const path = '/images/1.png';
 
       it('retains the leading slash', function testSpec() {
-        let expectation = '/';
-        let result = client._sanitizePath(path);
+        const expectation = '/';
+        const result = client._sanitizePath(path);
 
-        assert.strictEqual(expectation, result.substring(0, 1));
+        assert.strictEqual(result.substring(0, 1), expectation);
       });
 
       it('otherwise returns the same exact path', function testSpec() {
-        var expectation = path.substring(1),
-          result = client._sanitizePath(path);
+        const expectation = path.substring(1);
+        const result = client._sanitizePath(path);
 
-        assert.equal(expectation, result.substring(1));
+        assert.strictEqual(result.substring(1), expectation);
       });
     });
 
     describe('with a path that contains unencoded characters', function describeSuite() {
-      var path = 'images/"image 1".png';
+      const path = 'images/"image 1".png';
 
       it('prepends a leading slash', function testSpec() {
-        let expectation = '/';
-        let result = client._sanitizePath(path);
+        const expectation = '/';
+        const result = client._sanitizePath(path);
 
         assert.strictEqual(expectation, result.substring(0, 1));
       });
 
       it('otherwise returns the same path, except with the characters encoded properly', function testSpec() {
-        let expectation = encodeURI(path);
-        let result = client._sanitizePath(path);
+        const expectation = encodeURI(path);
+        const result = client._sanitizePath(path);
 
-        assert.strictEqual(expectation, result.substring(1));
+        assert.strictEqual(result.substring(1), expectation);
       });
     });
+
     describe('with a path that contains a hash character', function describeSuite() {
-      var path = '#blessed.png';
+      const path = '#blessed.png';
 
       it('properly encodes the hash character', function testSpec() {
-        let expectation = path.replace(/^#/, '%23');
-        let result = client._sanitizePath(path);
+        const expectation = path.replace(/^#/, '%23');
+        const result = client._sanitizePath(path);
 
-        assert.strictEqual(expectation, result.substring(1));
+        assert.strictEqual(result.substring(1), expectation);
       });
     });
 
     describe('with a path that contains a question mark', function describeSuite() {
-      var path = '?what.png';
+      const path = '?what.png';
 
       it('properly encodes the question mark', function testSpec() {
-        let expectation = path.replace(/^\?/, '%3F');
-        let result = client._sanitizePath(path);
+        const expectation = path.replace(/^\?/, '%3F');
+        const result = client._sanitizePath(path);
 
-        assert.strictEqual(expectation, result.substring(1));
+        assert.strictEqual(result.substring(1), expectation);
       });
     });
 
     describe('with a path that contains a colon', function describeSuite() {
-      var path = ':emoji.png';
+      const path = ':emoji.png';
 
       it('properly encodes the colon', function testSpec() {
-        let expectation = path.replace(/^\:/, '%3A');
-        let result = client._sanitizePath(path);
+        const expectation = path.replace(/^\:/, '%3A');
+        const result = client._sanitizePath(path);
 
-        assert.strictEqual(expectation, result.substring(1));
+        assert.strictEqual(result.substring(1), expectation);
       });
     });
 
     describe('with a full HTTP URL', function describeSuite() {
-      var path = 'http://example.com/images/1.png';
+      const path = 'http://example.com/images/1.png';
 
       it('prepends a leading slash, unencoded', function testSpec() {
-        let expectation = '/';
-        let result = client._sanitizePath(path);
+        const expectation = '/';
+        const result = client._sanitizePath(path);
 
-        assert.strictEqual(expectation, result.substring(0, 1));
+        assert.strictEqual(result.substring(0, 1), expectation);
       });
 
       it('otherwise returns a fully-encoded version of the given URL', function testSpec() {
-        let expectation = encodeURIComponent(path);
-        let result = client._sanitizePath(path);
+        const expectation = encodeURIComponent(path);
+        const result = client._sanitizePath(path);
 
-        assert.strictEqual(expectation, result.substring(1));
+        assert.strictEqual(result.substring(1), expectation);
       });
     });
 
     describe('with a full HTTPS URL', function describeSuite() {
-      var path = 'https://example.com/images/1.png';
+      const path = 'https://example.com/images/1.png';
 
       it('prepends a leading slash, unencoded', function testSpec() {
-        let expectation = '/';
-        let result = client._sanitizePath(path);
+        const expectation = '/';
+        const result = client._sanitizePath(path);
 
-        assert.strictEqual(expectation, result.substring(0, 1));
+        assert.strictEqual(result.substring(0, 1), expectation);
       });
 
       it('otherwise returns a fully-encoded version of the given URL', function testSpec() {
-        let expectation = encodeURIComponent(path);
-        let result = client._sanitizePath(path);
+        const expectation = encodeURIComponent(path);
+        const result = client._sanitizePath(path);
 
-        assert.strictEqual(expectation, result.substring(1));
+        assert.strictEqual(result.substring(1), expectation);
       });
     });
 
     describe('with a full URL that contains a leading slash', function describeSuite() {
-      var path = '/http://example.com/images/1.png';
+      const path = '/http://example.com/images/1.png';
 
       it('retains the leading slash, unencoded', function testSpec() {
-        let expectation = '/';
-        let result = client._sanitizePath(path);
+        const expectation = '/';
+        const result = client._sanitizePath(path);
 
-        assert.strictEqual(expectation, result.substring(0, 1));
+        assert.strictEqual(result.substring(0, 1), expectation);
       });
 
       it('otherwise returns a fully-encoded version of the given URL', function testSpec() {
-        let expectation = encodeURIComponent(path.substring(1));
-        let result = client._sanitizePath(path);
+        const expectation = encodeURIComponent(path.substring(1));
+        const result = client._sanitizePath(path);
 
-        assert.strictEqual(expectation, result.substring(1));
+        assert.strictEqual(result.substring(1), expectation);
       });
     });
 
     describe('with a full URL that contains encoded characters', function describeSuite() {
-      var path = 'http://example.com/images/1.png?foo=%20';
+      const path = 'http://example.com/images/1.png?foo=%20';
 
       it('prepends a leading slash, unencoded', function testSpec() {
-        let expectation = '/';
-        let result = client._sanitizePath(path);
+        const expectation = '/';
+        const result = client._sanitizePath(path);
 
-        assert.strictEqual(expectation, result.substring(0, 1));
+        assert.strictEqual(result.substring(0, 1), expectation);
       });
 
       it('otherwise returns a fully-encoded version of the given URL', function testSpec() {
-        let expectation = encodeURIComponent(path);
-        let result = client._sanitizePath(path);
+        const expectation = encodeURIComponent(path);
+        const result = client._sanitizePath(path);
 
-        assert.strictEqual(expectation, result.substring(1));
+        assert.strictEqual(result.substring(1), expectation);
       });
 
       it('double-encodes the original encoded characters', function testSpec() {
-        let expectation1 = -1;
-        let expectation2 = encodeURIComponent(path).length - 4;
-        let result = client._sanitizePath(path);
+        const expectation1 = -1;
+        const expectation2 = encodeURIComponent(path).length - 4;
+        const result = client._sanitizePath(path);
 
         // Result should not contain the string "%20"
-        assert.strictEqual(expectation1, result.indexOf('%20'));
+        assert.strictEqual(result.indexOf('%20'), expectation1);
 
         // Result should instead contain the string "%2520"
-        assert.equal(expectation2, result.indexOf('%2520'));
+        assert.strictEqual(result.indexOf('%2520'), expectation2);
       });
     });
   });
 
   describe('Calling _buildParams()', function describeSuite() {
-    var client;
+    let client;
 
     beforeEach(function setupClient() {
       client = new ImgixClient({
@@ -193,69 +194,70 @@ describe('URL Builder:', function describeSuite() {
     });
 
     it('returns an empty string if no parameters are given', function testSpec() {
-      let params = {};
-      let expectation = '';
-      let result = client._buildParams(params);
+      const params = {};
+      const expectation = '';
+      const result = client._buildParams(params);
 
       assert.strictEqual(result, expectation);
     });
 
     it('returns a properly-formatted query string if a single parameter is given', function testSpec() {
-      let params = { w: 400 };
-      let expectation = '?w=400';
-      let result = client._buildParams(params);
+      const params = { w: 400 };
+      const expectation = '?w=400';
+      const result = client._buildParams(params);
 
-      assert.strictEqual(expectation, result);
+      assert.strictEqual(result, expectation);
     });
 
     it('returns a properly-formatted query string if multiple parameters are given', function testSpec() {
-      let params = { w: 400, h: 300 };
-      let expectation = '?w=400&h=300';
-      let result = client._buildParams(params);
+      const params = { w: 400, h: 300 };
+      const expectation = '?w=400&h=300';
+      const result = client._buildParams(params);
 
-      assert.strictEqual(expectation, result);
+      assert.strictEqual(result, expectation);
     });
 
     it('does not modify its input-argument', function testSpec() {
-      let emptyParams = {};
-      let emptyResult = client._buildParams(emptyParams);
-      assert(Object.keys(emptyParams).length === 0);
+      const emptyParams = {};
+      const emptyResult = client._buildParams(emptyParams);
+
+      assert.strictEqual(Object.keys(emptyParams).length, 0);
     });
 
     it('includes an `ixlib` param if the `libraryParam` setting is truthy', function testSpec() {
       client.settings.libraryParam = 'test';
-      let result = client._buildParams({});
+      const result = client._buildParams({});
       assert(result.match(/ixlib=test/));
     });
 
     it('url-encodes parameter keys properly', function testSpec() {
-      let params = { w$: 400 };
-      let expectation = '?w%24=400';
-      let result = client._buildParams(params);
+      const params = { w$: 400 };
+      const expectation = '?w%24=400';
+      const result = client._buildParams(params);
 
-      assert.strictEqual(expectation, result);
+      assert.strictEqual(result, expectation);
     });
 
     it('url-encodes parameter values properly', function testSpec() {
-      let params = { w: '$400' };
-      let expectation = '?w=%24400';
-      let result = client._buildParams(params);
+      const params = { w: '$400' };
+      const expectation = '?w=%24400';
+      const result = client._buildParams(params);
 
-      assert.strictEqual(expectation, result);
+      assert.strictEqual(result, expectation);
     });
 
     it('base64-encodes parameter values whose keys end in `64`', function testSpec() {
-      let params = { txt64: 'lorem ipsum' };
-      let expectation = '?txt64=bG9yZW0gaXBzdW0';
-      let result = client._buildParams(params);
+      const params = { txt64: 'lorem ipsum' };
+      const expectation = '?txt64=bG9yZW0gaXBzdW0';
+      const result = client._buildParams(params);
 
-      assert.strictEqual(expectation, result);
+      assert.strictEqual(result, expectation);
     });
   });
 
   describe('Calling _signParams()', function describeSuite() {
-    var client;
-    let path = 'images/1.png';
+    let client;
+    const path = 'images/1.png';
 
     beforeEach(function setupClient() {
       client = new ImgixClient({
@@ -266,22 +268,22 @@ describe('URL Builder:', function describeSuite() {
     });
 
     it('returns a query string containing only a proper signature parameter, if no other query parameters are provided', function testSpec() {
-      var expectation = '?s=6d82410f89cc6d80a6aa9888dcf85825',
-        result = client._signParams(path, '');
+      const expectation = '?s=6d82410f89cc6d80a6aa9888dcf85825';
+      const result = client._signParams(path, '');
 
-      assert.equal(expectation, result);
+      assert.strictEqual(result, expectation);
     });
 
     it('returns a query string with a proper signature parameter appended, if other query parameters are provided', function testSpec() {
-      var expectation = '?w=400&s=990916ef8cc640c58d909833e47f6c31',
-        result = client._signParams(path, '?w=400');
+      const expectation = '?w=400&s=990916ef8cc640c58d909833e47f6c31';
+      const result = client._signParams(path, '?w=400');
 
-      assert.equal(expectation, result);
+      assert.strictEqual(result, expectation);
     });
   });
 
   describe('Calling buildURL()', function describeSuite() {
-    var client;
+    let client;
 
     beforeEach(function setupClient() {
       client = new ImgixClient({
@@ -291,45 +293,51 @@ describe('URL Builder:', function describeSuite() {
     });
 
     it('is an idempotent operation with empty args', function testSpec() {
-      let result1 = client.buildURL('', {});
-      let result2 = client.buildURL('', {});
-      assert.equal(result1, result2);
+      const result1 = client.buildURL('', {});
+      const result2 = client.buildURL('', {});
+
+      assert.strictEqual(result1, result2);
     });
 
     it('is an idempotent operation with args', function testSpec() {
-      let path = '/image/stöked.png';
-      let params = { w: 100 };
-      let result1 = client.buildURL(path, params);
-      let result2 = client.buildURL(path, params);
-      let expected = 'https://test.imgix.net/image/st%C3%B6ked.png?w=100';
+      const path = '/image/stöked.png';
+      const params = { w: 100 };
+      const result1 = client.buildURL(path, params);
+      const result2 = client.buildURL(path, params);
+      const expected = 'https://test.imgix.net/image/st%C3%B6ked.png?w=100';
+
       assert.strictEqual(result1, expected);
       assert.strictEqual(result2, expected);
     });
 
     it('does not modify empty args', function testSpec() {
-      let path = '';
-      let params = {};
-      let result1 = client.buildURL(path, params);
-      let result2 = client.buildURL(path, params);
-      let expected = 'https://test.imgix.net/';
+      const path = '';
+      const params = {};
+      const result1 = client.buildURL(path, params);
+      const result2 = client.buildURL(path, params);
+      const expected = 'https://test.imgix.net/';
 
       assert.strictEqual(path, '');
       assert.strictEqual(expected, result1);
       assert.strictEqual(expected, result2);
-      assert(Object.keys(params).length === 0 && params.constructor === Object);
+
+      assert.strictEqual(Object.keys(params).length, 0);
+      assert.strictEqual(params.constructor, Object);
     });
 
     it('does not modify its args', function testSpec() {
-      let path = 'image/1.png';
-      let params = { w: 100 };
-      let result1 = client.buildURL(path, params);
-      let result2 = client.buildURL(path, params);
-      let expected = 'https://test.imgix.net/image/1.png?w=100';
+      const path = 'image/1.png';
+      const params = { w: 100 };
+      const result1 = client.buildURL(path, params);
+      const result2 = client.buildURL(path, params);
+      const expected = 'https://test.imgix.net/image/1.png?w=100';
 
       assert.strictEqual(path, 'image/1.png');
       assert.strictEqual(result1, result2, expected);
       assert.strictEqual(params.w, 100);
-      assert(Object.keys(params).length === 1 && params.constructor === Object);
+
+      assert.strictEqual(Object.keys(params).length, 1);
+      assert.strictEqual(params.constructor, Object);
     });
   });
 });
