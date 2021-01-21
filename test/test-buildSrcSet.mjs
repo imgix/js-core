@@ -1079,9 +1079,20 @@ describe('SrcSet Builder:', function describeSuite() {
             domain: 'testing.imgix.net',
           }).buildSrcSet('image.jpg', {}, { widthTolerance: 999999.999 });
 
-          const actualLength = srcset.split(',').length;
+          const srcsetSplit = srcset.split(',');
+          const actualLength = srcsetSplit.length;
+
+          const srcsetMin = Number.parseFloat(
+            srcsetSplit[0].split(' ')[1].slice(0, -1),
+          );
+
+          const srcsetMax = Number.parseFloat(
+            srcsetSplit[srcsetSplit.length - 1].split(' ')[1].slice(0, -1),
+          );
 
           assert.strictEqual(actualLength, 2);
+          assert.strictEqual(srcsetMin, 100);
+          assert.strictEqual(srcsetMax, 8192);
         });
 
         it('memoizes generated srcset width pairs', function testSpec() {
