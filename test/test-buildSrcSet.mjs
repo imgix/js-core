@@ -72,7 +72,7 @@ function assertIncludesQualities(srcset, qualities) {
 }
 
 function assertIncludesQualityOverride(srcset, qOverride) {
-  const _ = srcset.split(',').map((u) => {
+  srcset.split(',').map((u) => {
     const url = u.split(' ')[0];
     assert(url.includes(`q=${qOverride}`));
   });
