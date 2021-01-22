@@ -180,7 +180,7 @@ https://testing.imgix.net/image.jpg?w=8192&s=59eb881b618fed314fe30cf9e3ec7b00 81
 
 #### Fixed Image Rendering
 
-In cases where enough information is provided about an image's dimensions, `buildSrcSet()` will instead build a `srcset` that will allow for an image to be served at different resolutions. The parameters taken into consideration when determining if an image is fixed-width are `w`, `h`, and `ar`. By invoking `buildSrcSet()` with either a width **or** the height and aspect ratio (along with `fit=crop`, typically) provided, a different `srcset` will be generated for a fixed-size image instead.
+Specifying either a `w` or a `h` parameter to `buildSrcSet()` will create a DPR-based srcset. This DPR-based srcset allows for the fixed-sized image to be served at different resolutions (i.e. at different pixel densities).
 
 ```js
 var client = new ImgixClient({
