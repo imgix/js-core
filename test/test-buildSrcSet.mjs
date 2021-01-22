@@ -254,21 +254,8 @@ describe('SrcSet Builder:', function describeSuite() {
           });
         });
 
-        it('should generate the expected default srcset pair values', function testSpec() {
-          assertCorrectWidthDescriptors(srcset, RESOLUTIONS);
-        });
-
-        it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
-          assert.strictEqual(srcset.split(',').length, 31);
-        });
-
-        it('should not exceed the bounds of [100, 8192]', function testSpec() {
-          assertMinMaxWidthBounds(srcset, 100, 8192);
-        });
-
-        // a 17% testing threshold is used to account for rounding
-        it('should not increase more than 17% every iteration', function testSpec() {
-          assertWidthsIncreaseByTolerance(srcset, 0.17);
+        it('creates a DPR srcset with default DPR values', function testSpec() {
+          assertIncludesDefaultDprParamAndDescriptor(srcset);
         });
 
         it('should correctly sign each URL', function testSpec() {
