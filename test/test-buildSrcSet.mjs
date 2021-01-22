@@ -58,7 +58,7 @@ function assertMinMaxWidthBounds(srcset, minBound, maxBound) {
 
 function assertCorrectWidthDescriptors(srcset, descriptors) {
   const srcsetSplit = srcset.split(',');
-  const _ = srcsetSplit.map((u, i) => {
+  srcsetSplit.map((u, i) => {
     const width = parseInt(u.split(' ')[1].slice(0, -1), 10);
     assert.strictEqual(width, descriptors[i]);
   });
