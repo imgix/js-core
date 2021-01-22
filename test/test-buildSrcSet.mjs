@@ -65,7 +65,7 @@ function assertCorrectWidthDescriptors(srcset, descriptors) {
 }
 
 function assertIncludesQualities(srcset, qualities) {
-  const _ = srcset.split(',').map((u, i) => {
+  srcset.split(',').map((u, i) => {
     const url = u.split(' ')[0];
     assert(url.includes(`q=${qualities[i]}`));
   });
