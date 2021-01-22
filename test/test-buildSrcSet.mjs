@@ -2,64 +2,166 @@ import md5 from 'md5';
 import assert from 'assert';
 import ImgixClient from '../src/main.mjs';
 
+function assertWidthsIncreaseByTolerance(srcset, tolerance) {
+  const srcsetWidths = srcset.split(',').map((u) => {
+    const tail = u.split(' ')[1];
+    const width = tail.slice(0, -1);
+    return Number.parseFloat(width);
+  });
+
+  // Make two equal sized arrays one for the numerators, e.g.
+  // [x1, x2, ..., xN] and another for the denominators, e.g.
+  // [x0, x1,..., x(N-1)].
+  const numerators = srcsetWidths.slice(1);
+  const denominators = srcsetWidths.slice(0, -1);
+
+  // Zip the numerator/denominator pairs.
+  const pairs = numerators.map((n, i) => {
+    return [n, denominators[i]];
+  });
+
+  // Be as tolerant as we can.
+  const tolerancePlus = tolerance + 0.004;
+
+  // Divide the zipped pairs, e.g. (x1 / x0), (x2 / x1)...
+  pairs.map((p) => {
+    assert(p[0] / p[1] - 1 < tolerancePlus);
+  });
+}
+
+function assertCorrectSigning(srcset, path, token) {
+  const _ = srcset.split(',').map((u) => {
+    // Split srcset into list of URLs.
+    const url = u.split(' ')[0];
+    assert(url.includes('s='));
+
+    // Get the signature without the otherParams.
+    const signature = url.slice(url.indexOf('s=') + 2, url.length);
+
+    // Use the otherParams, path, and token to create the expected signature.
+    const otherParams = url.slice(url.indexOf('?'), url.indexOf('s=') - 1);
+    const expected = md5(token + path + otherParams).toString();
+
+    assert.strictEqual(signature, expected);
+  });
+}
+
+function assertMinMaxWidthBounds(srcset, minBound, maxBound) {
+  const srcsetSplit = srcset.split(',');
+  const min = Number.parseFloat(srcsetSplit[0].split(' ')[1].slice(0, -1));
+  const max = Number.parseFloat(
+    srcsetSplit[srcsetSplit.length - 1].split(' ')[1].slice(0, -1),
+  );
+  assert(min >= minBound);
+  assert(max <= maxBound);
+}
+
+function assertCorrectWidthDescriptors(srcset, descriptors) {
+  const srcsetSplit = srcset.split(',');
+  srcsetSplit.map((u, i) => {
+    const width = parseInt(u.split(' ')[1].slice(0, -1), 10);
+    assert.strictEqual(width, descriptors[i]);
+  });
+}
+
+function assertIncludesQualities(srcset, qualities) {
+  srcset.split(',').map((u, i) => {
+    const url = u.split(' ')[0];
+    assert(url.includes(`q=${qualities[i]}`));
+  });
+}
+
+function assertIncludesQualityOverride(srcset, qOverride) {
+  srcset.split(',').map((u) => {
+    const url = u.split(' ')[0];
+    assert(url.includes(`q=${qOverride}`));
+  });
+}
+
+function assertIncludesDefaultDprParamAndDescriptor(srcset) {
+  const srcsetSplit = srcset.split(',');
+  assert.strictEqual(srcsetSplit.length, 5);
+
+  const parts = srcsetSplit.map((u) => u.split(' '));
+
+  // The firstParts contains the URLs without the width descriptors,
+  // i.e. ['https://test.imgix.net/image.jpg?dpr=1...',...]
+  const firstParts = parts.map((p) => p[0]);
+  firstParts.map((u, i) => {
+    assert(u.includes(`dpr=${i + 1}`));
+  });
+
+  // The lastParts contain the width descriptors without the URLs,
+  // i.e. [ '1x', '2x', '3x', '4x', '5x' ]
+  const lastParts = parts.map((p) => p[1]);
+  lastParts.map((d, i) => {
+    // assert 1x === `${0 + 1}x`, etc.
+    assert.strictEqual(d, `${i + 1}x`);
+  });
+}
+
+function assertDoesNotIncludeQuality(srcset) {
+  const _ = srcset.split(',').map((u) => {
+    const url = u.split(' ')[0];
+    assert(!url.includes(`q=`));
+  });
+}
+
+const RESOLUTIONS = [
+  100,
+  116,
+  135,
+  156,
+  181,
+  210,
+  244,
+  283,
+  328,
+  380,
+  441,
+  512,
+  594,
+  689,
+  799,
+  927,
+  1075,
+  1247,
+  1446,
+  1678,
+  1946,
+  2257,
+  2619,
+  3038,
+  3524,
+  4087,
+  4741,
+  5500,
+  6380,
+  7401,
+  8192,
+];
+
 describe('SrcSet Builder:', function describeSuite() {
   describe('Calling buildSrcSet()', function describeSuite() {
     describe('using image parameters', function describeSuite() {
       describe('with no parameters', function describeSuite() {
-        let client = new ImgixClient({
+        const client = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
           secureURLToken: 'MYT0KEN',
         });
-        let srcset = client.buildSrcSet('image.jpg');
+        const srcset = client.buildSrcSet('image.jpg');
 
         it('memoizes default srcset width pairs', function testSpec() {
-          let key = [0.08, 100, 8192].join('/');
-          let cachedValue = client.targetWidthsCache[key];
+          const key = [0.08, 100, 8192].join('/');
+          const cachedValue = client.targetWidthsCache[key];
 
-          assert(cachedValue !== undefined && cachedValue.length == 31);
+          assert.notStrictEqual(cachedValue, undefined);
+          assert.strictEqual(cachedValue.length, 31);
         });
 
         it('should generate the expected default srcset pair values', function testSpec() {
-          let resolutions = [
-            100,
-            116,
-            135,
-            156,
-            181,
-            210,
-            244,
-            283,
-            328,
-            380,
-            441,
-            512,
-            594,
-            689,
-            799,
-            927,
-            1075,
-            1247,
-            1446,
-            1678,
-            1946,
-            2257,
-            2619,
-            3038,
-            3524,
-            4087,
-            4741,
-            5500,
-            6380,
-            7401,
-            8192,
-          ];
-          let srclist = srcset.split(',');
-          let src = srclist.map(function (srcline) {
-            return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
-          });
-
-          srclist.map((_v, i) => assert.strictEqual(src[i], resolutions[i]));
+          assertCorrectWidthDescriptors(srcset, RESOLUTIONS);
         });
 
         it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
@@ -67,230 +169,84 @@ describe('SrcSet Builder:', function describeSuite() {
         });
 
         it('should not exceed the bounds of [100, 8192]', function testSpec() {
-          let srcsetSplit = srcset.split(',');
-          let min = Number.parseFloat(
-            srcsetSplit[0].split(' ')[1].slice(0, -1),
-          );
-          let max = Number.parseFloat(
-            srcsetSplit[srcsetSplit.length - 1].split(' ')[1].slice(0, -1),
-          );
-          assert(min >= 100);
-          assert(max <= 8192);
+          assertMinMaxWidthBounds(srcset, 100, 8192);
         });
 
         // a 17% testing threshold is used to account for rounding
         it('should not increase more than 17% every iteration', function testSpec() {
-          let INCREMENT_ALLOWED = 0.17;
-
-          let srcsetWidths = (function () {
-            return srcset
-              .split(',')
-              .map(function (srcsetSplit) {
-                return srcsetSplit.split(' ')[1];
-              })
-              .map(function (width) {
-                return width.slice(0, -1);
-              })
-              .map(Number.parseFloat);
-          })();
-
-          let prev = srcsetWidths[0];
-
-          for (let index = 1; index < srcsetWidths.length; index++) {
-            let element = srcsetWidths[index];
-            assert(element / prev < 1 + INCREMENT_ALLOWED);
-            prev = element;
-          }
+          assertWidthsIncreaseByTolerance(srcset, 0.17);
         });
 
         it('should correctly sign each URL', function testSpec() {
-          let path = '/image.jpg';
-          let param;
-
-          srcset
-            .split(',')
-            .map(function (srcsetSplit) {
-              // split the url portion of each srcset entry
-              return srcsetSplit.split(' ')[0];
-            })
-            .map(function (src) {
-              // asserts that the expected 's=' parameter is being generated per entry
-              assert(src.includes('s='));
-
-              // param will have all params except for '&s=...'
-              param = src.slice(src.indexOf('?'), src.length);
-              param = param.slice(0, param.indexOf('s=') - 1);
-              let generated_signature = src.slice(
-                src.indexOf('s=') + 2,
-                src.length,
-              );
-              let signatureBase = 'MYT0KEN' + path + param;
-              let expected_signature = md5(signatureBase).toString();
-
-              assert.strictEqual(expected_signature, generated_signature);
-            });
+          assertCorrectSigning(srcset, '/image.jpg', 'MYT0KEN');
         });
       });
 
       describe('with a width parameter provided', function describeSuite() {
-        let DPR_QUALITY = [75, 50, 35, 23, 20];
-        let srcset = new ImgixClient({
+        const DPR_QUALITY = [75, 50, 35, 23, 20];
+        const srcset = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
           secureURLToken: 'MYT0KEN',
         }).buildSrcSet('image.jpg', { w: 100 });
 
         it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
-          assert(srcset.split(',').length == 5);
-
-          let devicePixelRatios = srcset.split(',').map(function (srcsetSplit) {
-            return srcsetSplit.split(' ')[1];
-          });
-
-          assert.strictEqual(devicePixelRatios[0], '1x');
-          assert.strictEqual(devicePixelRatios[1], '2x');
-          assert.strictEqual(devicePixelRatios[2], '3x');
-          assert.strictEqual(devicePixelRatios[3], '4x');
-          assert.strictEqual(devicePixelRatios[4], '5x');
+          assertIncludesDefaultDprParamAndDescriptor(srcset);
         });
 
         it('should correctly sign each URL', function testSpec() {
-          let path = '/image.jpg';
-          let param;
-
-          srcset
-            .split(',')
-            .map(function (srcsetSplit) {
-              return srcsetSplit.split(' ')[0];
-            })
-            .map(function (src) {
-              // asserts that the expected 's=' parameter is being generated per entry
-              assert(src.includes('s='));
-
-              // param will have all params except for '&s=...'
-              param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
-              let generated_signature = src.slice(
-                src.indexOf('s=') + 2,
-                src.length,
-              );
-              let signatureBase = 'MYT0KEN' + path + param;
-              let expected_signature = md5(signatureBase).toString();
-
-              assert.strictEqual(expected_signature, generated_signature);
-            });
+          assertCorrectSigning(srcset, '/image.jpg', 'MYT0KEN');
         });
 
         it('should include a dpr param per specified src', function testSpec() {
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`dpr=${i + 1}`));
-          }
+          assertIncludesDefaultDprParamAndDescriptor(srcset);
         });
 
         it('should include variable qualities by default', function testSpec() {
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`q=${DPR_QUALITY[i]}`));
-          }
+          assertIncludesQualities(srcset, DPR_QUALITY);
         });
 
         it('should override the variable quality if a quality parameter is provided', function testSpec() {
-          let QUALITY_OVERRIDE = 100;
-          let srcset = new ImgixClient({
+          const QUALITY_OVERRIDE = 100;
+          const srcset = new ImgixClient({
             domain: 'testing.imgix.net',
           }).buildSrcSet('image.jpg', { w: 800, q: QUALITY_OVERRIDE });
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
-          }
+
+          assertIncludesQualityOverride(srcset, QUALITY_OVERRIDE);
         });
 
         it("should correctly disable generated variable qualities via the 'disableVariableQuality' argument", function testSpec() {
-          let srcset = new ImgixClient({
+          const srcset = new ImgixClient({
             domain: 'testing.imgix.net',
           }).buildSrcSet(
             'image.jpg',
             { w: 800 },
             { disableVariableQuality: true },
           );
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(!src.includes(`q=`));
-          }
+
+          assertDoesNotIncludeQuality(srcset);
         });
 
         it('should respect a provided quality parameter when variable qualities are disabled', function testSpec() {
-          let QUALITY_OVERRIDE = 100;
-          let srcset = new ImgixClient({
+          const QUALITY_OVERRIDE = 100;
+          const srcset = new ImgixClient({
             domain: 'testing.imgix.net',
           }).buildSrcSet(
             'image.jpg',
             { w: 800, q: QUALITY_OVERRIDE },
             { disableVariableQuality: true },
           );
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
-          }
+
+          assertIncludesQualityOverride(srcset, QUALITY_OVERRIDE);
         });
       });
 
       describe('with a height parameter provided', function describeSuite() {
-        let srcset = new ImgixClient({
+        const srcset = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
           secureURLToken: 'MYT0KEN',
         }).buildSrcSet('image.jpg', { h: 100 });
-
-        it('should generate the expected default srcset pair values', function testSpec() {
-          let resolutions = [
-            100,
-            116,
-            135,
-            156,
-            181,
-            210,
-            244,
-            283,
-            328,
-            380,
-            441,
-            512,
-            594,
-            689,
-            799,
-            927,
-            1075,
-            1247,
-            1446,
-            1678,
-            1946,
-            2257,
-            2619,
-            3038,
-            3524,
-            4087,
-            4741,
-            5500,
-            6380,
-            7401,
-            8192,
-          ];
-
-          let srclist = srcset.split(',');
-          let src = srclist.map(function (srcline) {
-            return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
-          });
-
-          for (let i = 0; i < srclist.length; i++) {
-            assert.strictEqual(src[i], resolutions[i]);
-          }
-        });
 
         it('should respect the height parameter', function testSpec() {
           srcset.split(',').map(function (src) {
@@ -298,193 +254,96 @@ describe('SrcSet Builder:', function describeSuite() {
           });
         });
 
+        it('should generate the expected default srcset pair values', function testSpec() {
+          assertCorrectWidthDescriptors(srcset, RESOLUTIONS);
+        });
+
         it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
-          assert.equal(srcset.split(',').length, 31);
+          assert.strictEqual(srcset.split(',').length, 31);
         });
 
         it('should not exceed the bounds of [100, 8192]', function testSpec() {
-          let srcsetSplit = srcset.split(',');
-          let min = Number.parseFloat(
-            srcsetSplit[0].split(' ')[1].slice(0, -1),
-          );
-          let max = Number.parseFloat(
-            srcsetSplit[srcsetSplit.length - 1].split(' ')[1].slice(0, -1),
-          );
-          assert(min >= 100);
-          assert(max <= 8192);
+          assertMinMaxWidthBounds(srcset, 100, 8192);
         });
 
         // a 17% testing threshold is used to account for rounding
         it('should not increase more than 17% every iteration', function testSpec() {
-          let INCREMENT_ALLOWED = 0.17;
-
-          let srcsetWidths = (function () {
-            return srcset
-              .split(',')
-              .map(function (srcsetSplit) {
-                return srcsetSplit.split(' ')[1];
-              })
-              .map(function (width) {
-                return width.slice(0, -1);
-              })
-              .map(Number.parseFloat);
-          })();
-
-          let prev = srcsetWidths[0];
-
-          for (let index = 1; index < srcsetWidths.length; index++) {
-            let element = srcsetWidths[index];
-            assert(element / prev < 1 + INCREMENT_ALLOWED);
-            prev = element;
-          }
+          assertWidthsIncreaseByTolerance(srcset, 0.17);
         });
 
         it('should correctly sign each URL', function testSpec() {
-          let path = '/image.jpg';
-          let param;
-
-          srcset
-            .split(',')
-            .map(function (srcsetSplit) {
-              // split the url portion of each srcset entry
-              return srcsetSplit.split(' ')[0];
-            })
-            .map(function (src) {
-              // asserts that the expected 's=' parameter is being generated per entry
-              assert(src.includes('s='));
-
-              // param will have all params except for '&s=...'
-              param = src.slice(src.indexOf('?'), src.length);
-              param = param.slice(0, param.indexOf('s=') - 1);
-              let generated_signature = src.slice(
-                src.indexOf('s=') + 2,
-                src.length,
-              );
-              let signatureBase = 'MYT0KEN' + path + param;
-              let expected_signature = md5(signatureBase).toString();
-
-              assert.strictEqual(expected_signature, generated_signature);
-            });
+          assertCorrectSigning(srcset, '/image.jpg', 'MYT0KEN');
         });
       });
 
       describe('with a width and height parameter provided', function describeSuite() {
-        let DPR_QUALITY = [75, 50, 35, 23, 20];
-        let srcset = new ImgixClient({
+        const DPR_QUALITY = [75, 50, 35, 23, 20];
+        const srcset = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
           secureURLToken: 'MYT0KEN',
         }).buildSrcSet('image.jpg', { w: 100, h: 100 });
 
         it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
-          assert(srcset.split(',').length == 5);
-
-          let devicePixelRatios = srcset.split(',').map(function (srcsetSplit) {
-            return srcsetSplit.split(' ')[1];
-          });
-
-          assert.strictEqual(devicePixelRatios[0], '1x');
-          assert.strictEqual(devicePixelRatios[1], '2x');
-          assert.strictEqual(devicePixelRatios[2], '3x');
-          assert.strictEqual(devicePixelRatios[3], '4x');
-          assert.strictEqual(devicePixelRatios[4], '5x');
+          assertIncludesDefaultDprParamAndDescriptor(srcset);
         });
 
         it('should correctly sign each URL', function testSpec() {
-          let path = '/image.jpg';
-          let param;
-
-          srcset
-            .split(',')
-            .map(function (srcsetSplit) {
-              return srcsetSplit.split(' ')[0];
-            })
-            .map(function (src) {
-              // asserts that the expected 's=' parameter is being generated per entry
-              assert(src.includes('s='));
-
-              // param will have all params except for '&s=...'
-              param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
-              let generated_signature = src.slice(
-                src.indexOf('s=') + 2,
-                src.length,
-              );
-              let signatureBase = 'MYT0KEN' + path + param;
-              let expected_signature = md5(signatureBase).toString();
-
-              assert.strictEqual(expected_signature, generated_signature);
-            });
+          assertCorrectSigning(srcset, '/image.jpg', 'MYT0KEN');
         });
 
         it('should include a dpr param per specified src', function testSpec() {
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`dpr=${i + 1}`));
-          }
+          assertIncludesDefaultDprParamAndDescriptor(srcset);
         });
 
         it('should include variable qualities by default', function testSpec() {
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`q=${DPR_QUALITY[i]}`));
-          }
+          assertIncludesQualities(srcset, DPR_QUALITY);
         });
 
         it('should override the variable quality if a quality parameter is provided', function testSpec() {
-          let QUALITY_OVERRIDE = 100;
-          let srcset = new ImgixClient({
+          const QUALITY_OVERRIDE = 100;
+          const srcset = new ImgixClient({
             domain: 'testing.imgix.net',
           }).buildSrcSet('image.jpg', { w: 800, q: QUALITY_OVERRIDE });
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
-          }
+
+          assertIncludesQualityOverride(srcset, QUALITY_OVERRIDE);
         });
 
         it("should correctly disable generated variable qualities via the 'disableVariableQuality' argument", function testSpec() {
-          let srcset = new ImgixClient({
+          const srcset = new ImgixClient({
             domain: 'testing.imgix.net',
           }).buildSrcSet(
             'image.jpg',
             { w: 800 },
             { disableVariableQuality: true },
           );
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(!src.includes(`q=`));
-          }
+
+          assertDoesNotIncludeQuality(srcset);
         });
 
         it('should respect a provided quality parameter when variable qualities are disabled', function testSpec() {
-          let QUALITY_OVERRIDE = 100;
-          let srcset = new ImgixClient({
+          const QUALITY_OVERRIDE = 100;
+          const srcset = new ImgixClient({
             domain: 'testing.imgix.net',
           }).buildSrcSet(
             'image.jpg',
             { w: 800, q: QUALITY_OVERRIDE },
             { disableVariableQuality: true },
           );
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
-          }
+
+          assertIncludesQualityOverride(srcset, QUALITY_OVERRIDE);
         });
 
         it('should not modify input params and should be idempotent', function testSpec() {
-          let client = new ImgixClient({ domain: 'test.imgix.net' });
-          let params = {};
-          let srcsetOptions = { widths: [100] };
-          let srcset1 = client.buildSrcSet('', params, srcsetOptions);
-          let srcset2 = client.buildSrcSet('', params, srcsetOptions);
+          const client = new ImgixClient({ domain: 'test.imgix.net' });
+          const params = {};
+          const srcsetOptions = { widths: [100] };
+          const srcset1 = client.buildSrcSet('', params, srcsetOptions);
+          const srcset2 = client.buildSrcSet('', params, srcsetOptions);
 
           // Show idempotent, ie. calling buildSrcSet produces the same result given
           // the same input-parameters.
-          assert(srcset1 == srcset2);
+          assert.strictEqual(srcset1, srcset2);
 
           // Assert that the object remains unchanged.
           assert(
@@ -494,7 +353,7 @@ describe('SrcSet Builder:', function describeSuite() {
       });
 
       describe('with an aspect ratio parameter provided', function describeSuite() {
-        let srcset = new ImgixClient({
+        const srcset = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
           secureURLToken: 'MYT0KEN',
@@ -505,314 +364,131 @@ describe('SrcSet Builder:', function describeSuite() {
         });
 
         it('should generate the expected default srcset pair values', function testSpec() {
-          let resolutions = [
-            100,
-            116,
-            135,
-            156,
-            181,
-            210,
-            244,
-            283,
-            328,
-            380,
-            441,
-            512,
-            594,
-            689,
-            799,
-            927,
-            1075,
-            1247,
-            1446,
-            1678,
-            1946,
-            2257,
-            2619,
-            3038,
-            3524,
-            4087,
-            4741,
-            5500,
-            6380,
-            7401,
-            8192,
-          ];
-
-          let srclist = srcset.split(',');
-          let src = srclist.map(function (srcline) {
-            return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
-          });
-
-          for (let i = 0; i < srclist.length; i++) {
-            assert.equal(src[i], resolutions[i]);
-          }
+          assertCorrectWidthDescriptors(srcset, RESOLUTIONS);
         });
 
         it('should not exceed the bounds of [100, 8192]', function testSpec() {
-          let srcsetSplit = srcset.split(',');
-          let min = Number.parseFloat(
-            srcsetSplit[0].split(' ')[1].slice(0, -1),
-          );
-          let max = Number.parseFloat(
-            srcsetSplit[srcsetSplit.length - 1].split(' ')[1].slice(0, -1),
-          );
-          assert(min >= 100);
-          assert(max <= 8192);
+          assertMinMaxWidthBounds(srcset, 100, 8192);
         });
 
         // a 17% testing threshold is used to account for rounding
         it('should not increase more than 17% every iteration', function testSpec() {
-          let INCREMENT_ALLOWED = 0.17;
-
-          let srcsetWidths = (function () {
-            return srcset
-              .split(',')
-              .map(function (srcsetSplit) {
-                return srcsetSplit.split(' ')[1];
-              })
-              .map(function (width) {
-                return width.slice(0, -1);
-              })
-              .map(Number.parseFloat);
-          })();
-
-          let prev = srcsetWidths[0];
-
-          for (let index = 1; index < srcsetWidths.length; index++) {
-            let element = srcsetWidths[index];
-            assert(element / prev < 1 + INCREMENT_ALLOWED);
-            prev = element;
-          }
+          assertWidthsIncreaseByTolerance(srcset, 0.17);
         });
 
         it('should correctly sign each URL', function testSpec() {
-          const path = '/image.jpg';
-          let param;
-
-          srcset.split(',').map(function (srcsetSplit) {
-            const src = srcsetSplit.split(' ')[0];
-            // asserts that the expected 's=' parameter is being generated per entry
-            assert(src.includes('s='));
-
-            // param will have all params except for '&s=...'
-            param = src.slice(src.indexOf('?'), src.length);
-            param = param.slice(0, param.indexOf('s=') - 1);
-            const generated_signature = src.slice(
-              src.indexOf('s=') + 2,
-              src.length,
-            );
-            const signatureBase = 'MYT0KEN' + path + param;
-            const expected_signature = md5(signatureBase).toString();
-
-            assert.strictEqual(expected_signature, generated_signature);
-          });
+          assertCorrectSigning(srcset, '/image.jpg', 'MYT0KEN');
         });
       });
 
       describe('with a width and aspect ratio parameter provided', function describeSuite() {
-        let DPR_QUALITY = [75, 50, 35, 23, 20];
-        let srcset = new ImgixClient({
+        const DPR_QUALITY = [75, 50, 35, 23, 20];
+        const srcset = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
           secureURLToken: 'MYT0KEN',
         }).buildSrcSet('image.jpg', { w: 100, ar: '3:2' });
 
         it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
-          assert(srcset.split(',').length == 5);
-
-          let devicePixelRatios = srcset.split(',').map(function (srcsetSplit) {
-            return srcsetSplit.split(' ')[1];
-          });
-
-          assert.strictEqual(devicePixelRatios[0], '1x');
-          assert.strictEqual(devicePixelRatios[1], '2x');
-          assert.strictEqual(devicePixelRatios[2], '3x');
-          assert.strictEqual(devicePixelRatios[3], '4x');
-          assert.strictEqual(devicePixelRatios[4], '5x');
+          assertIncludesDefaultDprParamAndDescriptor(srcset);
         });
 
         it('should correctly sign each URL', function testSpec() {
-          let path = '/image.jpg';
-          let param, signatureBase, expected_signature;
-
-          srcset
-            .split(',')
-            .map(function (srcsetSplit) {
-              return srcsetSplit.split(' ')[0];
-            })
-            .map(function (src) {
-              // asserts that the expected 's=' parameter is being generated per entry
-              assert(src.includes('s='));
-
-              // param will have all params except for '&s=...'
-              param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
-              let generated_signature = src.slice(
-                src.indexOf('s=') + 2,
-                src.length,
-              );
-              let signatureBase = 'MYT0KEN' + path + param;
-              let expected_signature = md5(signatureBase).toString();
-
-              assert.strictEqual(expected_signature, generated_signature);
-            });
+          assertCorrectSigning(srcset, '/image.jpg', 'MYT0KEN');
         });
 
         it('should include a dpr param per specified src', function testSpec() {
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`dpr=${i + 1}`));
-          }
+          assertIncludesDefaultDprParamAndDescriptor(srcset);
         });
 
         it('should include variable qualities by default', function testSpec() {
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`q=${DPR_QUALITY[i]}`));
-          }
+          assertIncludesQualities(srcset, DPR_QUALITY);
         });
 
         it('should override the variable quality if a quality parameter is provided', function testSpec() {
-          let QUALITY_OVERRIDE = 100;
-          let srcset = new ImgixClient({
+          const QUALITY_OVERRIDE = 100;
+          const srcset = new ImgixClient({
             domain: 'testing.imgix.net',
           }).buildSrcSet('image.jpg', { w: 800, q: QUALITY_OVERRIDE });
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
-          }
+
+          assertIncludesQualityOverride(srcset, QUALITY_OVERRIDE);
         });
 
         it("should correctly disable generated variable qualities via the 'disableVariableQuality' argument", function testSpec() {
-          let srcset = new ImgixClient({
+          const srcset = new ImgixClient({
             domain: 'testing.imgix.net',
           }).buildSrcSet(
             'image.jpg',
             { w: 800 },
             { disableVariableQuality: true },
           );
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(!src.includes(`q=`));
-          }
+
+          assertDoesNotIncludeQuality(srcset);
         });
 
         it('should respect a provided quality parameter when variable qualities are disabled', function testSpec() {
-          let QUALITY_OVERRIDE = 100;
-          let srcset = new ImgixClient({
+          const QUALITY_OVERRIDE = 100;
+          const srcset = new ImgixClient({
             domain: 'testing.imgix.net',
           }).buildSrcSet(
             'image.jpg',
             { w: 800, q: QUALITY_OVERRIDE },
             { disableVariableQuality: true },
           );
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
-          }
+
+          assertIncludesQualityOverride(srcset, QUALITY_OVERRIDE);
         });
       });
 
       describe('with a height and aspect ratio parameter provided', function describeSuite() {
-        let DPR_QUALITY = [75, 50, 35, 23, 20];
-        let srcset = new ImgixClient({
+        const DPR_QUALITY = [75, 50, 35, 23, 20];
+        const srcset = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
           secureURLToken: 'MYT0KEN',
         }).buildSrcSet('image.jpg', { h: 100, ar: '3:2' });
 
         it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
-          assert(srcset.split(',').length == 5);
-
-          let devicePixelRatios = srcset.split(',').map(function (srcsetSplit) {
-            return srcsetSplit.split(' ')[1];
-          });
-
-          assert.strictEqual(devicePixelRatios[0], '1x');
-          assert.strictEqual(devicePixelRatios[1], '2x');
-          assert.strictEqual(devicePixelRatios[2], '3x');
-          assert.strictEqual(devicePixelRatios[3], '4x');
-          assert.strictEqual(devicePixelRatios[4], '5x');
+          assertIncludesDefaultDprParamAndDescriptor(srcset);
         });
 
         it('should correctly sign each URL', function testSpec() {
-          let path = '/image.jpg';
-
-          srcset
-            .split(',')
-            .map(function (srcsetSplit) {
-              return srcsetSplit.split(' ')[0];
-            })
-            .map(function (src) {
-              // asserts that the expected 's=' parameter is being generated per entry
-              assert(src.includes('s='));
-
-              // param will have all params except for '&s=...'
-              let param = src.slice(src.indexOf('?'), src.indexOf('s=') - 1);
-              let generated_signature = src.slice(
-                src.indexOf('s=') + 2,
-                src.length,
-              );
-              let signatureBase = 'MYT0KEN' + path + param;
-              let expected_signature = md5(signatureBase).toString();
-
-              assert.strictEqual(expected_signature, generated_signature);
-            });
+          assertCorrectSigning(srcset, '/image.jpg', 'MYT0KEN');
         });
 
         it('should include a dpr param per specified src', function testSpec() {
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`dpr=${i + 1}`));
-          }
+          assertIncludesDefaultDprParamAndDescriptor(srcset);
         });
 
         it('should include variable qualities by default', function testSpec() {
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`q=${DPR_QUALITY[i]}`));
-          }
+          assertIncludesQualities(srcset, DPR_QUALITY);
         });
 
         it('should override the variable quality if a quality parameter is provided', function testSpec() {
-          let QUALITY_OVERRIDE = 100;
+          const QUALITY_OVERRIDE = 100;
 
-          let srcset = new ImgixClient({
+          const srcset = new ImgixClient({
             domain: 'testing.imgix.net',
           }).buildSrcSet('image.jpg', { w: 800, q: QUALITY_OVERRIDE });
 
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
-          }
+          assertIncludesQualityOverride(srcset, QUALITY_OVERRIDE);
         });
 
         it("should correctly disable generated variable qualities via the 'disableVariableQuality' argument", function testSpec() {
-          let srcset = new ImgixClient({
+          const srcset = new ImgixClient({
             domain: 'testing.imgix.net',
           }).buildSrcSet(
             'image.jpg',
             { w: 800 },
             { disableVariableQuality: true },
           );
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(!src.includes(`q=`));
-          }
+
+          assertDoesNotIncludeQuality(srcset);
         });
 
         it('should respect a provided quality parameter when variable qualities are disabled', function testSpec() {
-          let QUALITY_OVERRIDE = 100;
-          let srcset = new ImgixClient({
+          const QUALITY_OVERRIDE = 100;
+          const srcset = new ImgixClient({
             domain: 'testing.imgix.net',
           }).buildSrcSet(
             'image.jpg',
@@ -820,25 +496,22 @@ describe('SrcSet Builder:', function describeSuite() {
             { disableVariableQuality: true },
           );
 
-          let srclist = srcset.split(',');
-          for (let i = 0; i < srclist.length; i++) {
-            let src = srclist[i].split(' ')[0];
-            assert(src.includes(`q=${QUALITY_OVERRIDE}`));
-          }
+          assertIncludesQualityOverride(srcset, QUALITY_OVERRIDE);
         });
       });
     });
 
     describe('using srcset parameters', function describeSuite() {
       describe('with a minWidth and/or maxWidth provided', function describeSuite() {
-        let MIN = 500;
-        let MAX = 2000;
-        let client = new ImgixClient({
+        const MIN = 500;
+        const MAX = 2000;
+        const client = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
           secureURLToken: 'MYT0KEN',
         });
-        let srcset = client.buildSrcSet(
+
+        const srcset = client.buildSrcSet(
           'image.jpg',
           {},
           { minWidth: MIN, maxWidth: MAX },
@@ -849,7 +522,7 @@ describe('SrcSet Builder:', function describeSuite() {
         });
 
         it('should generate the expected default srcset pair values', function testSpec() {
-          let resolutions = [
+          const resolutions = [
             500,
             580,
             673,
@@ -862,26 +535,11 @@ describe('SrcSet Builder:', function describeSuite() {
             1901,
             2000,
           ];
-          let srclist = srcset.split(',');
-          let src = srclist.map(function (srcline) {
-            return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
-          });
-
-          for (let i = 0; i < srclist.length; i++) {
-            assert.strictEqual(src[i], resolutions[i]);
-          }
+          assertCorrectWidthDescriptors(srcset, resolutions);
         });
 
         it('should not exceed the bounds of [100, 8192]', function testSpec() {
-          let srcsetSplit = srcset.split(',');
-          let min = Number.parseFloat(
-            srcsetSplit[0].split(' ')[1].slice(0, -1),
-          );
-          let max = Number.parseFloat(
-            srcsetSplit[srcsetSplit.length - 1].split(' ')[1].slice(0, -1),
-          );
-          assert(min >= MIN);
-          assert(max <= MAX);
+          assertMinMaxWidthBounds(srcset, 100, 8192);
         });
 
         it('errors with non-Number minWidth', function testSpec() {
@@ -925,7 +583,7 @@ describe('SrcSet Builder:', function describeSuite() {
         });
 
         it('generates a single srcset entry if minWidth and maxWidth are equal', function testSpec() {
-          let srcset = new ImgixClient({
+          const srcset = new ImgixClient({
             domain: 'testing.imgix.net',
             includeLibraryParam: false,
           }).buildSrcSet('image.jpg', {}, { minWidth: 1000, maxWidth: 1000 });
@@ -938,56 +596,58 @@ describe('SrcSet Builder:', function describeSuite() {
         });
 
         it('only includes one entry if maxWidth is equal to 100', function testSpec() {
-          let srcset = new ImgixClient({
+          const srcset = new ImgixClient({
             domain: 'testing.imgix.net',
             includeLibraryParam: false,
           }).buildSrcSet('image.jpg', {}, { maxWidth: 100 });
 
-          assert.equal(
-            'https://testing.imgix.net/image.jpg?w=100 100w',
+          assert.strictEqual(
             srcset,
+            'https://testing.imgix.net/image.jpg?w=100 100w',
           );
         });
 
         it('only includes one entry if minWidth is equal to 8192', function testSpec() {
-          let srcset = new ImgixClient({
+          const srcset = new ImgixClient({
             domain: 'testing.imgix.net',
             includeLibraryParam: false,
           }).buildSrcSet('image.jpg', {}, { minWidth: 8192 });
 
-          assert.equal(
-            'https://testing.imgix.net/image.jpg?w=8192 8192w',
+          assert.strictEqual(
             srcset,
+            'https://testing.imgix.net/image.jpg?w=8192 8192w',
           );
         });
 
         it('memoizes generated srcset width pairs', function testSpec() {
-          let DEFAULT_WIDTH_TOLERANCE = 0.08;
-          let key = [DEFAULT_WIDTH_TOLERANCE, MIN, MAX].join('/');
-          let cachedValue = client.targetWidthsCache[key];
+          const DEFAULT_WIDTH_TOLERANCE = 0.08;
+          const key = [DEFAULT_WIDTH_TOLERANCE, MIN, MAX].join('/');
+          const cachedValue = client.targetWidthsCache[key];
 
-          assert(cachedValue !== undefined && cachedValue.length == 11);
+          assert.notStrictEqual(cachedValue, undefined);
+          assert.strictEqual(cachedValue.length, 11);
         });
       });
 
       describe('with a widthTolerance parameter provided', function describeSuite() {
-        let WIDTH_TOLERANCE = 0.2;
-        let client = new ImgixClient({
+        const WIDTH_TOLERANCE = 0.2;
+        const client = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
         });
-        let srcset = client.buildSrcSet(
+
+        const srcset = client.buildSrcSet(
           'image.jpg',
           {},
           { widthTolerance: WIDTH_TOLERANCE },
         );
 
         it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
-          assert.equal(srcset.split(',').length, 15);
+          assert.strictEqual(srcset.split(',').length, 15);
         });
 
         it('should generate the expected default srcset pair values', function testSpec() {
-          let resolutions = [
+          const resolutions = [
             100,
             140,
             196,
@@ -1004,50 +664,15 @@ describe('SrcSet Builder:', function describeSuite() {
             7937,
             8192,
           ];
-          let srclist = srcset.split(',');
-          let src = srclist.map(function (srcline) {
-            return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
-          });
-
-          for (let i = 0; i < srclist.length; i++) {
-            assert.equal(src[i], resolutions[i]);
-          }
+          assertCorrectWidthDescriptors(srcset, resolutions);
         });
 
         it('should not exceed the bounds of [100, 8192]', function testSpec() {
-          let srcsetSplit = srcset.split(',');
-          let min = Number.parseFloat(
-            srcsetSplit[0].split(' ')[1].slice(0, -1),
-          );
-          let max = Number.parseFloat(
-            srcsetSplit[srcsetSplit.length - 1].split(' ')[1].slice(0, -1),
-          );
-          assert(min >= 100);
-          assert(max <= 8192);
+          assertMinMaxWidthBounds(srcset, 100, 8192);
         });
 
         it('should not increase more than (2 * widthTolerance) + 1 every iteration', function testSpec() {
-          let INCREMENT_ALLOWED = WIDTH_TOLERANCE * 2 + 1;
-
-          let srcsetWidths = (function () {
-            return srcset
-              .split(',')
-              .map(function (srcsetSplit) {
-                return srcsetSplit.split(' ')[1];
-              })
-              .map(function (width) {
-                return width.slice(0, -1);
-              })
-              .map(Number.parseFloat);
-          })();
-
-          let prev = srcsetWidths[0];
-
-          for (let index = 1; index < srcsetWidths.length; index++) {
-            let element = srcsetWidths[index];
-            assert(element / prev < 1 + INCREMENT_ALLOWED);
-            prev = element;
-          }
+          assertWidthsIncreaseByTolerance(srcset, WIDTH_TOLERANCE * 2);
         });
 
         it('errors with non-Number widthTolerance', function testSpec() {
@@ -1096,41 +721,34 @@ describe('SrcSet Builder:', function describeSuite() {
         });
 
         it('memoizes generated srcset width pairs', function testSpec() {
-          let DEFAULT_MIN_WIDTH = 100;
-          let DEFAULT_MAX_WIDTH = 8192;
-          let key = [
+          const DEFAULT_MIN_WIDTH = 100;
+          const DEFAULT_MAX_WIDTH = 8192;
+          const key = [
             WIDTH_TOLERANCE,
             DEFAULT_MIN_WIDTH,
             DEFAULT_MAX_WIDTH,
           ].join('/');
-          let cachedValue = client.targetWidthsCache[key];
+          const cachedValue = client.targetWidthsCache[key];
 
-          assert(cachedValue !== undefined && cachedValue.length == 15);
+          assert.notStrictEqual(cachedValue, undefined);
+          assert.strictEqual(cachedValue.length, 15);
         });
       });
 
       describe('with a custom list of widths provided', function describeSuite() {
-        let CUSTOM_WIDTHS = [100, 500, 1000, 1800];
-        let srcset = new ImgixClient({
+        const CUSTOM_WIDTHS = [100, 500, 1000, 1800];
+        const srcset = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
           secureURLToken: 'MYT0KEN',
         }).buildSrcSet('image.jpg', {}, { widths: CUSTOM_WIDTHS });
 
         it('should return the expected number of `url widthDescriptor` pairs', function testSpec() {
-          assert.equal(srcset.split(',').length, 4);
+          assert.strictEqual(srcset.split(',').length, 4);
         });
 
         it('should generate the expected default srcset pair values', function testSpec() {
-          let resolutions = CUSTOM_WIDTHS;
-          let srclist = srcset.split(',');
-          let src = srclist.map(function (srcline) {
-            return parseInt(srcline.split(' ')[1].slice(0, -1), 10);
-          });
-
-          for (let i = 0; i < srclist.length; i++) {
-            assert.equal(src[i], resolutions[i]);
-          }
+          assertCorrectWidthDescriptors(srcset, CUSTOM_WIDTHS);
         });
 
         it('errors with non-array argument', function testSpec() {
@@ -1159,28 +777,28 @@ describe('SrcSet Builder:', function describeSuite() {
       });
 
       describe('with widthTolerance, minWidth, and maxWidth values which have caused duplicate values in the past', function describeSuite() {
-        var client = new ImgixClient({
+        const client = new ImgixClient({
           domain: 'testing.imgix.net',
           includeLibraryParam: false,
         });
-        var srcset = client.buildSrcSet(
+
+        const srcset = client.buildSrcSet(
           'image.jpg',
           {},
           { widthTolerance: 0.0999, minWidth: 1000, maxWidth: 1200 },
         );
 
         it('should not repeat the largest width when a running value just below maxWidth is reached', function testSpec() {
-          var srclist = srcset.split(',');
-          assert.equal(
-            parseInt(
-              srclist[srclist.length - 1].split(' ')[1].slice(0, -1),
-              10,
-            ),
-            1200,
-          );
-          assert.notEqual(
-            srclist[srclist.length - 2],
-            srclist[srclist.length - 1],
+          const srcsetSplit = srcset.split(',');
+          const maxWidth = srcsetSplit[srcsetSplit.length - 1]
+            .split(' ')[1]
+            .slice(0, -1);
+
+          assert.strictEqual(parseInt(maxWidth, 10), 1200);
+
+          assert.notStrictEqual(
+            srcsetSplit[srcsetSplit.length - 2],
+            srcsetSplit[srcsetSplit.length - 1],
           );
         });
       });
