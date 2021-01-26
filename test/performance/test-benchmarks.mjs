@@ -1,12 +1,12 @@
-var Benchmark = require('benchmark');
-var ImgixClient = require('../../src/imgix-core-js');
+import Benchmark from 'benchmark';
+import ImgixClient from '../../src/main.mjs';
 
-var client = new ImgixClient({
+const client = new ImgixClient({
   domain: 'testing.imgix.net',
   includeLibraryParam: false,
 });
 
-var suite = new Benchmark.Suite('srcset generation', {
+const suite = new Benchmark.Suite('srcset generation', {
   onStart: function () {
     console.log(`\tBenchmarking ${this.name}\n`);
   },
@@ -14,15 +14,15 @@ var suite = new Benchmark.Suite('srcset generation', {
   onCycle: function () {
     // clears the target width cache between runs to ensure that
     // memoization does not affect subsequent benchmark cycles
-    var memoizedCache = ImgixClient.prototype.targetWidthsCache;
+    const memoizedCache = client.targetWidthsCache;
     Object.getOwnPropertyNames(memoizedCache).forEach(function (prop) {
       delete memoizedCache[prop];
     });
   },
 
   onComplete: function () {
-    for (var key in this) {
-      var benchmark = this[key];
+    for (const key in this) {
+      const benchmark = this[key];
       try {
         if (benchmark.constructor.name == 'Benchmark') {
           console.log('\t\t' + benchmark.toString() + '\n');
