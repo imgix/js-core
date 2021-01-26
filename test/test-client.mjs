@@ -1,5 +1,5 @@
 import assert from 'assert';
-import ImgixClient from '../src/main.mjs';
+import ImgixClient from '../src/index.mjs';
 import { VERSION } from '../src/constants.mjs';
 
 describe('Imgix client:', function describeSuite() {

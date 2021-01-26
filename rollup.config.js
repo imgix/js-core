@@ -5,11 +5,11 @@ import babel from 'rollup-plugin-babel';
 import pkg from './package.json';
 
 export default [
-  // browser-friendly UMD build
+  // Browser-friendly UMD build.
   {
-    input: 'src/main.mjs',
+    input: 'src/index.mjs',
     output: {
-      name: 'imgix',
+      name: 'imgix-core-js',
       file: pkg.browser,
       format: 'umd',
     },
@@ -23,7 +23,7 @@ export default [
     ],
   },
   {
-    input: 'src/main.mjs',
+    input: 'src/index.mjs',
     external: ['md5', 'js-base64', 'assert'],
     output: [
       { file: pkg.main, format: 'cjs' },
