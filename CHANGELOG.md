@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0-beta.0](https://github.com/imgix/imgix-core-js/compare/2.3.2...3.0.0-beta.0) (2021-01-26)
+
+* feat: esm rewrite ([#188](https://github.com/imgix/imgix-core-js/pull/188))
+* feat: remove ensureEven requirement ([#206](https://github.com/imgix/imgix-core-js/pull/206))
+* feat: use mjs file extensions with type module ([#209](https://github.com/imgix/imgix-core-js/pull/209))
+* feat: enforce 0.01 lower bound for widthTolerance ([#211](https://github.com/imgix/imgix-core-js/pull/211))
+* feat: create a DPR srcset when a fixed height is specified ([#215](https://github.com/imgix/imgix-core-js/pull/215))
+
 ## [2.3.2](https://github.com/imgix/imgix-core-js/compare/2.3.1...2.3.2) (2020-10-12)
 
 * fix(buildURL): ensure operation is idempotent ([#168](https://github.com/imgix/imgix-core-js/pull/168))
