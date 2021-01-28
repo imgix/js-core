@@ -339,5 +339,12 @@ describe('URL Builder:', function describeSuite() {
       assert.strictEqual(Object.keys(params).length, 1);
       assert.strictEqual(params.constructor, Object);
     });
+
+    it('correctly encodes plus signs (+) in paths', function testSpec() {
+      const actual = client.buildURL('&$+,:;=?@#.jpg', {});
+      const expected = 'https://test.imgix.net/&$%2B,%3A;=%3F@%23.jpg';
+
+      assert.strictEqual(actual, expected);
+    });
   });
 });
