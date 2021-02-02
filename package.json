@@ -17,6 +17,9 @@
     "@babel/core": "7.12.10",
     "@babel/preset-env": "7.12.11",
     "@babel/register": "7.12.10",
+    "@google/semantic-release-replace-plugin": "^1.0.2",
+    "@semantic-release/changelog": "5.0.1",
+    "@semantic-release/git": "9.0.0",
     "benchmark": "2.1.4",
     "mocha": "8.2.1",
     "prettier": "2.2.1",
@@ -25,6 +28,7 @@
     "rollup-plugin-commonjs": "10.1.0",
     "rollup-plugin-node-resolve": "4.2.4",
     "rollup-plugin-uglify": "6.0.4",
+    "semantic-release": "^17.3.7",
     "sinon": "9.2.4",
     "typescript": "4.1.3",
     "uglify-js": "3.12.6"
@@ -38,6 +42,75 @@
     "pretty": "prettier --write '{src,test}/**/*.mjs'",
     "test": "mocha ./test/*.mjs",
     "test:performance": "mocha test/performance/*.mjs"
+  },
+  "release": {
+    "branches": [
+      "main",
+      {
+        "name": "beta",
+        "prerelease": true
+      }
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@google/semantic-release-replace-plugin",
+        {
+          "replacements": [
+            {
+              "files": [
+                "src/constants.mjs"
+              ],
+              "from": "export const VERSION = '.*'",
+              "to": "export const VERSION = '${nextRelease.version}'",
+              "results": [
+                {
+                  "file": "src/constants.mjs",
+                  "hasChanged": true,
+                  "numMatches": 1,
+                  "numReplacements": 1
+                }
+              ],
+              "countMatches": true
+            }
+          ]
+        }
+      ],
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "src",
+            "dist",
+            "package.json",
+            "CHANGELOG.md"
+          ],
+          "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes}"
+        }
+      ],
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            {
+              "path": "dist/imgix-core-js.js",
+              "label": "Standalone UMD browser build"
+            },
+            {
+              "path": "dist/imgix-core-js.cjs",
+              "label": "CommonJS build"
+            },
+            {
+              "path": "dist/imgix-core-js.mjs",
+              "label": "ES Module build"
+            }
+          ]
+        }
+      ]
+    ]
   },
   "files": [
     "dist",
