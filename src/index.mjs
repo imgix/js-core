@@ -96,7 +96,7 @@ export default class ImgixClient {
     } else {
       // Use de/encodeURI if we think the path is just a path,
       // so it leaves legal characters like '/' and '@' alone
-      _path = encodeURI(_path).replace(/[#?:]/g, encodeURIComponent);
+      _path = encodeURI(_path).replace(/[#?:+]/g, encodeURIComponent);
     }
 
     return '/' + _path;
