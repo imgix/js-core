@@ -9,7 +9,7 @@ export default [
   {
     input: 'src/index.mjs',
     output: {
-      name: 'imgix-core-js',
+      name: 'ImgixClient',
       file: pkg.browser,
       format: 'umd',
     },
