@@ -4,9 +4,9 @@
   "version": "2.3.2",
   "repository": "https://github.com/imgix/imgix-core-js",
   "license": "BSD-2-Clause",
-  "main": "dist/imgix-core-js.cjs",
-  "module": "dist/imgix-core-js.mjs",
-  "browser": "dist/imgix-core-js.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "browser": "dist/imgix-core-js.umd.js",
   "type": "module",
   "types": "dist/imgix-core-js.d.ts",
   "dependencies": {
