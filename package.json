@@ -14,8 +14,8 @@
     "md5": "^2.2.1"
   },
   "devDependencies": {
-    "@babel/core": "7.12.16",
-    "@babel/preset-env": "7.12.16",
+    "@babel/core": "7.12.17",
+    "@babel/preset-env": "7.12.17",
     "@babel/register": "7.12.13",
     "benchmark": "2.1.4",
     "mocha": "8.3.0",
