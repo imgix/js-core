@@ -3,5 +3,5 @@
     "target": "es2015",
     "module": "umd"
   },
-  "files": ["src/imgix-core-js.d.ts"]
+  "files": ["src/imgix-js-core.d.ts"]
 }

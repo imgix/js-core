@@ -1,14 +1,14 @@
 {
-  "name": "imgix-core-js",
+  "name": "@imgix/js-core",
   "description": "A JavaScript client library for generating image URLs with imgix",
   "version": "2.3.2",
-  "repository": "https://github.com/imgix/imgix-core-js",
+  "repository": "https://github.com/imgix/js-core",
   "license": "BSD-2-Clause",
-  "main": "dist/imgix-core-js.cjs",
-  "module": "dist/imgix-core-js.mjs",
-  "browser": "dist/imgix-core-js.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "browser": "dist/imgix-js-core.umd.js",
   "type": "module",
-  "types": "dist/imgix-core-js.d.ts",
+  "types": "dist/imgix-js-core.d.ts",
   "dependencies": {
     "js-base64": "~2.6.0",
     "md5": "^2.2.1"
@@ -32,7 +32,7 @@
   "scripts": {
     "assert_version": "node assert_version.cjs",
     "build": "rollup -c",
-    "compile": "cp ./src/imgix-core-js.d.ts ./dist/imgix-core-js.d.ts && tsc",
+    "compile": "cp ./src/imgix-js-core.d.ts ./dist/imgix-js-core.d.ts && tsc",
     "dev": "rollup -c -w",
     "prepublish": "npm run build && npm run compile && npm run assert_version",
     "pretest": "npm run build",
