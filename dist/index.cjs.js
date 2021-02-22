@@ -199,8 +199,8 @@ function validateRange(min, max) {
   }
 }
 function validateWidthTolerance(widthTolerance) {
-  if (typeof widthTolerance != 'number' || widthTolerance <= 0) {
-    throw new Error('The srcset widthTolerance argument can only be passed a positive scalar number');
+  if (typeof widthTolerance != 'number' || widthTolerance < 0.01) {
+    throw new Error('The srcset widthTolerance must be a number greater than or equal to 0.01');
   }
 }
 function validateWidths(customWidths) {
@@ -241,7 +241,7 @@ var ImgixClient = /*#__PURE__*/function () {
     }
 
     if (this.settings.includeLibraryParam) {
-      this.settings.libraryParam = 'js-' + VERSION;
+      this.settings.libraryParam = 'js-core-' + VERSION;
     }
 
     this.settings.urlPrefix = this.settings.useHTTPS ? 'https://' : 'http://';
@@ -298,7 +298,7 @@ var ImgixClient = /*#__PURE__*/function () {
       } else {
         // Use de/encodeURI if we think the path is just a path,
         // so it leaves legal characters like '/' and '@' alone
-        _path = encodeURI(_path).replace(/[#?:]/g, encodeURIComponent);
+        _path = encodeURI(_path).replace(/[#?:+]/g, encodeURIComponent);
       }
 
       return '/' + _path;
@@ -309,10 +309,9 @@ var ImgixClient = /*#__PURE__*/function () {
       var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
       var w = params.w,
-          h = params.h,
-          ar = params.ar;
+          h = params.h;
 
-      if (w || h && ar) {
+      if (w || h) {
         return this._buildDPRSrcSet(path, params, options);
       } else {
         return this._buildSrcSetPairs(path, params, options);
@@ -379,32 +378,35 @@ var ImgixClient = /*#__PURE__*/function () {
   }, {
     key: "_generateTargetWidths",
     value: function _generateTargetWidths(widthTolerance, minWidth, maxWidth) {
-      var INCREMENT_PERCENTAGE = widthTolerance;
-
-      var _minWidth = Math.floor(minWidth);
-
-      var _maxWidth = Math.floor(maxWidth);
-
-      var cacheKey = INCREMENT_PERCENTAGE + '/' + _minWidth + '/' + _maxWidth;
-      var resolutions = [_minWidth];
-
-      if (minWidth === maxWidth) {
-        return resolutions;
-      }
+      var minW = Math.floor(minWidth);
+      var maxW = Math.floor(maxWidth);
+      var cacheKey = widthTolerance + '/' + minW + '/' + maxW; // First, check the cache.
 
       if (cacheKey in this.targetWidthsCache) {
         return this.targetWidthsCache[cacheKey];
       }
 
-      var ensureEven = function ensureEven(n) {
-        return 2 * Math.round(n / 2);
-      };
+      if (minW === maxW) {
+        return [minW];
+      }
 
-      var tempWidth = _minWidth;
+      var resolutions = [];
+      var currentWidth = minW;
 
-      while (resolutions[resolutions.length - 1] < _maxWidth) {
-        tempWidth *= 1 + INCREMENT_PERCENTAGE * 2;
-        resolutions.push(Math.min(ensureEven(tempWidth), _maxWidth));
+      while (currentWidth < maxW) {
+        // While the currentWidth is less than the maxW, push the rounded
+        // width onto the list of resolutions.
+        resolutions.push(Math.round(currentWidth));
+        currentWidth *= 1 + widthTolerance * 2;
+      } // At this point, the last width in resolutions is less than the
+      // currentWidth that caused the loop to terminate. This terminating
+      // currentWidth is greater than or equal to the maxW. We want to
+      // to stop at maxW, so we make sure our maxW is larger than the last
+      // width in resolutions before pushing it (if it's equal we're done).
+
+
+      if (resolutions[resolutions.length - 1] < maxW) {
+        resolutions.push(maxW);
       }
 
       this.targetWidthsCache[cacheKey] = resolutions;

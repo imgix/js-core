@@ -34,7 +34,7 @@ export default class ImgixClient {
     }
 
     if (this.settings.includeLibraryParam) {
-      this.settings.libraryParam = 'js-' + VERSION;
+      this.settings.libraryParam = 'js-core-' + VERSION;
     }
 
     this.settings.urlPrefix = this.settings.useHTTPS ? 'https://' : 'http://';

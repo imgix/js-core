@@ -37,7 +37,7 @@ describe('Imgix client:', function describeSuite() {
 
     it('appends ixlib param by default', function testSpec() {
       const domain = 'test.imgix.net';
-      const expectedURL = `https://${domain}/image.jpg?ixlib=js-${VERSION}`;
+      const expectedURL = `https://${domain}/image.jpg?ixlib=js-core-${VERSION}`;
       const client = new ImgixClient({ domain: domain });
 
       assert.strictEqual(client.buildURL('image.jpg'), expectedURL);
