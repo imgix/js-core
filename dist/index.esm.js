@@ -237,7 +237,7 @@ var ImgixClient = /*#__PURE__*/function () {
     }
 
     if (this.settings.includeLibraryParam) {
-      this.settings.libraryParam = 'js-core-' + VERSION;
+      this.settings.libraryParam = 'js-' + VERSION;
     }
 
     this.settings.urlPrefix = this.settings.useHTTPS ? 'https://' : 'http://';
