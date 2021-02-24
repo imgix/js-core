@@ -1,4 +1,4 @@
 node_modules
 CHANGELOG.md
 package.json
-dist/imgix-core-js.umd.js
+dist/imgix-js-core.umd.js
