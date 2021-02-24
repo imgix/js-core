@@ -6,7 +6,7 @@ var packageVersion = require('./package').version;
     return 0;
   } else {
     process.stdout.write(
-      'FAIL: package.json and @imgix/js-core versions do not match!\n',
+      'FAIL: package.json and src/constants.mjs versions do not match!\n',
     );
     return 1;
   }
