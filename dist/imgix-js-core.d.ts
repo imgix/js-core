@@ -1,4 +1,4 @@
-// Type definitions for @imgix/js-core.js
+// Type definitions for @imgix/js-core.
 
 declare class ImgixClient {
     domain: string;
