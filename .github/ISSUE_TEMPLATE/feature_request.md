@@ -11,7 +11,7 @@ Please provide the following information and someone from @imgix/imgix-sdk-team 
 
 **Before you submit:**
 
-- [ ] Please search through the [existing issues](https://github.com/imgix/imgix-core-js/issues?utf8=%E2%9C%93&q=is%3Aissue) to see if your feature has already been discussed.
+- [ ] Please search through the [existing issues](https://github.com/imgix/js-core/issues?utf8=%E2%9C%93&q=is%3Aissue) to see if your feature has already been discussed.
 - [ ] Please take a moment to find out whether your idea fits with the scope and aims of this project.
 
 **Is your feature request related to a problem? Please describe.**

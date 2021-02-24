@@ -1,5 +1,5 @@
 <!--
-Hello, and thanks for contributing to imgix-core-js! 🎉🙌
+Hello, and thanks for contributing to @imgix/js-core! 🎉🙌
 Please take a second to fill out PRs with the following template!
 -->
 
@@ -27,7 +27,7 @@ Please use the checklist that is most closely related to your PR, and delete the
 
 - [ ] Each commit follows the [Conventional Commit](https://www.conventionalcommits.org/en/v1.0.0/#summary) format: e.g. `chore(readme): fix typo`. See the end of this file for more information.
 - [ ] Any breaking changes are specified on the commit on which they are introduced with `BREAKING CHANGE` in the body of the commit.
-- [ ] If this is a big feature with breaking changes, consider [opening an issue](https://github.com/imgix/imgix-core-js/issues/new?assignees=&labels=&template=feature_request.md&title=) to discuss first. This is completely up to you, but please keep in mind that your PR might not be accepted.
+- [ ] If this is a big feature with breaking changes, consider [opening an issue](https://github.com/imgix/js-core/issues/new?assignees=&labels=&template=feature_request.md&title=) to discuss first. This is completely up to you, but please keep in mind that your PR might not be accepted.
 - [ ] Run unit tests to ensure all existing tests are still passing
 - [ ] Add new passing unit tests to cover the code introduced by your PR
 - [ ] Update the readme
