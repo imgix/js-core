@@ -4,11 +4,11 @@
 
 `imgix-core-js` is a JavaScript library for generating image URLs with [imgix](https://www.imgix.com/) that can be used in browser or server-side settings.
 
-[![NPM Version](https://img.shields.io/npm/v/imgix-core-js.svg)](https://www.npmjs.com/package/imgix-core-js)
-[![Build Status](https://travis-ci.com/imgix/imgix-core-js.svg?branch=main)](https://travis-ci.com/imgix/imgix-core-js)
-[![Monthly Downloads](https://img.shields.io/npm/dm/imgix-core-js.svg)](https://www.npmjs.com/package/imgix-core-js)
+[![NPM Version](https://img.shields.io/npm/v/imgix-core-js.svg)](https://www.npmjs.com/package/@imgix/js-core)
+[![Build Status](https://travis-ci.com/imgix/imgix-core-js.svg?branch=main)](https://travis-ci.com/github/imgix/js-core)
+[![Monthly Downloads](https://img.shields.io/npm/dm/imgix-core-js.svg)](https://www.npmjs.com/package/@imgix/js-core)
 [![Minified Size](https://img.shields.io/bundlephobia/min/imgix-core-js)](https://bundlephobia.com/result?p=imgix-core-js)
-[![License](https://img.shields.io/github/license/imgix/imgix-core-js)](https://github.com/imgix/imgix-core-js/blob/main/LICENSE.md)
+[![License](https://img.shields.io/github/license/imgix/imgix-core-js)](https://github.com/imgix/js-core/blob/main/LICENSE.md)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fimgix%2Fimgix-core-js.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fimgix%2Fimgix-core-js?ref=badge_shield)
 
 ---
@@ -42,16 +42,10 @@
 
 ## Installing
 
-imgix-core-js can be installed via npm or bower:
+@imgix/js-core can be installed via npm:
 
 ```bash
-npm install imgix-core-js
-```
-
-or
-
-```bash
-bower install imgix-core-js
+npm install @imgix/js-core
 ```
 
 ## Usage
@@ -318,11 +312,11 @@ Remember that browsers will apply a device pixel ratio as a multiplier when sele
 
 #### Variable Qualities
 
-This library will automatically append a variable `q` parameter mapped to each `dpr` parameter when generating a [fixed-image](https://github.com/imgix/imgix-core-js#fixed-image-rendering) srcset. This technique is commonly used to compensate for the increased filesize of high-DPR images. Since high-DPR images are displayed at a higher pixel density on devices, image quality can be lowered to reduce overall filesize without sacrificing perceived visual quality. For more information and examples of this technique in action, see [this blog post](https://blog.imgix.com/2016/03/30/dpr-quality).
+This library will automatically append a variable `q` parameter mapped to each `dpr` parameter when generating a [fixed-image](https://github.com/imgix/js-core#fixed-image-rendering) srcset. This technique is commonly used to compensate for the increased filesize of high-DPR images. Since high-DPR images are displayed at a higher pixel density on devices, image quality can be lowered to reduce overall filesize without sacrificing perceived visual quality. For more information and examples of this technique in action, see [this blog post](https://blog.imgix.com/2016/03/30/dpr-quality).
 
 This behavior will respect any overriding `q` value passed in as a parameter. Additionally, it can be disabled altogether by passing `{ disableVariableQuality: true }` to the third argument of `buildSrcSet()`.
 
-This behavior specifically occurs when a [fixed-size image](https://github.com/imgix/imgix-core-js#fixed-image-rendering) is rendered, for example:
+This behavior specifically occurs when a [fixed-size image](https://github.com/imgix/js-core#fixed-image-rendering) is rendered, for example:
 
 ```js
 const client = new ImgixClient({
