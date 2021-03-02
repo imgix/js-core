@@ -73,7 +73,7 @@ console.log(url); // => "https://testing.imgix.net/users/1.png?w=400&h=300&s=…
 ### ES6 Modules
 
 ```js
-import ImgixClient from 'imgix-core-js';
+import ImgixClient from "@imgix/js-core";
 
 const client = new ImgixClient({
   domain: 'testing.imgix.net',
