@@ -2,7 +2,7 @@
 
 ![imgix logo](https://assets.imgix.net/sdk-imgix-logo.svg)
 
-`imgix-core-js` is a JavaScript library for generating image URLs with [imgix](https://www.imgix.com/) that can be used in browser or server-side settings.
+`@imgix/js-core` is a JavaScript library for generating image URLs with [imgix](https://www.imgix.com/) that can be used in browser or server-side settings.
 
 [![NPM Version](https://img.shields.io/npm/v/imgix-core-js.svg)](https://www.npmjs.com/package/@imgix/js-core)
 [![Build Status](https://travis-ci.com/imgix/imgix-core-js.svg?branch=main)](https://travis-ci.com/github/imgix/js-core)
@@ -50,7 +50,7 @@ npm install @imgix/js-core
 
 ## Usage
 
-Depending on your module system, using imgix-core-js is done a few different ways. The most common entry point will be the `ImgixClient` class. Whenever you provide data to imgix-core-js, make sure it is not already URL-encoded, as the library handles proper encoding internally.
+Depending on your module system, using @imgix/js-core is done a few different ways. The most common entry point will be the `ImgixClient` class. Whenever you provide data to `ImgixClient`, make sure it is not already URL-encoded, as the library handles proper encoding internally.
 
 ### CommonJS
 
@@ -147,7 +147,7 @@ https://testing.imgix.net/folder/image.jpg?w=1000&ixlib=js-...
 
 <!-- prettier-ignore-end -->
 
-The imgix-core-js module allows for generation of custom `srcset` attributes, which can be invoked through `buildSrcSet()`. By default, the `srcset` generated will allow for responsive size switching by building a list of image-width mappings.
+The @imgix/js-core module allows for generation of custom `srcset` attributes, which can be invoked through `buildSrcSet()`. By default, the `srcset` generated will allow for responsive size switching by building a list of image-width mappings.
 
 ```js
 const client = new ImgixClient({
@@ -341,10 +341,10 @@ https://testing.imgix.net/image.jpg?w=100&dpr=5&q=20 5x
 
 ### Web Proxy Sources
 
-If you are using a [Web Proxy Source](https://docs.imgix.com/setup/creating-sources/web-proxy), all you need to do is pass the full image URL you would like to proxy to `imgix-core-js` as the path, and include a `secureURLToken` when creating the client. `imgix-core-js` will then encode this full URL into a format that imgix will understand, thus creating a proxy URL for you.
+If you are using a [Web Proxy Source](https://docs.imgix.com/setup/creating-sources/web-proxy), all you need to do is pass the full image URL you would like to proxy to `@imgix/js-core` as the path, and include a `secureURLToken` when creating the client. `@imgix/js-core` will then encode this full URL into a format that imgix will understand, thus creating a proxy URL for you.
 
 ```js
-import ImgixClient from 'imgix-core-js';
+import ImgixClient from '@imgix/js-core';
 
 const client = new ImgixClient({
   domain: 'my-proxy-domain.imgix.net',
@@ -370,7 +370,7 @@ new ImgixClient({
 
 ## Testing
 
-imgix-core-js uses mocha for testing. Here’s how to run those tests:
+@imgix/js-core uses mocha for testing. Here’s how to run those tests:
 
 ```bash
 npm test
