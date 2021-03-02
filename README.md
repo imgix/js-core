@@ -55,16 +55,18 @@ Depending on your module system, using imgix-core-js is done a few different way
 ### CommonJS
 
 ```js
-var ImgixClient = require('imgix-core-js');
+const ImgixClient = require("@imgix/js-core");
 
-var client = new ImgixClient({
+const client = new ImgixClient({
   domain: 'testing.imgix.net',
   secureURLToken: '<SECURE TOKEN>',
 });
-var url = client.buildURL('/path/to/image.png', {
+
+const url = client.buildURL('/path/to/image.png', {
   w: 400,
   h: 300,
 });
+
 console.log(url); // => "https://testing.imgix.net/users/1.png?w=400&h=300&s=…"
 ```
 
