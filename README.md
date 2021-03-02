@@ -5,10 +5,10 @@
 `@imgix/js-core` is a JavaScript library for generating image URLs with [imgix](https://www.imgix.com/) that can be used in browser or server-side settings.
 
 [![NPM Version](https://img.shields.io/npm/v/imgix-core-js.svg)](https://www.npmjs.com/package/@imgix/js-core)
-[![Build Status](https://travis-ci.com/imgix/imgix-core-js.svg?branch=main)](https://travis-ci.com/github/imgix/js-core)
+[![Build Status](https://api.travis-ci.com/imgix/js-core.svg?branch=main)](https://travis-ci.com/github/imgix/js-core)
 [![Monthly Downloads](https://img.shields.io/npm/dm/imgix-core-js.svg)](https://www.npmjs.com/package/@imgix/js-core)
 [![Minified Size](https://img.shields.io/bundlephobia/min/imgix-core-js)](https://bundlephobia.com/result?p=imgix-core-js)
-[![License](https://img.shields.io/github/license/imgix/imgix-core-js)](https://github.com/imgix/js-core/blob/main/LICENSE.md)
+[![License](https://img.shields.io/github/license/imgix/js-core)](https://github.com/imgix/js-core/blob/main/LICENSE.md)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fimgix%2Fimgix-core-js.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fimgix%2Fimgix-core-js?ref=badge_shield)
 
 ---
