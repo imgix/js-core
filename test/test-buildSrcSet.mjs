@@ -763,6 +763,13 @@ describe('SrcSet Builder:', function describeSuite() {
         });
       });
 
+      describe('with only default arguments', function describeSuite() {
+        it('targetWidths produces the default target width resolutions', function testSpec() {
+          const actual = ImgixClient.targetWidths();
+          assert.deepStrictEqual(actual, RESOLUTIONS);
+        });
+      });
+
       describe('with widthTolerance, minWidth, and maxWidth values which have caused duplicate values in the past', function describeSuite() {
         const client = new ImgixClient({
           domain: 'testing.imgix.net',
