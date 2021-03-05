@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [v3.0.0-beta.4](https://github.com/imgix/js-core/compare/v3.0.0-beta.2...v3.0.0-beta.4) (2021-03-04)
+
+* feat: static targetWidths functionality ([#248](https://github.com/imgix/js-core/pull/248))
+
 ## [v3.0.0-beta.2](https://github.com/imgix/js-core/compare/2.3.2...v3.0.0-beta.2) (2021-02-24)
 
 * feat: esm rewrite ([#188](https://github.com/imgix/js-core/pull/188))
