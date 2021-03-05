@@ -112,26 +112,70 @@ export default class ImgixClient {
     }
   }
 
+  // returns an array of width values used during srcset generation
+  static targetWidths(
+    minWidth = 100,
+    maxWidth = 8192,
+    widthTolerance = 0.08,
+    cache = {},
+  ) {
+    const minW = Math.floor(minWidth);
+    const maxW = Math.floor(maxWidth);
+    const cacheKey = widthTolerance + '/' + minW + '/' + maxW;
+
+    // First, check the cache.
+    if (cacheKey in cache) {
+      return cache[cacheKey];
+    }
+
+    if (minW === maxW) {
+      return [minW];
+    }
+
+    const resolutions = [];
+    let currentWidth = minW;
+    while (currentWidth < maxW) {
+      // While the currentWidth is less than the maxW, push the rounded
+      // width onto the list of resolutions.
+      resolutions.push(Math.round(currentWidth));
+      currentWidth *= 1 + widthTolerance * 2;
+    }
+
+    // At this point, the last width in resolutions is less than the
+    // currentWidth that caused the loop to terminate. This terminating
+    // currentWidth is greater than or equal to the maxW. We want to
+    // to stop at maxW, so we make sure our maxW is larger than the last
+    // width in resolutions before pushing it (if it's equal we're done).
+    if (resolutions[resolutions.length - 1] < maxW) {
+      resolutions.push(maxW);
+    }
+
+    cache[cacheKey] = resolutions;
+
+    return resolutions;
+  }
+
   _buildSrcSetPairs(path, params, options) {
     const [widthTolerance, minWidth, maxWidth] = validateAndDestructureOptions(
       options,
     );
 
-    let targetWidths;
+    let targetWidthValues;
     if (options.widths) {
       validateWidths(options.widths);
-      targetWidths = [...options.widths];
+      targetWidthValues = [...options.widths];
     } else {
       validateRange(minWidth, maxWidth);
       validateWidthTolerance(widthTolerance);
-      targetWidths = this._generateTargetWidths(
-        widthTolerance,
+      targetWidthValues = ImgixClient.targetWidths(
         minWidth,
         maxWidth,
+        widthTolerance,
+        this.targetWidthsCache,
       );
     }
 
-    const srcset = targetWidths.map(
+    const srcset = targetWidthValues.map(
       (w) => `${this.buildURL(path, { ...params, w })} ${w}w`,
     );
 
@@ -161,43 +205,5 @@ export default class ImgixClient {
       : targetRatios.map((dpr) => withQuality(path, params, dpr));
 
     return srcset.join(',\n');
-  }
-
-  // returns an array of width values used during srcset generation
-  _generateTargetWidths(widthTolerance, minWidth, maxWidth) {
-    const minW = Math.floor(minWidth);
-    const maxW = Math.floor(maxWidth);
-    const cacheKey = widthTolerance + '/' + minW + '/' + maxW;
-
-    // First, check the cache.
-    if (cacheKey in this.targetWidthsCache) {
-      return this.targetWidthsCache[cacheKey];
-    }
-
-    if (minW === maxW) {
-      return [minW];
-    }
-
-    const resolutions = [];
-    let currentWidth = minW;
-    while (currentWidth < maxW) {
-      // While the currentWidth is less than the maxW, push the rounded
-      // width onto the list of resolutions.
-      resolutions.push(Math.round(currentWidth));
-      currentWidth *= 1 + widthTolerance * 2;
-    }
-
-    // At this point, the last width in resolutions is less than the
-    // currentWidth that caused the loop to terminate. This terminating
-    // currentWidth is greater than or equal to the maxW. We want to
-    // to stop at maxW, so we make sure our maxW is larger than the last
-    // width in resolutions before pushing it (if it's equal we're done).
-    if (resolutions[resolutions.length - 1] < maxW) {
-      resolutions.push(maxW);
-    }
-
-    this.targetWidthsCache[cacheKey] = resolutions;
-
-    return resolutions;
   }
 }
