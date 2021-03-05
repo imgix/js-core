@@ -149,7 +149,7 @@ function _nonIterableRest() {
 }
 
 // package version used in the ix-lib parameter
-var VERSION = 'v3.0.0-beta.3'; // regex pattern used to determine if a domain is valid
+var VERSION = 'v3.0.0-beta.4'; // regex pattern used to determine if a domain is valid
 
 var DOMAIN_REGEX = /^(?:[a-z\d\-_]{1,62}\.){0,125}(?:[a-z\d](?:\-(?=\-*[a-z\d])|[a-z]|\d){0,62}\.)[a-z\d]{1,63}$/i; // minimum generated srcset width
 
@@ -316,7 +316,8 @@ var ImgixClient = /*#__PURE__*/function () {
       } else {
         return this._buildSrcSetPairs(path, params, options);
       }
-    }
+    } // returns an array of width values used during srcset generation
+
   }, {
     key: "_buildSrcSetPairs",
     value: function _buildSrcSetPairs(path, params, options) {
@@ -328,18 +329,18 @@ var ImgixClient = /*#__PURE__*/function () {
           minWidth = _validateAndDestructu2[1],
           maxWidth = _validateAndDestructu2[2];
 
-      var targetWidths;
+      var targetWidthValues;
 
       if (options.widths) {
         validateWidths(options.widths);
-        targetWidths = _toConsumableArray(options.widths);
+        targetWidthValues = _toConsumableArray(options.widths);
       } else {
         validateRange(minWidth, maxWidth);
         validateWidthTolerance(widthTolerance);
-        targetWidths = this._generateTargetWidths(widthTolerance, minWidth, maxWidth);
+        targetWidthValues = ImgixClient.targetWidths(minWidth, maxWidth, widthTolerance, this.targetWidthsCache);
       }
 
-      var srcset = targetWidths.map(function (w) {
+      var srcset = targetWidthValues.map(function (w) {
         return "".concat(_this.buildURL(path, _objectSpread2(_objectSpread2({}, params), {}, {
           w: w
         })), " ").concat(w, "w");
@@ -373,17 +374,20 @@ var ImgixClient = /*#__PURE__*/function () {
         return withQuality(path, params, dpr);
       });
       return srcset.join(',\n');
-    } // returns an array of width values used during srcset generation
-
-  }, {
-    key: "_generateTargetWidths",
-    value: function _generateTargetWidths(widthTolerance, minWidth, maxWidth) {
+    }
+  }], [{
+    key: "targetWidths",
+    value: function targetWidths() {
+      var minWidth = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 100;
+      var maxWidth = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 8192;
+      var widthTolerance = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0.08;
+      var cache = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
       var minW = Math.floor(minWidth);
       var maxW = Math.floor(maxWidth);
       var cacheKey = widthTolerance + '/' + minW + '/' + maxW; // First, check the cache.
 
-      if (cacheKey in this.targetWidthsCache) {
-        return this.targetWidthsCache[cacheKey];
+      if (cacheKey in cache) {
+        return cache[cacheKey];
       }
 
       if (minW === maxW) {
@@ -409,7 +413,7 @@ var ImgixClient = /*#__PURE__*/function () {
         resolutions.push(maxW);
       }
 
-      this.targetWidthsCache[cacheKey] = resolutions;
+      cache[cacheKey] = resolutions;
       return resolutions;
     }
   }]);
