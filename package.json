@@ -34,7 +34,7 @@
     "build": "rollup -c",
     "compile": "cp ./src/imgix-js-core.d.ts ./dist/imgix-js-core.d.ts && tsc",
     "dev": "rollup -c -w",
-    "prepublish": "npm run build && npm run compile && npm run assert_version",
+    "prepare": "npm run build && npm run compile && npm run assert_version",
     "pretest": "npm run build",
     "pretty": "prettier --write '{src,test}/**/*.mjs'",
     "test": "mocha ./test/*.mjs",
