@@ -15,7 +15,7 @@ declare class ImgixClient {
     buildSrcSet(path: string, params?: {}, options?: SrcSetOptions): string;
     _buildSrcSetPairs(path: string, params?: {}, options?: SrcSetOptions): string;
     _buildDPRSrcSet(path: string, params?: {}, options?: SrcSetOptions): string;
-    targetWidths(minWidth?: number, maxWidth?: number, widthTolerance?: number, cache?: {}): number[];
+    static targetWidths(minWidth?: number, maxWidth?: number, widthTolerance?: number, cache?: {}): number[];
 }    
 
 interface SrcSetOptions {
