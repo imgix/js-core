@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [v3.0.0](https://github.com/imgix/js-core/compare/v2.3.2...v3.0.0) (2021-03-08)
+
+* feat: esm rewrite ([#188](https://github.com/imgix/js-core/pull/188))
+* feat: remove ensureEven requirement ([#206](https://github.com/imgix/js-core/pull/206))
+* feat: use mjs file extensions with type module ([#209](https://github.com/imgix/js-core/pull/209))
+* feat: enforce 0.01 lower bound for widthTolerance ([#211](https://github.com/imgix/js-core/pull/211))
+* feat: create a DPR srcset when a fixed height is specified ([#215](https://github.com/imgix/js-core/pull/215))
+* feat: drop bower.json ([#222](https://github.com/imgix/js-core/pull/222))
+* fix: percent encode plus signs in path components ([#223](https://github.com/imgix/js-core/pull/223))
+* feat: static targetWidths functionality ([#248](https://github.com/imgix/js-core/pull/248))
+  
 ## [v3.0.0-beta.4](https://github.com/imgix/js-core/compare/v3.0.0-beta.2...v3.0.0-beta.4) (2021-03-04)
 
 * feat: static targetWidths functionality ([#248](https://github.com/imgix/js-core/pull/248))
