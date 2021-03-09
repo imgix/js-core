@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [v3.1.0](https://github.com/imgix/js-core/compare/v3.0.0...v3.1.0) (2021-03-09)
+
+* fix: typings for ImgixClient.targetWidths ([47658bc](https://github.com/imgix/js-core/commit/47658bc4869a156db6541cd97dfb41f6cc23351f))
+
 ## [v3.0.0](https://github.com/imgix/js-core/compare/v2.3.2...v3.0.0) (2021-03-08)
 
 * feat: esm rewrite ([#188](https://github.com/imgix/js-core/pull/188))
