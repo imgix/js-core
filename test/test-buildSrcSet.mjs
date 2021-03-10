@@ -809,6 +809,14 @@ describe('SrcSet Builder:', function describeSuite() {
             ImgixClient.targetWidths(-0.1);
           });
         });
+        describe('should not with widthTolerance <= 0', () => {
+          it('0', () => {
+            ImgixClient.targetWidths(1, 10, 0);
+          });
+          it('-0.5', () => {
+            ImgixClient.targetWidths(1, 10, -0.5);
+          });
+        });
       });
     });
   });
