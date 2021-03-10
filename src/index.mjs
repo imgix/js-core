@@ -1,18 +1,17 @@
-import md5 from 'md5';
 import { Base64 } from 'js-base64';
-
+import md5 from 'md5';
 import {
-  VERSION,
-  DOMAIN_REGEX,
   DEFAULT_OPTIONS,
+  DOMAIN_REGEX,
   DPR_QUALITIES,
+  VERSION,
 } from './constants.mjs';
-
+import { ensureGreaterEqualThan } from './utils.mjs';
 import {
-  validateRange,
-  validateWidths,
   validateAndDestructureOptions,
+  validateRange,
   validateVariableQuality,
+  validateWidths,
   validateWidthTolerance,
 } from './validators.mjs';
 
@@ -119,7 +118,7 @@ export default class ImgixClient {
     widthTolerance = 0.08,
     cache = {},
   ) {
-    const minW = Math.floor(minWidth);
+    const minW = ensureGreaterEqualThan(1)(Math.floor(minWidth));
     const maxW = Math.floor(maxWidth);
     const cacheKey = widthTolerance + '/' + minW + '/' + maxW;
 
