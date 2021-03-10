@@ -121,6 +121,8 @@ export default class ImgixClient {
   ) {
     const minW = Math.floor(minWidth);
     const maxW = Math.floor(maxWidth);
+    validateRange(minWidth, maxWidth);
+    validateWidthTolerance(widthTolerance);
     const cacheKey = widthTolerance + '/' + minW + '/' + maxW;
 
     // First, check the cache.
@@ -165,8 +167,6 @@ export default class ImgixClient {
       validateWidths(options.widths);
       targetWidthValues = [...options.widths];
     } else {
-      validateRange(minWidth, maxWidth);
-      validateWidthTolerance(widthTolerance);
       targetWidthValues = ImgixClient.targetWidths(
         minWidth,
         maxWidth,

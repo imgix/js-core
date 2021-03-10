@@ -763,10 +763,28 @@ describe('SrcSet Builder:', function describeSuite() {
         });
       });
 
-      describe('with only default arguments', function describeSuite() {
-        it('targetWidths produces the default target width resolutions', function testSpec() {
+      describe('ImgixClient.targetWidths', function describeSuite() {
+        it('produces the default target width resolutions given default args', function testSpec() {
           const actual = ImgixClient.targetWidths();
           assert.deepStrictEqual(actual, RESOLUTIONS);
+        });
+
+        it('errors on invalid minWidth', function testSpec() {
+          assert.throws(() => {
+            ImgixClient.targetWidths(0);
+          }, Error);
+        });
+
+        it('errors on invalid range', function testSpec() {
+          assert.throws(() => {
+            ImgixClient.targetWidths(100, 0);
+          }, Error);
+        });
+
+        it('errors on invalid widthTolerance', function testSpec() {
+          assert.throws(() => {
+            ImgixClient.targetWidths(100, 8192, 0.001);
+          }, Error);
         });
       });
 
