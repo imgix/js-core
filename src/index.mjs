@@ -115,11 +115,12 @@ export default class ImgixClient {
   static targetWidths(
     minWidth = 100,
     maxWidth = 8192,
-    widthTolerance = 0.08,
+    _widthTolerance = 0.08,
     cache = {},
   ) {
     const minW = ensureGreaterEqualThan(1)(Math.floor(minWidth));
     const maxW = Math.floor(maxWidth);
+    const widthTolerance = ensureGreaterEqualThan(0.01)(_widthTolerance);
     const cacheKey = widthTolerance + '/' + minW + '/' + maxW;
 
     // First, check the cache.
