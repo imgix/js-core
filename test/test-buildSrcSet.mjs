@@ -1,5 +1,5 @@
-import md5 from 'md5';
 import assert from 'assert';
+import md5 from 'md5';
 import ImgixClient from '../src/index.mjs';
 
 function assertWidthsIncreaseByTolerance(srcset, tolerance) {
@@ -794,6 +794,20 @@ describe('SrcSet Builder:', function describeSuite() {
             srcsetSplit[srcsetSplit.length - 2],
             srcsetSplit[srcsetSplit.length - 1],
           );
+        });
+      });
+
+      describe('with rogue parameters', () => {
+        describe('should not crash with minWidth < 1', () => {
+          it('0.99', () => {
+            ImgixClient.targetWidths(0.99);
+          });
+          it('0', () => {
+            ImgixClient.targetWidths(0);
+          });
+          it('-0.1', () => {
+            ImgixClient.targetWidths(-0.1);
+          });
         });
       });
     });
