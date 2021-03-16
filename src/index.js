@@ -2,7 +2,6 @@ import md5 from 'md5';
 import { Base64 } from 'js-base64';
 
 import {
-  VERSION,
   DOMAIN_REGEX,
   DEFAULT_OPTIONS,
   DPR_QUALITIES,
@@ -17,6 +16,10 @@ import {
 } from './validators';
 
 export default class ImgixClient {
+  static version() {
+    return 'v3.1.0';
+  }
+
   constructor(opts = {}) {
     this.settings = { ...DEFAULT_OPTIONS, ...opts };
     // a cache to store memoized srcset width-pairs
@@ -34,7 +37,7 @@ export default class ImgixClient {
     }
 
     if (this.settings.includeLibraryParam) {
-      this.settings.libraryParam = 'js-' + VERSION;
+      this.settings.libraryParam = 'js-' + ImgixClient.version();
     }
 
     this.settings.urlPrefix = this.settings.useHTTPS ? 'https://' : 'http://';

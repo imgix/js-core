@@ -1,6 +1,5 @@
 import assert from 'assert';
 import ImgixClient from '../src/index';
-import { VERSION } from '../src/constants';
 
 describe('Imgix client:', function describeSuite() {
   describe('The constructor', function describeSuite() {
@@ -37,7 +36,7 @@ describe('Imgix client:', function describeSuite() {
 
     it('appends ixlib param by default', function testSpec() {
       const domain = 'test.imgix.net';
-      const expectedURL = `https://${domain}/image.jpg?ixlib=js-${VERSION}`;
+      const expectedURL = `https://${domain}/image.jpg?ixlib=js-${ImgixClient.version()}`;
       const client = new ImgixClient({ domain: domain });
 
       assert.strictEqual(client.buildURL('image.jpg'), expectedURL);
