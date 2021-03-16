@@ -1,7 +1,8 @@
+/*
 var packageVersion = require('./package').version;
 
 (async () => {
-  const { VERSION } = await import('./src/constants.mjs');
+  const { VERSION } = await import('./src/constants.js');
   if (packageVersion === VERSION) {
     return 0;
   } else {
@@ -11,3 +12,4 @@ var packageVersion = require('./package').version;
     return 1;
   }
 })();
+*/
