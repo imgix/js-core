@@ -30,11 +30,10 @@
     "uglify-js": "3.12.8"
   },
   "scripts": {
-    "assert_version": "node assert_version.js",
     "build": "rollup -c",
     "compile": "cp ./src/imgix-js-core.d.ts ./dist/imgix-js-core.d.ts && tsc",
     "dev": "rollup -c -w",
-    "prepare": "npm run build && npm run compile && npm run assert_version",
+    "prepare": "npm run build && npm run compile", 
     "pretest": "npm run build",
     "pretty": "prettier --write '{src,test}/**/*.js'",
     "test": "mocha --require esm --recursive ./test/*.js",
