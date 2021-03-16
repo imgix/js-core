@@ -1,6 +1,6 @@
 import md5 from 'md5';
 import assert from 'assert';
-import ImgixClient from '../src/index.mjs';
+import ImgixClient from '../src/index';
 
 function assertWidthsIncreaseByTolerance(srcset, tolerance) {
   const srcsetWidths = srcset.split(',').map((u) => {

@@ -7,7 +7,7 @@ import pkg from './package.json';
 export default [
   // Browser-friendly UMD build.
   {
-    input: 'src/index.mjs',
+    input: 'src/index.js',
     output: {
       name: 'ImgixClient',
       file: pkg.browser,
@@ -23,7 +23,7 @@ export default [
     ],
   },
   {
-    input: 'src/index.mjs',
+    input: 'src/index.js',
     external: ['md5', 'js-base64', 'assert'],
     output: [
       { file: pkg.main, format: 'cjs' },
