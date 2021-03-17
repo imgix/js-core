@@ -6,7 +6,6 @@
   "license": "BSD-2-Clause",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
-  "browser": "dist/imgix-js-core.umd.js",
   "types": "dist/imgix-js-core.d.ts",
   "dependencies": {
     "js-base64": "~2.6.0",

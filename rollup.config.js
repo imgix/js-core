@@ -10,7 +10,7 @@ export default [
     input: 'src/index.js',
     output: {
       name: 'ImgixClient',
-      file: pkg.browser,
+      file: "dist/imgix-js-core.umd.js",
       format: 'umd',
     },
     plugins: [
