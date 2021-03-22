@@ -10,7 +10,7 @@ export default [
     input: 'src/index.mjs',
     output: {
       name: 'ImgixClient',
-      file: "dist/imgix-js-core.umd.js",
+      file: 'dist/imgix-js-core.umd.js',
       format: 'umd',
     },
     plugins: [
@@ -26,8 +26,8 @@ export default [
     input: 'src/index.mjs',
     external: ['md5', 'js-base64', 'assert'],
     output: [
-      { file: pkg.main, format: 'cjs' },
-      { file: pkg.module, format: 'es' },
+      { file: pkg.main, format: 'cjs', exports: 'default'},
+      { file: pkg.module, format: 'es', exports: 'default' },
     ],
     plugins: [
       babel({
