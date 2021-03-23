@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [v3.2.0-beta.0](https://github.com/imgix/js-core/compare/v3.1.0...v3.2.0-beta.0) (2021-03-22)
+
+* fix: validate minWidth, maxWidth, widthTolerance ([#257](https://github.com/imgix/js-core/pull/257))
+* fix: remove type and browser attributes from package.json ([#260](https://github.com/imgix/js-core/pull/260))
+* build: tell rollup we want to explicitly export default ([#262](https://github.com/imgix/js-core/pull/262))
+
 ## [v3.1.0](https://github.com/imgix/js-core/compare/v3.0.0...v3.1.0) (2021-03-09)
 
 * fix: typings for ImgixClient.targetWidths ([47658bc](https://github.com/imgix/js-core/commit/47658bc4869a156db6541cd97dfb41f6cc23351f))
