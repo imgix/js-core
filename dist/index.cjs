@@ -1,11 +1,9 @@
 'use strict';
 
-var md5 = require('md5');
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var md5 = _interopDefault(require('md5'));
 var jsBase64 = require('js-base64');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var md5__default = /*#__PURE__*/_interopDefaultLegacy(md5);
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -284,7 +282,7 @@ var ImgixClient = /*#__PURE__*/function () {
     key: "_signParams",
     value: function _signParams(path, queryParams) {
       var signatureBase = this.settings.secureURLToken + path + queryParams;
-      var signature = md5__default['default'](signatureBase);
+      var signature = md5(signatureBase);
       return queryParams.length > 0 ? queryParams + '&s=' + signature : '?s=' + signature;
     }
   }, {
@@ -337,6 +335,8 @@ var ImgixClient = /*#__PURE__*/function () {
         validateWidths(options.widths);
         targetWidthValues = _toConsumableArray(options.widths);
       } else {
+        validateRange(minWidth, maxWidth);
+        validateWidthTolerance(widthTolerance);
         targetWidthValues = ImgixClient.targetWidths(minWidth, maxWidth, widthTolerance, this.targetWidthsCache);
       }
 
@@ -384,8 +384,6 @@ var ImgixClient = /*#__PURE__*/function () {
       var cache = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
       var minW = Math.floor(minWidth);
       var maxW = Math.floor(maxWidth);
-      validateRange(minWidth, maxWidth);
-      validateWidthTolerance(widthTolerance);
       var cacheKey = widthTolerance + '/' + minW + '/' + maxW; // First, check the cache.
 
       if (cacheKey in cache) {
