@@ -1,9 +1,11 @@
 'use strict';
 
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
-
-var md5 = _interopDefault(require('md5'));
+var md5 = require('md5');
 var jsBase64 = require('js-base64');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var md5__default = /*#__PURE__*/_interopDefaultLegacy(md5);
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -149,7 +151,7 @@ function _nonIterableRest() {
 }
 
 // package version used in the ix-lib parameter
-var VERSION = 'v3.1.0'; // regex pattern used to determine if a domain is valid
+var VERSION = 'v3.1.1'; // regex pattern used to determine if a domain is valid
 
 var DOMAIN_REGEX = /^(?:[a-z\d\-_]{1,62}\.){0,125}(?:[a-z\d](?:\-(?=\-*[a-z\d])|[a-z]|\d){0,62}\.)[a-z\d]{1,63}$/i; // minimum generated srcset width
 
@@ -282,7 +284,7 @@ var ImgixClient = /*#__PURE__*/function () {
     key: "_signParams",
     value: function _signParams(path, queryParams) {
       var signatureBase = this.settings.secureURLToken + path + queryParams;
-      var signature = md5(signatureBase);
+      var signature = md5__default['default'](signatureBase);
       return queryParams.length > 0 ? queryParams + '&s=' + signature : '?s=' + signature;
     }
   }, {
@@ -335,8 +337,6 @@ var ImgixClient = /*#__PURE__*/function () {
         validateWidths(options.widths);
         targetWidthValues = _toConsumableArray(options.widths);
       } else {
-        validateRange(minWidth, maxWidth);
-        validateWidthTolerance(widthTolerance);
         targetWidthValues = ImgixClient.targetWidths(minWidth, maxWidth, widthTolerance, this.targetWidthsCache);
       }
 
@@ -384,6 +384,8 @@ var ImgixClient = /*#__PURE__*/function () {
       var cache = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
       var minW = Math.floor(minWidth);
       var maxW = Math.floor(maxWidth);
+      validateRange(minWidth, maxWidth);
+      validateWidthTolerance(widthTolerance);
       var cacheKey = widthTolerance + '/' + minW + '/' + maxW; // First, check the cache.
 
       if (cacheKey in cache) {
