@@ -331,8 +331,6 @@ var ImgixClient = /*#__PURE__*/function () {
         validateWidths(options.widths);
         targetWidthValues = _toConsumableArray(options.widths);
       } else {
-        validateRange(minWidth, maxWidth);
-        validateWidthTolerance(widthTolerance);
         targetWidthValues = ImgixClient.targetWidths(minWidth, maxWidth, widthTolerance, this.targetWidthsCache);
       }
 
@@ -380,6 +378,8 @@ var ImgixClient = /*#__PURE__*/function () {
       var cache = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
       var minW = Math.floor(minWidth);
       var maxW = Math.floor(maxWidth);
+      validateRange(minWidth, maxWidth);
+      validateWidthTolerance(widthTolerance);
       var cacheKey = widthTolerance + '/' + minW + '/' + maxW; // First, check the cache.
 
       if (cacheKey in cache) {
