@@ -34,7 +34,7 @@ export function validateRange(min, max) {
     min > max
   ) {
     throw new Error(
-      'The min and max srcset widths can only be passed positive Number values',
+      `The min and max srcset widths can only be passed positive Number values, and min must be less than max. Found min: ${min} and max: ${max}.`,
     );
   }
 }
