@@ -6,7 +6,7 @@ import {
   DOMAIN_REGEX,
   DEFAULT_OPTIONS,
   DPR_QUALITIES,
-} from './constants.mjs';
+} from './constants.js';
 
 import {
   validateRange,
@@ -14,7 +14,7 @@ import {
   validateAndDestructureOptions,
   validateVariableQuality,
   validateWidthTolerance,
-} from './validators.mjs';
+} from './validators.js';
 
 export default class ImgixClient {
   constructor(opts = {}) {
@@ -34,11 +34,15 @@ export default class ImgixClient {
     }
 
     if (this.settings.includeLibraryParam) {
-      this.settings.libraryParam = 'js-' + VERSION;
+      this.settings.libraryParam = 'js-' + ImgixClient.version();
     }
 
     this.settings.urlPrefix = this.settings.useHTTPS ? 'https://' : 'http://';
   }
+
+   static version() {
+     return VERSION;
+   }
 
   buildURL(path = '', params = {}) {
     const sanitizedPath = this._sanitizePath(path);

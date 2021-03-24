@@ -5,7 +5,7 @@ import {
   validateWidths,
   validateWidthTolerance,
   validateVariableQuality,
-} from '../src/validators.mjs';
+} from '../src/validators.js';
 
 describe('Validators:', function () {
   describe('Testing validateWidths', function () {
