@@ -1,5 +1,5 @@
 import Benchmark from 'benchmark';
-import ImgixClient from '../../src/index.mjs';
+import ImgixClient from '../../src/index.js';
 
 const client = new ImgixClient({
   domain: 'testing.imgix.net',

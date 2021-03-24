@@ -4,10 +4,11 @@
   "version": "v3.1.1",
   "repository": "https://github.com/imgix/js-core",
   "license": "BSD-2-Clause",
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
   "types": "dist/imgix-js-core.d.ts",
   "dependencies": {
+    "esm": "^3.2.25",
     "js-base64": "~2.6.0",
     "md5": "^2.2.1"
   },
@@ -34,9 +35,9 @@
     "dev": "rollup -c -w",
     "prepare": "npm run build && npm run compile && npm run assert_version",
     "pretest": "npm run build",
-    "pretty": "prettier --write '{src,test}/**/*.mjs'",
-    "test": "mocha ./test/*.mjs",
-    "test:performance": "mocha test/performance/*.mjs"
+    "pretty": "prettier --write '{src,test}/**/*.js'",
+    "test": "mocha --require esm --recursive ./test/*.js",
+    "test:performance": "mocha --require esm --recursive test/performance/*.js"
   },
   "publishConfig": {
     "access": "public"
