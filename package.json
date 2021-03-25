@@ -8,7 +8,6 @@
   "module": "dist/index.esm.js",
   "types": "dist/imgix-js-core.d.ts",
   "dependencies": {
-    "esm": "^3.2.25",
     "js-base64": "~2.6.0",
     "md5": "^2.2.1"
   },
@@ -17,6 +16,7 @@
     "@babel/preset-env": "7.13.12",
     "@babel/register": "7.13.8",
     "benchmark": "2.1.4",
+    "esm": "^3.2.25",
     "mocha": "8.3.2",
     "prettier": "2.2.1",
     "rollup": "2.42.4",
