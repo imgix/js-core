@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [v3.1.3](https://github.com/imgix/js-core/compare/v3.1.2...v3.1.3) (2021-03-25)
+
+* build: declare esm as devDep ([#273](https://github.com/imgix/js-core/pull/273))
+
 ## [v3.1.2](https://github.com/imgix/js-core/compare/v3.1.1...v3.1.2) (2021-03-25)
 
 * fix: improve error messages for target width validator ([#267](https://github.com/imgix/js-core/pull/267))
