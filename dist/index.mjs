@@ -145,7 +145,7 @@ function _nonIterableRest() {
 }
 
 // package version used in the ix-lib parameter
-var VERSION = 'v3.1.2'; // regex pattern used to determine if a domain is valid
+var VERSION = 'v3.1.1'; // regex pattern used to determine if a domain is valid
 
 var DOMAIN_REGEX = /^(?:[a-z\d\-_]{1,62}\.){0,125}(?:[a-z\d](?:\-(?=\-*[a-z\d])|[a-z]|\d){0,62}\.)[a-z\d]{1,63}$/i; // minimum generated srcset width
 
@@ -237,7 +237,7 @@ var ImgixClient = /*#__PURE__*/function () {
     }
 
     if (this.settings.includeLibraryParam) {
-      this.settings.libraryParam = 'js-' + ImgixClient.version();
+      this.settings.libraryParam = 'js-' + VERSION;
     }
 
     this.settings.urlPrefix = this.settings.useHTTPS ? 'https://' : 'http://';
@@ -370,11 +370,6 @@ var ImgixClient = /*#__PURE__*/function () {
       return srcset.join(',\n');
     }
   }], [{
-    key: "version",
-    value: function version() {
-      return VERSION;
-    }
-  }, {
     key: "targetWidths",
     value: function targetWidths() {
       var minWidth = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 100;
