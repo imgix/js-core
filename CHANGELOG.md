@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [v3.1.2](https://github.com/imgix/js-core/compare/v3.1.1...v3.1.2) (2021-03-24)
+
+* build: use js extensions ([#269](https://github.com/imgix/js-core/pull/269))
+
+
 ## [v3.1.1](https://github.com/imgix/js-core/compare/v3.1.0...v3.1.1) (2021-03-23)
 
 * fix: validate minWidth, maxWidth, widthTolerance ([#257](https://github.com/imgix/js-core/pull/257))
