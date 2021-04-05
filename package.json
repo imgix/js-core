@@ -12,9 +12,9 @@
     "md5": "^2.2.1"
   },
   "devDependencies": {
-    "@babel/core": "7.13.13",
+    "@babel/core": "7.13.14",
     "@babel/preset-env": "7.13.12",
-    "@babel/register": "7.13.8",
+    "@babel/register": "7.13.14",
     "benchmark": "2.1.4",
     "esm": "3.2.25",
     "mocha": "8.3.2",
