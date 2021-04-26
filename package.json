@@ -8,7 +8,7 @@
   "module": "dist/index.esm.js",
   "types": "dist/imgix-js-core.d.ts",
   "dependencies": {
-    "js-base64": "~2.6.0",
+    "js-base64": "~3.6.0",
     "md5": "^2.2.1"
   },
   "devDependencies": {
