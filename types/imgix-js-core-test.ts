@@ -1,4 +1,4 @@
-import ImgixClient, { SrcSetOptions } from 'index';
+import ImgixClient from 'index';
 
 const expectedToken = 'MYT0KEN';
 // $ExpectType ImgixClient
@@ -7,37 +7,37 @@ const client = new ImgixClient({
   secureURLToken: expectedToken,
 });
 
+const path = 'image.jpg';
+
 // $ExpectType string
-client.buildURL("foo/bar")
+client.buildURL(path);
 
 let params = {}
-params = { foo: 'bar' }
+params = { w: 100 }
 
 // $ExpectType string
-client.buildURL("foo/bar", params)
+client.buildURL(path, params)
 
 params = {}
 // $ExpectType string
 client.buildURL('foo/bar/baz', params)
 
-const path = "Krillin";
 // $ExpectType string
 client._sanitizePath(path);
 
 // $ExpectType string
 client._buildParams(params);
 
-let queryParams = {}
-queryParams = { foo: 'bar' };
+// let queryParams = {}
+// queryParams = { foo: 'bar' };
 // $ExpectType string
-client._signParams(path, queryParams);
+client._signParams(path, params);
 
-// buildSrcSet(path: string, params?: {}, options?: SrcSetOptions): string;
 const options = {
-  widths: [100],
-  widthTolerance: 100,
-  minWidth: 100,
-  maxWidth: 100,
+  widths: [ 100, 500, 1000 ],
+  widthTolerance: .05,
+  minWidth: 500,
+  maxWidth: 2000,
   disableVariableQuality: false,
 }
 
@@ -48,7 +48,6 @@ client.buildSrcSet(path, params)
 // $ExpectType string
 client.buildSrcSet(path, params, options)
 
-// _buildSrcSetPairs(path: string, params?: {}, options?: SrcSetOptions): string;
 // $ExpectType string
 client._buildSrcSetPairs(path);
 // $ExpectType string
@@ -56,7 +55,6 @@ client._buildSrcSetPairs(path, params);
 // $ExpectType string
 client._buildSrcSetPairs(path, params, options);
 
-// _buildDPRSrcSet(path: string, params?: {}, options?: SrcSetOptions): string;
 // $ExpectType string
 client._buildDPRSrcSet(path)
 // $ExpectType string
@@ -64,13 +62,12 @@ client._buildDPRSrcSet(path, params)
 // $ExpectType string
 client._buildDPRSrcSet(path, params, options)
 
-// static targetWidths(minWidth?: number, maxWidth?: number, widthTolerance?: number, cache?: {}): number[];
-const minWidth = 42;
-const maxWidth = 42;
-const widthTol = 42;
+const minWidth = 200;
+const maxWidth = 1000;
+const widthTol = .05;
 const cache = {};
 
-// $ExpectType number[]
+// $ExpectType string[]
 ImgixClient.targetWidths()
 // $ExpectType number[]
 ImgixClient.targetWidths(minWidth)
