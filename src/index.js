@@ -40,9 +40,9 @@ export default class ImgixClient {
     this.settings.urlPrefix = this.settings.useHTTPS ? 'https://' : 'http://';
   }
 
-   static version() {
-     return VERSION;
-   }
+  static version() {
+    return VERSION;
+  }
 
   buildURL(path = '', params = {}) {
     const sanitizedPath = this._sanitizePath(path);
