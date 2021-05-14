@@ -23,7 +23,7 @@ declare class ImgixClient {
     static targetWidths(minWidth?: number, maxWidth?: number, widthTolerance?: number, cache?: {}): number[];
 }
 
-interface SrcSetOptions {
+export interface SrcSetOptions {
     widths?: number[];
     widthTolerance?: number;
     minWidth?: number;
@@ -31,4 +31,4 @@ interface SrcSetOptions {
     disableVariableQuality?: boolean;
 }
 
-export = ImgixClient;
+export default ImgixClient;
