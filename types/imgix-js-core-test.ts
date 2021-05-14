@@ -12,15 +12,15 @@ const path = 'image.jpg';
 // $ExpectType string
 client.buildURL(path);
 
-let params = {}
-params = { w: 100 }
+let params = {};
+params = { w: 100 };
 
 // $ExpectType string
-client.buildURL(path, params)
+client.buildURL(path, params);
 
-params = {}
+params = {};
 // $ExpectType string
-client.buildURL('foo/bar/baz', params)
+client.buildURL('foo/bar/baz', params);
 
 // $ExpectType string
 client._sanitizePath(path);
@@ -34,19 +34,19 @@ client._buildParams(params);
 client._signParams(path, params);
 
 const options = {
-  widths: [ 100, 500, 1000 ],
-  widthTolerance: .05,
+  widths: [100, 500, 1000],
+  widthTolerance: 0.05,
   minWidth: 500,
   maxWidth: 2000,
   disableVariableQuality: false,
-}
+};
 
 // $ExpectType string
-client.buildSrcSet(path)
+client.buildSrcSet(path);
 // $ExpectType string
-client.buildSrcSet(path, params)
+client.buildSrcSet(path, params);
 // $ExpectType string
-client.buildSrcSet(path, params, options)
+client.buildSrcSet(path, params, options);
 
 // $ExpectType string
 client._buildSrcSetPairs(path);
@@ -56,24 +56,24 @@ client._buildSrcSetPairs(path, params);
 client._buildSrcSetPairs(path, params, options);
 
 // $ExpectType string
-client._buildDPRSrcSet(path)
+client._buildDPRSrcSet(path);
 // $ExpectType string
-client._buildDPRSrcSet(path, params)
+client._buildDPRSrcSet(path, params);
 // $ExpectType string
-client._buildDPRSrcSet(path, params, options)
+client._buildDPRSrcSet(path, params, options);
 
 const minWidth = 200;
 const maxWidth = 1000;
-const widthTol = .05;
+const widthTol = 0.05;
 const cache = {};
 
-// $ExpectType string[]
-ImgixClient.targetWidths()
 // $ExpectType number[]
-ImgixClient.targetWidths(minWidth)
+ImgixClient.targetWidths();
 // $ExpectType number[]
-ImgixClient.targetWidths(minWidth, maxWidth)
+ImgixClient.targetWidths(minWidth);
 // $ExpectType number[]
-ImgixClient.targetWidths(minWidth, maxWidth, widthTol)
+ImgixClient.targetWidths(minWidth, maxWidth);
 // $ExpectType number[]
-ImgixClient.targetWidths(minWidth, maxWidth, widthTol, cache)
+ImgixClient.targetWidths(minWidth, maxWidth, widthTol);
+// $ExpectType number[]
+ImgixClient.targetWidths(minWidth, maxWidth, widthTol, cache);
