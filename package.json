@@ -6,7 +6,7 @@
   "license": "BSD-2-Clause",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
-  "types": "dist/imgix-js-core.d.ts",
+  "types": "dist/index.d.ts",
   "dependencies": {
     "js-base64": "~3.6.0",
     "md5": "^2.2.1"
@@ -32,14 +32,14 @@
   "scripts": {
     "assert_version": "node assert_version.cjs",
     "build": "rollup -c",
-    "compile": "cp ./src/imgix-js-core.d.ts ./dist/imgix-js-core.d.ts && tsc",
+    "compile": "cp ./types/index.d.ts ./dist/index.d.ts && tsc",
     "dev": "rollup -c -w",
     "prepare": "npm run build && npm run compile && npm run assert_version",
     "pretest": "npm run build",
     "pretty": "prettier --write '{src,test}/**/*.js'",
-    "test": "mocha --require esm --recursive ./test/*.js",
+    "test": "mocha --require esm --recursive ./test/*.js && npm run dtslint",
     "test:performance": "mocha --require esm --recursive test/performance/*.js",
-    "dtslint": "dtslint types"
+    "dtslint": "echo Running dtslint; dtslint types"
   },
   "publishConfig": {
     "access": "public"
