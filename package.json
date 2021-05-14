@@ -36,7 +36,7 @@
     "dev": "rollup -c -w",
     "prepare": "npm run build && npm run compile && npm run assert_version",
     "pretest": "npm run build",
-    "pretty": "prettier --write '{src,test}/**/*.js'",
+    "pretty": "prettier --write '{src,test,types}/**/*.{js,ts}'",
     "test": "mocha --require esm --recursive ./test/*.js && npm run dtslint",
     "test:performance": "mocha --require esm --recursive test/performance/*.js",
     "dtslint": "echo Running dtslint; dtslint types"
