@@ -67,14 +67,18 @@ export default class ImgixClient {
         : []),
 
       // Map over the key-value pairs in params while applying applicable encoding.
-      ...Object.entries(params).map(([key, value]) => {
+      ...Object.entries(params).reduce((prev, [key, value]) => {
+        if (value == null) {
+          return prev;
+        }
         const encodedKey = encodeURIComponent(key);
         const encodedValue =
           key.substr(-2) === '64'
             ? Base64.encodeURI(value)
             : encodeURIComponent(value);
-        return `${encodedKey}=${encodedValue}`;
-      }),
+        prev.push(`${encodedKey}=${encodedValue}`);
+        return prev;
+      }, []),
     ];
 
     return `${queryParams.length > 0 ? '?' : ''}${queryParams.join('&')}`;
