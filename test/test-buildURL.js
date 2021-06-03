@@ -346,5 +346,13 @@ describe('URL Builder:', function describeSuite() {
 
       assert.strictEqual(actual, expected);
     });
+
+    it('should not include undefined parameters in url', function testSpect() {
+      const actual = client.buildURL('test.jpg', { ar: undefined, txt: null });
+      assert(!actual.includes('ar=undefined'));
+      assert(!actual.includes('ar=null'));
+      assert(!actual.includes('txt=undefined'));
+      assert(!actual.includes('txt=null'));
+    });
   });
 });
