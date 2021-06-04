@@ -135,6 +135,22 @@ export default class ImgixClient {
     }
   }
 
+  static _buildSrcSet({ url, params, options }) {
+    if (url == null) {
+      return '';
+    }
+
+    const { domain, path } = extractUrl({ url, options });
+
+    // throw error if no domain or no path present
+    if (!domain.length || !path.length) {
+      throw new Error('_buildOneStepURL: URL must match {host}/{path}?{query}');
+    }
+
+    const client = new ImgixClient({ domain, ...options });
+    return client.buildSrcSet(path, params, options);
+  }
+
   // returns an array of width values used during srcset generation
   static targetWidths(
     minWidth = 100,
