@@ -75,19 +75,7 @@ export default class ImgixClient {
 
     const client = new ImgixClient({ domain, ...options });
 
-    if (options.sanitize) {
-      return client.buildURL(path, params);
-    } else {
-      // build the params string
-      let formattedParams = client._buildParams(params);
-      // sign the params string
-      if (!!client.settings.secureURLToken) {
-        formattedParams = client._signParams(path, formattedParams);
-      }
-
-      // return the url + params
-      return prefix + url + formattedParams;
-    }
+    return client.buildURL(path, params);
   }
 
   _buildParams(params = {}) {
