@@ -16,6 +16,8 @@ import {
   validateWidthTolerance,
 } from './validators.js';
 
+import { extractUrl } from './helpers';
+
 export default class ImgixClient {
   constructor(opts = {}) {
     this.settings = { ...DEFAULT_OPTIONS, ...opts };
@@ -57,6 +59,35 @@ export default class ImgixClient {
       sanitizedPath +
       finalParams
     );
+  }
+
+  static _buildURL({ url, params, options = {} }) {
+    if (url == null) {
+      return '';
+    }
+
+    const { prefix, domain, path } = extractUrl({ url, options });
+
+    // throw error if no domain or no path present
+    if (!domain.length || !path.length) {
+      throw new Error('_buildURL: URL must match {host}/{path}?{query}');
+    }
+
+    const client = new ImgixClient({ domain, ...options });
+
+    if (options.sanitize) {
+      return client.buildURL(path, params);
+    } else {
+      // build the params string
+      let formattedParams = client._buildParams(params);
+      // sign the params string
+      if (!!client.settings.secureURLToken) {
+        formattedParams = client._signParams(path, formattedParams);
+      }
+
+      // return the url + params
+      return prefix + url + formattedParams;
+    }
   }
 
   _buildParams(params = {}) {
