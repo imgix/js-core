@@ -16,7 +16,7 @@ export function extractUrl({ url = '', options = {} }) {
   }
 
   // parse URL attributes
-  const hasScheme = url.indexOf('://') !== -1;
+  const hasScheme = url.indexOf('http') == 0;
   const isProxy = (url.match(/http/g) || []).length >= 2;
   const useHttps = options.useHttps
     ? options.useHttps
