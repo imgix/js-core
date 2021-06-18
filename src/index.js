@@ -66,7 +66,8 @@ export default class ImgixClient {
       return '';
     }
 
-    const { prefix, domain, path } = extractUrl({ url, options });
+    // TODO(luis): handle proxy URLs
+    const { domain, path } = extractUrl({ url, options });
 
     // throw error if no domain or no path present
     if (!domain.length || !path.length) {
