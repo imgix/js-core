@@ -15,9 +15,21 @@ describe('extractURL', () => {
     });
   });
   describe('For proxy path URLs', () => {
-    const proxyPath =
-      'https://assets.imgix.net/https://sdk-test.imgix.net/amsterdam.jpg';
-    it('should extract a proxy path if exists', () => {
+    it('should extract a proxy path from full URLs', () => {
+      const proxyPath =
+        'https://assets.imgix.net/https://sdk-test.imgix.net/amsterdam.jpg';
+      const result = extractUrl({ url: proxyPath });
+      const expectation = {
+        domain: 'assets.imgix.net',
+        path: 'https://sdk-test.imgix.net/amsterdam.jpg',
+      };
+      assert.strictEqual(result.domain, expectation.domain);
+      assert.strictEqual(result.path, expectation.path);
+    });
+
+    it('should extract a proxy path from partial URLs', () => {
+      const proxyPath =
+        'assets.imgix.net/https://sdk-test.imgix.net/amsterdam.jpg';
       const result = extractUrl({ url: proxyPath });
       const expectation = {
         domain: 'assets.imgix.net',
