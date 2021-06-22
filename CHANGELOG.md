@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [v3.2.0](https://github.com/imgix/js-core/compare/v3.1.3...v3.2.0) (2021-06-22)
+
+* feat: export srcset TypeScript interface ([#283](https://github.com/imgix/js-core/pull/283))
+* fix: remove "v" prefix from `VERSION` constant ([#289](https://github.com/imgix/js-core/pull/289))
+* fix: ensure `undefined` parameters not added to url ([#286](https://github.com/imgix/js-core/pull/286))
+
 ## [v3.1.3](https://github.com/imgix/js-core/compare/v3.1.2...v3.1.3) (2021-03-25)
 
 * build: declare esm as devDep ([#273](https://github.com/imgix/js-core/pull/273))
