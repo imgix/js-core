@@ -1,7 +1,7 @@
 var packageVersion = require('./package').version;
 var ImgixClient = require('./dist/index.cjs.js');
 
-if (packageVersion === ImgixClient.version()) {
+if (packageVersion.includes(ImgixClient.version())) {
   return 0;
 } else {
   process.stdout.write(
