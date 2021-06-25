@@ -9,7 +9,8 @@
   "types": "dist/index.d.ts",
   "dependencies": {
     "js-base64": "~3.6.0",
-    "md5": "^2.2.1"
+    "md5": "^2.2.1",
+    "ufo": "^0.7.5"
   },
   "devDependencies": {
     "@babel/core": "7.14.6",
@@ -56,74 +57,83 @@
   ],
   "release": {
     "branches": [
-    "main",
-    { "name": "@next", "prerelease": "rc" },
-    { "name": "beta", "prerelease": true },
-    { "name": "alpha", "prerelease": true }
-  ],
-  "plugins": [
-    "@semantic-release/commit-analyzer",
-    "@semantic-release/release-notes-generator",
-    [
-      "@google/semantic-release-replace-plugin",
+      "main",
       {
-        "replacements": [
-          {
-            "files": [
-              "src/constants.js"
-            ],
-            "from": "const VERSION = '.*'",
-            "to": "const VERSION = '${nextRelease.version}'",
-            "results": [
-              {
-                "file": "src/constants.js",
-                "hasChanged": true,
-                "numMatches": 1,
-                "numReplacements": 1
-              }
-            ],
-            "countMatches": true
-          }
-        ]
+        "name": "@next",
+        "prerelease": "rc"
+      },
+      {
+        "name": "beta",
+        "prerelease": true
+      },
+      {
+        "name": "alpha",
+        "prerelease": true
       }
     ],
-    "@semantic-release/changelog",
-    "@semantic-release/npm",
-    [
-      "@semantic-release/git",
-      {
-        "assets": [
-          "src/**",
-          "dist/**",
-          "package.json",
-          "changelog.md"
-        ],
-        "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes} [skip ci]"
-      }
-    ],
-    [
-      "@semantic-release/github",
-      {
-        "assets": [
-          {
-            "path": "dist/imgix-js-core.umd.js",
-            "label": "Standalone UMD build"
-          },
-          {
-            "path": "dist/index.cjs.js",
-            "label": "Standalone CJS build"
-          },
-          {
-            "path": "dist/index.esm.js",
-            "label": "Standalone ESM build"
-          },
-          {
-            "path": "dist/index.d.ts",
-            "label": "Type declarations file"
-          }
-        ]
-      }
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@google/semantic-release-replace-plugin",
+        {
+          "replacements": [
+            {
+              "files": [
+                "src/constants.js"
+              ],
+              "from": "const VERSION = '.*'",
+              "to": "const VERSION = '${nextRelease.version}'",
+              "results": [
+                {
+                  "file": "src/constants.js",
+                  "hasChanged": true,
+                  "numMatches": 1,
+                  "numReplacements": 1
+                }
+              ],
+              "countMatches": true
+            }
+          ]
+        }
+      ],
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "src/**",
+            "dist/**",
+            "package.json",
+            "changelog.md"
+          ],
+          "message": "chore(release): ${nextRelease.version}\n\n${nextRelease.notes} [skip ci]"
+        }
+      ],
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            {
+              "path": "dist/imgix-js-core.umd.js",
+              "label": "Standalone UMD build"
+            },
+            {
+              "path": "dist/index.cjs.js",
+              "label": "Standalone CJS build"
+            },
+            {
+              "path": "dist/index.esm.js",
+              "label": "Standalone ESM build"
+            },
+            {
+              "path": "dist/index.d.ts",
+              "label": "Type declarations file"
+            }
+          ]
+        }
+      ]
     ]
-  ]
   }
 }

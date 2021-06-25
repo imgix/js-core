@@ -24,9 +24,9 @@ export default [
   },
   {
     input: 'src/index.js',
-    external: ['md5', 'js-base64', 'assert'],
+    external: ['md5', 'js-base64', 'assert', 'ufo'],
     output: [
-      { file: pkg.main, format: 'cjs', exports: 'default'},
+      { file: pkg.main, format: 'cjs', exports: 'default' },
       { file: pkg.module, format: 'es', exports: 'default' },
     ],
     plugins: [
