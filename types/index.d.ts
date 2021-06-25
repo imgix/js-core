@@ -12,9 +12,11 @@ declare class ImgixClient {
   });
 
   buildURL(path: string, params?: {}): string;
+  static _buildURL(path: string, params?: {}, options?: {}): string;
   _sanitizePath(path: string): string;
   _buildParams(params: {}): string;
   _signParams(path: string, queryParams?: {}): string;
+  static _buildSrcSet(path: string, params?: {}, options?: {}): string;
   buildSrcSet(path: string, params?: {}, options?: SrcSetOptions): string;
   _buildSrcSetPairs(path: string, params?: {}, options?: SrcSetOptions): string;
   _buildDPRSrcSet(path: string, params?: {}, options?: SrcSetOptions): string;
