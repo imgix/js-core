@@ -1,25 +1,22 @@
-import md5 from 'md5';
 import { Base64 } from 'js-base64';
-import { extractUrl } from './helpers';
+import md5 from 'md5';
 import { getQuery } from 'ufo';
-
-
 import {
-  VERSION,
-  DOMAIN_REGEX,
-  DEFAULT_OPTIONS,
-  DPR_QUALITIES,
   DEFAULT_DPR,
+  DEFAULT_OPTIONS,
+  DOMAIN_REGEX,
+  DPR_QUALITIES,
+  VERSION,
 } from './constants.js';
-
+import { extractUrl } from './helpers';
 import {
-  validateRange,
-  validateWidths,
   validateAndDestructureOptions,
-  validateVariableQuality,
-  validateWidthTolerance,
   validateDevicePixelRatios,
+  validateRange,
   validateVariableQualities,
+  validateVariableQuality,
+  validateWidths,
+  validateWidthTolerance,
 } from './validators.js';
 
 export default class ImgixClient {
@@ -60,6 +57,51 @@ export default class ImgixClient {
       finalParams = this._signParams(path, finalParams);
     }
     return this.settings.urlPrefix + this.settings.domain + path + finalParams;
+  }
+
+  /**
+   *`_buildURL` static method allows full URLs to be formatted for use with
+   * imgix.
+   *
+   * - If the source URL has included parameters, they are merged with
+   * the `params` passed in as an argument.
+   * - URL must match `{host}/{pathname}?{query}` otherwise an error is thrown.
+   *
+   * @param {String} url - full source URL path string, required
+   * @param {Object} params - imgix params object, optional
+   * @param {Object} options - imgix client options, optional
+   *
+   * @returns URL string formatted to imgix specifications.
+   *
+   * @example
+   * const client = ImgixClient
+   * const params = { w: 100 }
+   * const opts = { useHttps: true }
+   * const src = "sdk-test.imgix.net/amsterdam.jpg?h=100"
+   * const url = client._buildURL(src, params, opts)
+   * console.log(url)
+   * // => "https://sdk-test.imgix.net/amsterdam.jpg?h=100&w=100"
+   */
+  static _buildURL(url, params = {}, options = {}) {
+    if (url == null) {
+      return '';
+    }
+
+    const { host, pathname, search } = extractUrl({
+      url,
+      useHTTPS: options.useHTTPS,
+    });
+    // merge source URL parameters with options parameters
+    const combinedParams = { ...getQuery(search), ...params };
+
+    // throw error if no host or no pathname present
+    if (!host.length || !pathname.length) {
+      throw new Error('_buildURL: URL must match {host}/{pathname}?{query}');
+    }
+
+    const client = new ImgixClient({ domain: host, ...options });
+
+    return client.buildURL(pathname, combinedParams);
   }
 
   _buildParams(params = {}) {
