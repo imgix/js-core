@@ -1,5 +1,6 @@
 import md5 from 'md5';
 import { Base64 } from 'js-base64';
+import { getQuery } from 'ufo';
 
 import {
   VERSION,
@@ -15,6 +16,8 @@ import {
   validateVariableQuality,
   validateWidthTolerance,
 } from './validators.js';
+
+import { extractUrl } from './helpers';
 
 export default class ImgixClient {
   constructor(opts = {}) {
@@ -57,6 +60,51 @@ export default class ImgixClient {
       sanitizedPath +
       finalParams
     );
+  }
+
+  /**
+   *`_buildURL` static method allows full URLs to be formatted for use with
+   * imgix.
+   *
+   * - If the source URL has included parameters, they are merged with
+   * the `params` passed in as an argument.
+   * - URL must match `{host}/{pathname}?{query}` otherwise an error is thrown.
+   *
+   * @param {String} url - full source URL path string, required
+   * @param {Object} params - imgix params object, optional
+   * @param {Object} options - imgix client options, optional
+   *
+   * @returns URL string formatted to imgix specifications.
+   *
+   * @example
+   * const client = ImgixClient
+   * const params = { w: 100 }
+   * const opts = { useHttps: true }
+   * const src = "sdk-test.imgix.net/amsterdam.jpg?h=100"
+   * const url = client._buildURL(src, params, opts)
+   * console.log(url)
+   * // => "https://sdk-test.imgix.net/amsterdam.jpg?h=100&w=100"
+   */
+  static _buildURL(url, params = {}, options = {}) {
+    if (url == null) {
+      return '';
+    }
+
+    const { host, pathname, search } = extractUrl({
+      url,
+      useHTTPS: options.useHTTPS,
+    });
+    // merge source URL parameters with options parameters
+    const combinedParams = { ...getQuery(search), ...params };
+
+    // throw error if no host or no pathname present
+    if (!host.length || !pathname.length) {
+      throw new Error('_buildURL: URL must match {host}/{pathname}?{query}');
+    }
+
+    const client = new ImgixClient({ domain: host, ...options });
+
+    return client.buildURL(pathname, combinedParams);
   }
 
   _buildParams(params = {}) {
