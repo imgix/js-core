@@ -168,6 +168,42 @@ export default class ImgixClient {
     }
   }
 
+  /**
+   * _buildSrcSet static method allows full URLs to be used when generating
+   * imgix formatted `srcset` string values.
+   *
+   * - If the source URL has included parameters, they are merged with
+   * the `params` passed in as an argument.
+   * - URL must match `{host}/{pathname}?{query}` otherwise an error is thrown.
+   *
+   * @param {String} url - full source URL path string, required
+   * @param {Object} params - imgix params object, optional
+   * @param {Object} options - imgix client options, optional
+   * @returns imgix `srcset` for full URLs.
+   */
+  static _buildSrcSet(url, params = {}, options = {}) {
+    if (url == null) {
+      return '';
+    }
+
+    const { host, pathname, search } = extractUrl({
+      url,
+      useHTTPS: options.useHTTPS,
+    });
+    // merge source URL parameters with options parameters
+    const combinedParams = { ...getQuery(search), ...params };
+
+    // throw error if no host or no pathname present
+    if (!host.length || !pathname.length) {
+      throw new Error(
+        '_buildOneStepURL: URL must match {host}/{pathname}?{query}',
+      );
+    }
+
+    const client = new ImgixClient({ domain: host, ...options });
+    return client.buildSrcSet(pathname, combinedParams, options);
+  }
+
   // returns an array of width values used during srcset generation
   static targetWidths(
     minWidth = 100,
