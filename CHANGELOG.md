@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [v3.2.1](https://github.com/imgix/js-core/compare/v3.2.0...v3.2.1) (2021-06-28)
+
+* build: remove stale `.d.ts` file from `dist` ([#293](https://github.com/imgix/js-core/pull/293))
+
 ## [v3.2.0](https://github.com/imgix/js-core/compare/v3.1.3...v3.2.0) (2021-06-22)
 
 * feat: export srcset TypeScript interface ([#283](https://github.com/imgix/js-core/pull/283))
