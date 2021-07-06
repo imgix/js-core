@@ -43,7 +43,8 @@
     "test": "mocha --require esm --recursive ./test/*.js && npm run dtslint",
     "test:performance": "mocha --require esm --recursive test/performance/*.js",
     "dtslint": "echo Running dtslint; dtslint types",
-    "release:dryRun": "npx node-env-run --exec 'semantic-release --dryRun'"
+    "release:dryRun": "npx node-env-run --exec 'semantic-release --dryRun'",
+    "release:publish": "sematic-release"
   },
   "publishConfig": {
     "access": "public"
