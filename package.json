@@ -42,7 +42,8 @@
     "pretty": "prettier --write '{src,test,types}/**/*.{js,ts}'",
     "test": "mocha --require esm --recursive ./test/*.js && npm run dtslint",
     "test:performance": "mocha --require esm --recursive test/performance/*.js",
-    "dtslint": "echo Running dtslint; dtslint types"
+    "dtslint": "echo Running dtslint; dtslint types",
+    "release:dryRun": "npx node-env-run --exec 'semantic-release --dryRun'"
   },
   "publishConfig": {
     "access": "public"
