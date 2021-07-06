@@ -178,17 +178,23 @@ export default class ImgixClient {
    *
    * @param {String} url - full source URL path string, required
    * @param {Object} params - imgix params object, optional
-   * @param {Object} options - imgix client options, optional
+   * @param {Object} srcsetModifiers - srcset modifiers, optional
+   * @param {Object} clientOptions - imgix client options, optional
    * @returns imgix `srcset` for full URLs.
    */
-  static _buildSrcSet(url, params = {}, options = {}) {
+  static _buildSrcSet(
+    url,
+    params = {},
+    srcsetModifiers = {},
+    clientOptions = {},
+  ) {
     if (url == null) {
       return '';
     }
 
     const { host, pathname, search } = extractUrl({
       url,
-      useHTTPS: options.useHTTPS,
+      useHTTPS: clientOptions.useHTTPS,
     });
     // merge source URL parameters with options parameters
     const combinedParams = { ...getQuery(search), ...params };
@@ -200,8 +206,8 @@ export default class ImgixClient {
       );
     }
 
-    const client = new ImgixClient({ domain: host, ...options });
-    return client.buildSrcSet(pathname, combinedParams, options);
+    const client = new ImgixClient({ domain: host, ...clientOptions });
+    return client.buildSrcSet(pathname, combinedParams, srcsetModifiers);
   }
 
   // returns an array of width values used during srcset generation

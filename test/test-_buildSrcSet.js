@@ -143,17 +143,23 @@ const RESOLUTIONS = [
 
 describe('URL Builder:', function describeSuite() {
   describe('Calling _buildSrcSet()', function describeSuite() {
-    let client, params, url, options;
+    let client, params, url, srcsetModifiers, clientOptions;
 
     describe('on a one-step URL', function describeSuite() {
       url = 'https://testing.imgix.net/image.jpg';
-      options = {
+      clientOptions = {
         includeLibraryParam: false,
         useHTTPS: true,
         secureURLToken: 'MYT0KEN',
       };
+      srcsetModifiers = {};
       client = ImgixClient;
-      const srcset = client._buildSrcSet(url, params, options);
+      const srcset = client._buildSrcSet(
+        url,
+        params,
+        srcsetModifiers,
+        clientOptions,
+      );
 
       describe('with no parameters', function describeSuite() {
         params = {};
@@ -182,7 +188,12 @@ describe('URL Builder:', function describeSuite() {
       describe('with a width parameter provided', function describeSuite() {
         params = { w: 100 };
         const DPR_QUALITY = [75, 50, 35, 23, 20];
-        const srcset = client._buildSrcSet(url, params, options);
+        const srcset = client._buildSrcSet(
+          url,
+          params,
+          srcsetModifiers,
+          clientOptions,
+        );
 
         it('should be in the form src 1x, src 2x, src 3x, src 4x, src 5x', function testSpec() {
           assertIncludesDefaultDprParamAndDescriptor(srcset);
@@ -203,23 +214,38 @@ describe('URL Builder:', function describeSuite() {
         it('should override variable quality if quality parameter provided', function testSpec() {
           const QUALITY_OVERRIDE = 100;
           params = { w: 800, q: QUALITY_OVERRIDE };
-          const srcset = client._buildSrcSet(url, params, options);
+          const srcset = client._buildSrcSet(
+            url,
+            params,
+            srcsetModifiers,
+            clientOptions,
+          );
 
           assertIncludesQualityOverride(srcset, QUALITY_OVERRIDE);
         });
 
         it("should disable variable qualities if 'disableVariableQuality'", function testSpec() {
           params = { w: 800 };
-          options = { ...options, disableVariableQuality: true };
-          const srcset = client._buildSrcSet(url, params, options);
+          srcsetModifiers = { disableVariableQuality: true };
+          const srcset = client._buildSrcSet(
+            url,
+            params,
+            srcsetModifiers,
+            clientOptions,
+          );
           assertDoesNotIncludeQuality(srcset);
         });
 
         it('should respect quality param when variable qualities disabled', function testSpec() {
           const QUALITY_OVERRIDE = 100;
           params = { w: 800, q: QUALITY_OVERRIDE };
-          options = { ...options, disableVariableQuality: true };
-          const srcset = client._buildSrcSet(url, params, options);
+          srcsetModifiers = { disableVariableQuality: true };
+          const srcset = client._buildSrcSet(
+            url,
+            params,
+            srcsetModifiers,
+            clientOptions,
+          );
           assertIncludesQualityOverride(srcset, QUALITY_OVERRIDE);
         });
       });
@@ -229,8 +255,13 @@ describe('URL Builder:', function describeSuite() {
           const MIN = 500;
           const MAX = 2000;
           params = {};
-          options = { ...options, minWidth: MIN, maxWidth: MAX };
-          const srcset = client._buildSrcSet(url, params, options);
+          srcsetModifiers = { minWidth: MIN, maxWidth: MAX };
+          const srcset = client._buildSrcSet(
+            url,
+            params,
+            srcsetModifiers,
+            clientOptions,
+          );
 
           it('should return correct number of `url widthDescriptor` pairs', function testSpec() {
             assert.strictEqual(srcset.split(',').length, 11);
