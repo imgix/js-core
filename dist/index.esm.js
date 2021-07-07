@@ -1,5 +1,6 @@
 import md5 from 'md5';
 import { Base64 } from 'js-base64';
+import { hasProtocol, parseURL, getQuery } from 'ufo';
 
 function ownKeys(object, enumerableOnly) {
   var keys = Object.keys(object);
@@ -97,7 +98,7 @@ function _iterableToArray(iter) {
 }
 
 function _iterableToArrayLimit(arr, i) {
-  var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]);
+  var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"];
 
   if (_i == null) return;
   var _arr = [];
@@ -225,6 +226,43 @@ function validateVariableQuality(disableVariableQuality) {
   }
 }
 
+/**
+ * `extractUrl()` extracts URL components from a source URL string.
+ * It does this by matching the URL against regular expressions. The irrelevant
+ * (entire URL) matches are removed and the rest stored as their corresponding
+ * URL components.
+ *
+ * `url` can be a partial, full URL, or full proxy URL. `useHttps` boolean
+ * defaults to false.
+ *
+ * @returns {Object} `{ protocol, auth, host, pathname, search, hash }`
+ * extracted from the URL.
+ */
+
+function extractUrl(_ref) {
+  var _ref$url = _ref.url,
+      url = _ref$url === void 0 ? '' : _ref$url,
+      _ref$useHttps = _ref.useHttps,
+      useHttps = _ref$useHttps === void 0 ? false : _ref$useHttps;
+  var defaultProto = useHttps ? 'https://' : 'http://';
+
+  if (!hasProtocol(url, true)) {
+    return extractUrl({
+      url: defaultProto + url
+    });
+  }
+  /**
+   * Regex are hard to parse. Leaving this breakdown here for reference.
+   * - `protocol`: ([^:/]+:)? - all not `:` or `/` & preceded by `:`, 0-1 times
+   * - `auth`: ([^/@]+@)? - all not `/` or `@` & preceded by `@`, 0-1 times
+   * - `domainAndPath`: (.*) /) -  all except line breaks
+   * - `domain`: `([^/]*)` - all before a `/` token
+   */
+
+
+  return parseURL(url);
+}
+
 var ImgixClient = /*#__PURE__*/function () {
   function ImgixClient() {
     var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -266,6 +304,30 @@ var ImgixClient = /*#__PURE__*/function () {
 
       return this.settings.urlPrefix + this.settings.domain + sanitizedPath + finalParams;
     }
+    /**
+     *`_buildURL` static method allows full URLs to be formatted for use with
+     * imgix.
+     *
+     * - If the source URL has included parameters, they are merged with
+     * the `params` passed in as an argument.
+     * - URL must match `{host}/{pathname}?{query}` otherwise an error is thrown.
+     *
+     * @param {String} url - full source URL path string, required
+     * @param {Object} params - imgix params object, optional
+     * @param {Object} options - imgix client options, optional
+     *
+     * @returns URL string formatted to imgix specifications.
+     *
+     * @example
+     * const client = ImgixClient
+     * const params = { w: 100 }
+     * const opts = { useHttps: true }
+     * const src = "sdk-test.imgix.net/amsterdam.jpg?h=100"
+     * const url = client._buildURL(src, params, opts)
+     * console.log(url)
+     * // => "https://sdk-test.imgix.net/amsterdam.jpg?h=100&w=100"
+     */
+
   }, {
     key: "_buildParams",
     value: function _buildParams() {
@@ -324,7 +386,21 @@ var ImgixClient = /*#__PURE__*/function () {
       } else {
         return this._buildSrcSetPairs(path, params, options);
       }
-    } // returns an array of width values used during srcset generation
+    }
+    /**
+     * _buildSrcSet static method allows full URLs to be used when generating
+     * imgix formatted `srcset` string values.
+     *
+     * - If the source URL has included parameters, they are merged with
+     * the `params` passed in as an argument.
+     * - URL must match `{host}/{pathname}?{query}` otherwise an error is thrown.
+     *
+     * @param {String} url - full source URL path string, required
+     * @param {Object} params - imgix params object, optional
+     * @param {Object} srcsetModifiers - srcset modifiers, optional
+     * @param {Object} clientOptions - imgix client options, optional
+     * @returns imgix `srcset` for full URLs.
+     */
 
   }, {
     key: "_buildSrcSetPairs",
@@ -386,6 +462,70 @@ var ImgixClient = /*#__PURE__*/function () {
     value: function version() {
       return VERSION;
     }
+  }, {
+    key: "_buildURL",
+    value: function _buildURL(url) {
+      var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+
+      if (url == null) {
+        return '';
+      }
+
+      var _extractUrl = extractUrl({
+        url: url,
+        useHTTPS: options.useHTTPS
+      }),
+          host = _extractUrl.host,
+          pathname = _extractUrl.pathname,
+          search = _extractUrl.search; // merge source URL parameters with options parameters
+
+
+      var combinedParams = _objectSpread2(_objectSpread2({}, getQuery(search)), params); // throw error if no host or no pathname present
+
+
+      if (!host.length || !pathname.length) {
+        throw new Error('_buildURL: URL must match {host}/{pathname}?{query}');
+      }
+
+      var client = new ImgixClient(_objectSpread2({
+        domain: host
+      }, options));
+      return client.buildURL(pathname, combinedParams);
+    }
+  }, {
+    key: "_buildSrcSet",
+    value: function _buildSrcSet(url) {
+      var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var srcsetModifiers = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+      var clientOptions = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+
+      if (url == null) {
+        return '';
+      }
+
+      var _extractUrl2 = extractUrl({
+        url: url,
+        useHTTPS: clientOptions.useHTTPS
+      }),
+          host = _extractUrl2.host,
+          pathname = _extractUrl2.pathname,
+          search = _extractUrl2.search; // merge source URL parameters with options parameters
+
+
+      var combinedParams = _objectSpread2(_objectSpread2({}, getQuery(search)), params); // throw error if no host or no pathname present
+
+
+      if (!host.length || !pathname.length) {
+        throw new Error('_buildOneStepURL: URL must match {host}/{pathname}?{query}');
+      }
+
+      var client = new ImgixClient(_objectSpread2({
+        domain: host
+      }, clientOptions));
+      return client.buildSrcSet(pathname, combinedParams, srcsetModifiers);
+    } // returns an array of width values used during srcset generation
+
   }, {
     key: "targetWidths",
     value: function targetWidths() {
