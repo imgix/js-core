@@ -58,10 +58,7 @@
   "release": {
     "branches": [
       "main",
-      {
-        "name": "@next",
-        "prerelease": "rc"
-      },
+      "next",
       {
         "name": "beta",
         "prerelease": true
