@@ -16,7 +16,12 @@ declare class ImgixClient {
   _sanitizePath(path: string): string;
   _buildParams(params: {}): string;
   _signParams(path: string, queryParams?: {}): string;
-  static _buildSrcSet(path: string, params?: {}, options?: {}): string;
+  static _buildSrcSet(
+    path: string,
+    params?: {},
+    srcSetOptions?: {},
+    clientOptions?: {},
+  ): string;
   buildSrcSet(path: string, params?: {}, options?: SrcSetOptions): string;
   _buildSrcSetPairs(path: string, params?: {}, options?: SrcSetOptions): string;
   _buildDPRSrcSet(path: string, params?: {}, options?: SrcSetOptions): string;
