@@ -114,6 +114,18 @@ describe('URL Builder:', function describeSuite() {
 
         assert.strictEqual(result, expectation);
       });
+
+      it('includes an `ixlib` param if the `libraryParam` setting is truthy', function testSpec() {
+        const url = 'https://assets.imgix.net/images/1.png?w=100&h=100';
+        const params = { h: 200 };
+        const options = {
+          includeLibraryParam: false,
+          useHTTPS: true,
+          libraryParam: 'test',
+        };
+        const result = client._buildURL(url, params, options);
+        assert(result.match(/ixlib=test/));
+      });
     });
   });
 });
