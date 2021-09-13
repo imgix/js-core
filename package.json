@@ -12,8 +12,8 @@
     "md5": "^2.2.1"
   },
   "devDependencies": {
-    "@babel/core": "7.15.0",
-    "@babel/preset-env": "7.15.0",
+    "@babel/core": "7.15.5",
+    "@babel/preset-env": "7.15.6",
     "@babel/register": "7.15.3",
     "@google/semantic-release-replace-plugin": "1.1.0",
     "@semantic-release/changelog": "5.0.1",
