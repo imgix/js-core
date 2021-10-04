@@ -34,7 +34,7 @@
     "rollup-plugin-uglify": "6.0.4",
     "sinon": "10.0.0",
     "typescript": "4.3.5",
-    "uglify-js": "3.14.1"
+    "uglify-js": "3.14.2"
   },
   "scripts": {
     "assert_version": "node assert_version.cjs",
