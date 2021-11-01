@@ -33,7 +33,7 @@
     "rollup-plugin-node-resolve": "5.2.0",
     "rollup-plugin-uglify": "6.0.4",
     "sinon": "10.0.0",
-    "typescript": "4.3.5",
+    "typescript": "4.4.4",
     "uglify-js": "3.14.2"
   },
   "scripts": {
