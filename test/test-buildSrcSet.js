@@ -107,38 +107,18 @@ function assertDoesNotIncludeQuality(srcset) {
   });
 }
 
+function assertCorrectTargetDPRRatiosDescriptors(srcset, targetRatios) {
+  const srcsetSplit = srcset.split(',');
+  srcsetSplit.map((u, i) => {
+    const drp = parseInt(u.split(' ')[1].slice(0, -1), 10);
+    assert.strictEqual(drp, targetRatios[i]);
+  });
+}
+
 const RESOLUTIONS = [
-  100,
-  116,
-  135,
-  156,
-  181,
-  210,
-  244,
-  283,
-  328,
-  380,
-  441,
-  512,
-  594,
-  689,
-  799,
-  927,
-  1075,
-  1247,
-  1446,
-  1678,
-  1946,
-  2257,
-  2619,
-  3038,
-  3524,
-  4087,
-  4741,
-  5500,
-  6380,
-  7401,
-  8192,
+  100, 116, 135, 156, 181, 210, 244, 283, 328, 380, 441, 512, 594, 689, 799,
+  927, 1075, 1247, 1446, 1678, 1946, 2257, 2619, 3038, 3524, 4087, 4741, 5500,
+  6380, 7401, 8192,
 ];
 
 describe('SrcSet Builder:', function describeSuite() {
@@ -510,17 +490,7 @@ describe('SrcSet Builder:', function describeSuite() {
 
         it('should generate the expected default srcset pair values', function testSpec() {
           const resolutions = [
-            500,
-            580,
-            673,
-            780,
-            905,
-            1050,
-            1218,
-            1413,
-            1639,
-            1901,
-            2000,
+            500, 580, 673, 780, 905, 1050, 1218, 1413, 1639, 1901, 2000,
           ];
           assertCorrectWidthDescriptors(srcset, resolutions);
         });
@@ -635,21 +605,8 @@ describe('SrcSet Builder:', function describeSuite() {
 
         it('should generate the expected default srcset pair values', function testSpec() {
           const resolutions = [
-            100,
-            140,
-            196,
-            274,
-            384,
-            538,
-            753,
-            1054,
-            1476,
-            2066,
-            2893,
-            4050,
-            5669,
-            7937,
-            8192,
+            100, 140, 196, 274, 384, 538, 753, 1054, 1476, 2066, 2893, 4050,
+            5669, 7937, 8192,
           ];
           assertCorrectWidthDescriptors(srcset, resolutions);
         });
@@ -759,6 +716,160 @@ describe('SrcSet Builder:', function describeSuite() {
             new ImgixClient({
               domain: 'testing.imgix.net',
             }).buildSrcSet('image.jpg', {}, { widths: [100, false] });
+          }, Error);
+        });
+      });
+
+      describe('with a targetDPRRatios provided', function describeSuite() {
+        const CUSTOM_TARGETS_RATIOS = [1, 2];
+
+        const srcset = new ImgixClient({
+          domain: 'testing.imgix.net',
+          includeLibraryParam: false,
+        }).buildSrcSet(
+          'image.jpg',
+          { w: 100 },
+          { targetDPRRatios: CUSTOM_TARGETS_RATIOS },
+        );
+
+        it('should return the expected number of `url targetRatios` pairs', function testSpec() {
+          assert.strictEqual(srcset.split(',').length, 2);
+        });
+
+        it('should generate the srcset with excepted targets ratios', function testSpec() {
+          assertCorrectTargetDPRRatiosDescriptors(
+            srcset,
+            CUSTOM_TARGETS_RATIOS,
+          );
+        });
+
+        it('errors with non-array argument', function testSpec() {
+          assert.throws(function () {
+            new ImgixClient({
+              domain: 'testing.imgix.net',
+            }).buildSrcSet('image.jpg', { w: 100 }, { targetDPRRatios: 'abc' });
+          }, Error);
+        });
+
+        it('errors with empty array argument', function testSpec() {
+          assert.throws(function () {
+            new ImgixClient({
+              domain: 'testing.imgix.net',
+            }).buildSrcSet('image.jpg', { w: 100 }, { targetDPRRatios: [] });
+          }, Error);
+        });
+
+        it('errors with invalid ratios', function testSpec() {
+          assert.throws(function () {
+            new ImgixClient({
+              domain: 'testing.imgix.net',
+            }).buildSrcSet(
+              'image.jpg',
+              { w: 100 },
+              { targetDPRRatios: [1, 10] },
+            );
+          }, Error);
+
+          assert.throws(function () {
+            new ImgixClient({
+              domain: 'testing.imgix.net',
+            }).buildSrcSet(
+              'image.jpg',
+              { w: 100 },
+              { targetDPRRatios: ['a', 'b', 'c'] },
+            );
+          }, Error);
+        });
+      });
+
+      describe('with a targetDPRRatiosQualities provided', function describeSuite() {
+        const DPR_QUALITY = [75, 50, 35, 23, 20];
+
+        const CUSTOM_TARGETS_RATIOS_QUALITIES = {
+          1: 45,
+          2: 30,
+          3: 20,
+          4: 15,
+          5: 10,
+        };
+
+        const srcset = new ImgixClient({
+          domain: 'testing.imgix.net',
+          includeLibraryParam: false,
+        }).buildSrcSet(
+          'image.jpg',
+          { w: 100 },
+          { targetDPRRatiosQualities: CUSTOM_TARGETS_RATIOS_QUALITIES },
+        );
+
+        it('should return the expected qualities', function testSpec() {
+          assertIncludesQualities(
+            srcset,
+            Object.values(CUSTOM_TARGETS_RATIOS_QUALITIES),
+          );
+        });
+
+        it('should return the expected qualities with default merge', function testSpec() {
+          const srcset = new ImgixClient({
+            domain: 'testing.imgix.net',
+            includeLibraryParam: false,
+          }).buildSrcSet(
+            'image.jpg',
+            { w: 100 },
+            { targetDPRRatiosQualities: { 1: 40, 2: 35 } },
+          );
+
+          assertIncludesQualities(
+            srcset,
+            Object.values([
+              40,
+              35,
+              DPR_QUALITY[2],
+              DPR_QUALITY[3],
+              DPR_QUALITY[4],
+            ]),
+          );
+        });
+
+        it('should override the variable quality if a quality parameter is provided', function testSpec() {
+          const QUALITY_OVERRIDE = 100;
+
+          const srcset = new ImgixClient({
+            domain: 'testing.imgix.net',
+          }).buildSrcSet(
+            'image.jpg',
+            { w: 800, q: QUALITY_OVERRIDE },
+            { targetDPRRatiosQualities: CUSTOM_TARGETS_RATIOS_QUALITIES },
+          );
+
+          assertIncludesQualityOverride(srcset, QUALITY_OVERRIDE);
+        });
+
+        it('should respect a provided quality parameter when variable qualities are disabled', function testSpec() {
+          const QUALITY_OVERRIDE = 100;
+          const srcset = new ImgixClient({
+            domain: 'testing.imgix.net',
+          }).buildSrcSet(
+            'image.jpg',
+            { w: 800, q: QUALITY_OVERRIDE },
+            {
+              disableVariableQuality: true,
+              targetDPRRatiosQualities: CUSTOM_TARGETS_RATIOS_QUALITIES,
+            },
+          );
+
+          assertIncludesQualityOverride(srcset, QUALITY_OVERRIDE);
+        });
+
+        it('errors with non-object argument', function testSpec() {
+          assert.throws(function () {
+            new ImgixClient({
+              domain: 'testing.imgix.net',
+            }).buildSrcSet(
+              'image.jpg',
+              { w: 100 },
+              { targetDPRRatiosQualities: 'abc' },
+            );
           }, Error);
         });
       });

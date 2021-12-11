@@ -26,12 +26,21 @@ declare class ImgixClient {
   ): number[];
 }
 
+export type TargetDPRRatio = 1 | 2 | 3 | 4 | 5;
+
+// Non-empty array of TargetDPRRatio
+export type TargetDPRRatios = [TargetDPRRatio, ...TargetDPRRatio[]];
+
+export type TargetDPRRatiosQualities = { [key in TargetDPRRatio]?: number };
+
 export interface SrcSetOptions {
   widths?: number[];
   widthTolerance?: number;
   minWidth?: number;
   maxWidth?: number;
   disableVariableQuality?: boolean;
+  targetDPRRatios?: TargetDPRRatios;
+  targetDPRRatiosQualities?: TargetDPRRatiosQualities;
 }
 
 export default ImgixClient;

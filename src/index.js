@@ -6,6 +6,7 @@ import {
   DOMAIN_REGEX,
   DEFAULT_OPTIONS,
   DPR_QUALITIES,
+  DPR_TARGETS_RATIOS,
 } from './constants.js';
 
 import {
@@ -14,6 +15,8 @@ import {
   validateAndDestructureOptions,
   validateVariableQuality,
   validateWidthTolerance,
+  validateTargetDPRRatios,
+  validateTargetDPRRatiosQualities,
 } from './validators.js';
 
 export default class ImgixClient {
@@ -166,9 +169,8 @@ export default class ImgixClient {
   }
 
   _buildSrcSetPairs(path, params, options) {
-    const [widthTolerance, minWidth, maxWidth] = validateAndDestructureOptions(
-      options,
-    );
+    const [widthTolerance, minWidth, maxWidth] =
+      validateAndDestructureOptions(options);
 
     let targetWidthValues;
     if (options.widths) {
@@ -191,18 +193,29 @@ export default class ImgixClient {
   }
 
   _buildDPRSrcSet(path, params, options) {
-    const targetRatios = [1, 2, 3, 4, 5];
+    if (options.targetDPRRatios) {
+      validateTargetDPRRatios(options.targetDPRRatios);
+    }
+
+    const targetRatios = options.targetDPRRatios || DPR_TARGETS_RATIOS;
+
     const disableVariableQuality = options.disableVariableQuality || false;
 
     if (!disableVariableQuality) {
       validateVariableQuality(disableVariableQuality);
     }
 
+    if (options.targetDPRRatiosQualities) {
+      validateTargetDPRRatiosQualities(options.targetDPRRatiosQualities);
+    }
+
+    const qualities = { ...DPR_QUALITIES, ...options.targetDPRRatiosQualities };
+
     const withQuality = (path, params, dpr) => {
       return `${this.buildURL(path, {
         ...params,
         dpr: dpr,
-        q: params.q || DPR_QUALITIES[dpr],
+        q: params.q || qualities[dpr],
       })} ${dpr}x`;
     };
 

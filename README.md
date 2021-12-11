@@ -55,7 +55,7 @@ Depending on your module system, using @imgix/js-core is done a few different wa
 ### CommonJS
 
 ```js
-const ImgixClient = require("@imgix/js-core");
+const ImgixClient = require('@imgix/js-core');
 
 const client = new ImgixClient({
   domain: 'testing.imgix.net',
@@ -73,7 +73,7 @@ console.log(url); // => "https://testing.imgix.net/users/1.png?w=400&h=300&s=…
 ### ES6 Modules
 
 ```js
-import ImgixClient from "@imgix/js-core";
+import ImgixClient from '@imgix/js-core';
 
 const client = new ImgixClient({
   domain: 'testing.imgix.net',
@@ -144,6 +144,8 @@ https://testing.imgix.net/folder/image.jpg?w=1000&ixlib=js-...
   - [**`minWidth`**](#minimum-and-maximum-width-ranges)
   - [**`maxWidth`**](#minimum-and-maximum-width-ranges)
   - [**`disableVariableQuality`**](#variable-qualities)
+  - [**`targetDPRRatios`**](#fixed-image-rendering)
+  - [**`targetDPRRatiosQualities`**](#variable-qualities)
 
 <!-- prettier-ignore-end -->
 
@@ -210,6 +212,38 @@ https://testing.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=5&s=7c4b8adb733d
 
 <!-- prettier-ignore-end -->
 
+This library generate by default `1` to `5` dpr `srcset`.
+You can control generated target ratios with `targetDPRRatios` parameters.
+
+```js
+const client = new ImgixClient({
+  domain: 'testing.imgix.net',
+  secureURLToken: 'my-token',
+  includeLibraryParam: false,
+});
+
+const srcset = client.buildSrcSet(
+  'image.jpg',
+  {
+    h: 800,
+    ar: '3:2',
+    fit: 'crop',
+  },
+  {
+    targetDPRRatios: [1, 2],
+  },
+);
+
+console.log(srcset);
+```
+
+Will result in a smaller srcset.
+
+```html
+https://testing.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=1&s=3d754a157458402fd3e26977107ade74 1x,
+https://testing.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=2&s=a984ad1a81d24d9dd7d18195d5262c82 2x
+```
+
 For more information to better understand `srcset`, we highly recommend [Eric Portis' "Srcset and sizes" article](https://ericportis.com/posts/2014/srcset-sizes/) which goes into depth about the subject.
 
 #### Custom Widths
@@ -225,7 +259,7 @@ const client = new ImgixClient({
 const srcset = client.buildSrcSet(
   'image.jpg',
   {},
-  { widths: [100, 500, 1000, 1800] }
+  { widths: [100, 500, 1000, 1800] },
 );
 
 console.log(srcset);
@@ -286,7 +320,7 @@ const client = new ImgixClient({
 const srcset = client.buildSrcSet(
   'image.jpg',
   {},
-  { minWidth: 500, maxWidth: 2000 }
+  { minWidth: 500, maxWidth: 2000 },
 );
 
 console.log(srcset);
@@ -339,6 +373,31 @@ https://testing.imgix.net/image.jpg?w=100&dpr=4&q=23 4x,
 https://testing.imgix.net/image.jpg?w=100&dpr=5&q=20 5x
 ```
 
+Quality parameters is overridable for each `dpr` by passing `targetDPRRatiosQualities` parameters.
+
+```js
+const client = new ImgixClient({
+  domain: 'testing.imgix.net',
+  includeLibraryParam: false,
+});
+
+const srcset = client.buildSrcSet(
+  'image.jpg',
+  { w: 100 },
+  { targetDPRRatiosQualities: { 1: 45, 2: 30, 3: 20, 4: 15, 5: 10 } },
+);
+```
+
+will generate the following custom `q` to `dpr` mapping:
+
+```html
+https://testing.imgix.net/image.jpg?w=100&dpr=1&q=45 1x,
+https://testing.imgix.net/image.jpg?w=100&dpr=2&q=30 2x,
+https://testing.imgix.net/image.jpg?w=100&dpr=3&q=20 3x,
+https://testing.imgix.net/image.jpg?w=100&dpr=4&q=15 4x,
+https://testing.imgix.net/image.jpg?w=100&dpr=5&q=10 5x
+```
+
 ### Web Proxy Sources
 
 If you are using a [Web Proxy Source](https://docs.imgix.com/setup/creating-sources/web-proxy), all you need to do is pass the full image URL you would like to proxy to `@imgix/js-core` as the path, and include a `secureURLToken` when creating the client. `@imgix/js-core` will then encode this full URL into a format that imgix will understand, thus creating a proxy URL for you.
@@ -376,6 +435,6 @@ new ImgixClient({
 npm test
 ```
 
-
 ## License
+
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fimgix%2Fimgix-core-js.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fimgix%2Fimgix-core-js?ref=badge_large)

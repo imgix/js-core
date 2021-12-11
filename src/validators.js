@@ -2,6 +2,7 @@ import {
   MIN_SRCSET_WIDTH,
   MAX_SRCSET_WIDTH,
   DEFAULT_SRCSET_WIDTH_TOLERANCE,
+  DPR_TARGETS_RATIOS,
 } from './constants.js';
 
 export function validateAndDestructureOptions(options) {
@@ -68,6 +69,32 @@ export function validateVariableQuality(disableVariableQuality) {
   if (typeof disableVariableQuality != 'boolean') {
     throw new Error(
       'The disableVariableQuality argument can only be passed a Boolean value',
+    );
+  }
+}
+
+export function validateTargetDPRRatios(targetDPRRatios) {
+  if (!Array.isArray(targetDPRRatios) || !targetDPRRatios.length) {
+    throw new Error(
+      'The targetDPRRatios argument can only be passed a valid non-empty array of integers',
+    );
+  } else {
+    const allValidDPR = targetDPRRatios.every(function (dpr) {
+      return DPR_TARGETS_RATIOS.includes(dpr);
+    });
+
+    if (!allValidDPR) {
+      throw new Error(
+        'The targetDPRRatios argument can only contains 1, 2, 3, 4 or 5 values',
+      );
+    }
+  }
+}
+
+export function validateTargetDPRRatiosQualities(targetDPRRatiosQualities) {
+  if (typeof targetDPRRatiosQualities !== 'object') {
+    throw new Error(
+      'The targetDPRRatiosQualities argument can only be an object',
     );
   }
 }
