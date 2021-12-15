@@ -107,10 +107,10 @@ function assertDoesNotIncludeQuality(srcset) {
   });
 }
 
-function assertCorrectTargetDPRRatiosDescriptors(srcset, targetRatios) {
+function assertCorrectDevicePixelRatiosDescriptors(srcset, targetRatios) {
   const srcsetSplit = srcset.split(',');
   srcsetSplit.map((u, i) => {
-    const drp = parseInt(u.split(' ')[1].slice(0, -1), 10);
+    const drp = parseFloat(u.split(' ')[1].slice(0, -1));
     assert.strictEqual(drp, targetRatios[i]);
   });
 }
@@ -720,8 +720,8 @@ describe('SrcSet Builder:', function describeSuite() {
         });
       });
 
-      describe('with a targetDPRRatios provided', function describeSuite() {
-        const CUSTOM_TARGETS_RATIOS = [1, 2];
+      describe('with a devicePixelRatios provided', function describeSuite() {
+        const CUSTOM_TARGETS_RATIOS = [1, 1.5, 2];
 
         const srcset = new ImgixClient({
           domain: 'testing.imgix.net',
@@ -729,15 +729,15 @@ describe('SrcSet Builder:', function describeSuite() {
         }).buildSrcSet(
           'image.jpg',
           { w: 100 },
-          { targetDPRRatios: CUSTOM_TARGETS_RATIOS },
+          { devicePixelRatios: CUSTOM_TARGETS_RATIOS },
         );
 
         it('should return the expected number of `url targetRatios` pairs', function testSpec() {
-          assert.strictEqual(srcset.split(',').length, 2);
+          assert.strictEqual(srcset.split(',').length, 3);
         });
 
         it('should generate the srcset with excepted targets ratios', function testSpec() {
-          assertCorrectTargetDPRRatiosDescriptors(
+          assertCorrectDevicePixelRatiosDescriptors(
             srcset,
             CUSTOM_TARGETS_RATIOS,
           );
@@ -747,7 +747,7 @@ describe('SrcSet Builder:', function describeSuite() {
           assert.throws(function () {
             new ImgixClient({
               domain: 'testing.imgix.net',
-            }).buildSrcSet('image.jpg', { w: 100 }, { targetDPRRatios: 'abc' });
+            }).buildSrcSet('image.jpg', { w: 100 }, { devicePixelRatios: 'abc' });
           }, Error);
         });
 
@@ -755,7 +755,7 @@ describe('SrcSet Builder:', function describeSuite() {
           assert.throws(function () {
             new ImgixClient({
               domain: 'testing.imgix.net',
-            }).buildSrcSet('image.jpg', { w: 100 }, { targetDPRRatios: [] });
+            }).buildSrcSet('image.jpg', { w: 100 }, { devicePixelRatios: [] });
           }, Error);
         });
 
@@ -766,7 +766,7 @@ describe('SrcSet Builder:', function describeSuite() {
             }).buildSrcSet(
               'image.jpg',
               { w: 100 },
-              { targetDPRRatios: [1, 10] },
+              { devicePixelRatios: [1, 10] },
             );
           }, Error);
 
@@ -776,13 +776,13 @@ describe('SrcSet Builder:', function describeSuite() {
             }).buildSrcSet(
               'image.jpg',
               { w: 100 },
-              { targetDPRRatios: ['a', 'b', 'c'] },
+              { devicePixelRatios: ['a', 'b', 'c'] },
             );
           }, Error);
         });
       });
 
-      describe('with a targetDPRRatiosQualities provided', function describeSuite() {
+      describe('with a variableQualities provided', function describeSuite() {
         const DPR_QUALITY = [75, 50, 35, 23, 20];
 
         const CUSTOM_TARGETS_RATIOS_QUALITIES = {
@@ -799,7 +799,7 @@ describe('SrcSet Builder:', function describeSuite() {
         }).buildSrcSet(
           'image.jpg',
           { w: 100 },
-          { targetDPRRatiosQualities: CUSTOM_TARGETS_RATIOS_QUALITIES },
+          { variableQualities: CUSTOM_TARGETS_RATIOS_QUALITIES },
         );
 
         it('should return the expected qualities', function testSpec() {
@@ -816,18 +816,18 @@ describe('SrcSet Builder:', function describeSuite() {
           }).buildSrcSet(
             'image.jpg',
             { w: 100 },
-            { targetDPRRatiosQualities: { 1: 40, 2: 35 } },
+            { variableQualities: { 1: 40, 2: 35 } },
           );
 
           assertIncludesQualities(
             srcset,
-            Object.values([
+            [
               40,
               35,
               DPR_QUALITY[2],
               DPR_QUALITY[3],
               DPR_QUALITY[4],
-            ]),
+            ],
           );
         });
 
@@ -839,7 +839,7 @@ describe('SrcSet Builder:', function describeSuite() {
           }).buildSrcSet(
             'image.jpg',
             { w: 800, q: QUALITY_OVERRIDE },
-            { targetDPRRatiosQualities: CUSTOM_TARGETS_RATIOS_QUALITIES },
+            { variableQualities: CUSTOM_TARGETS_RATIOS_QUALITIES },
           );
 
           assertIncludesQualityOverride(srcset, QUALITY_OVERRIDE);
@@ -854,11 +854,28 @@ describe('SrcSet Builder:', function describeSuite() {
             { w: 800, q: QUALITY_OVERRIDE },
             {
               disableVariableQuality: true,
-              targetDPRRatiosQualities: CUSTOM_TARGETS_RATIOS_QUALITIES,
+              variableQualities: CUSTOM_TARGETS_RATIOS_QUALITIES,
             },
           );
 
           assertIncludesQualityOverride(srcset, QUALITY_OVERRIDE);
+        });
+
+        it('should work with float dpr', function testSpec() {
+            const srcset = new ImgixClient({
+                domain: 'testing.imgix.net',
+            }).buildSrcSet(
+                'image.jpg',
+                { w: 800 },
+                {
+                    devicePixelRatios: [1, 1.5, 2],
+                    variableQualities: {
+                        1.5: 60
+                    },
+                },
+            );
+
+            assertIncludesQualities(srcset, [DPR_QUALITY[0], 60, DPR_QUALITY[1]]);
         });
 
         it('errors with non-object argument', function testSpec() {
@@ -868,7 +885,7 @@ describe('SrcSet Builder:', function describeSuite() {
             }).buildSrcSet(
               'image.jpg',
               { w: 100 },
-              { targetDPRRatiosQualities: 'abc' },
+              { variableQualities: 'abc' },
             );
           }, Error);
         });

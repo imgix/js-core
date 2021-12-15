@@ -19,7 +19,7 @@ export const DPR_QUALITIES = {
   5: 20,
 };
 
-export const DPR_TARGETS_RATIOS = [1, 2, 3, 4, 5];
+export const DEFAULT_DPR = [1, 2, 3, 4, 5];
 
 export const DEFAULT_OPTIONS = {
   domain: null,

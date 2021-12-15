@@ -45,22 +45,6 @@ function _objectSpread2(target) {
   return target;
 }
 
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function (obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function (obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
-}
-
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -174,7 +158,7 @@ function _nonIterableRest() {
 }
 
 // package version used in the ix-lib parameter
-var VERSION = '3.2.2'; // regex pattern used to determine if a domain is valid
+var VERSION = '3.2.1'; // regex pattern used to determine if a domain is valid
 
 var DOMAIN_REGEX = /^(?:[a-z\d\-_]{1,62}\.){0,125}(?:[a-z\d](?:\-(?=\-*[a-z\d])|[a-z]|\d){0,62}\.)[a-z\d]{1,63}$/i; // minimum generated srcset width
 
@@ -191,7 +175,6 @@ var DPR_QUALITIES = {
   4: 23,
   5: 20
 };
-var DPR_TARGETS_RATIOS = [1, 2, 3, 4, 5];
 var DEFAULT_OPTIONS = {
   domain: null,
   useHTTPS: true,
@@ -245,24 +228,6 @@ function validateWidths(customWidths) {
 function validateVariableQuality(disableVariableQuality) {
   if (typeof disableVariableQuality != 'boolean') {
     throw new Error('The disableVariableQuality argument can only be passed a Boolean value');
-  }
-}
-function validateTargetDPRRatios(targetDPRRatios) {
-  if (!Array.isArray(targetDPRRatios) || !targetDPRRatios.length) {
-    throw new Error('The targetDPRRatios argument can only be passed a valid non-empty array of integers');
-  } else {
-    var allValidDPR = targetDPRRatios.every(function (dpr) {
-      return DPR_TARGETS_RATIOS.includes(dpr);
-    });
-
-    if (!allValidDPR) {
-      throw new Error('The targetDPRRatios argument can only contains 1, 2, 3, 4 or 5 values');
-    }
-  }
-}
-function validateTargetDPRRatiosQualities(targetDPRRatiosQualities) {
-  if (_typeof(targetDPRRatiosQualities) !== 'object') {
-    throw new Error('The targetDPRRatiosQualities argument can only be an object');
   }
 }
 
@@ -399,27 +364,17 @@ var ImgixClient = /*#__PURE__*/function () {
     value: function _buildDPRSrcSet(path, params, options) {
       var _this2 = this;
 
-      if (options.targetDPRRatios) {
-        validateTargetDPRRatios(options.targetDPRRatios);
-      }
-
-      var targetRatios = options.targetDPRRatios || DPR_TARGETS_RATIOS;
+      var targetRatios = [1, 2, 3, 4, 5];
       var disableVariableQuality = options.disableVariableQuality || false;
 
       if (!disableVariableQuality) {
         validateVariableQuality(disableVariableQuality);
       }
 
-      if (options.targetDPRRatiosQualities) {
-        validateTargetDPRRatiosQualities(options.targetDPRRatiosQualities);
-      }
-
-      var qualities = _objectSpread2(_objectSpread2({}, DPR_QUALITIES), options.targetDPRRatiosQualities);
-
       var withQuality = function withQuality(path, params, dpr) {
         return "".concat(_this2.buildURL(path, _objectSpread2(_objectSpread2({}, params), {}, {
           dpr: dpr,
-          q: params.q || qualities[dpr]
+          q: params.q || DPR_QUALITIES[dpr]
         })), " ").concat(dpr, "x");
       };
 

@@ -26,12 +26,9 @@ declare class ImgixClient {
   ): number[];
 }
 
-export type TargetDPRRatio = 1 | 2 | 3 | 4 | 5;
+export type DevicePixelRatio = 1 | 2 | 3 | 4 | 5 | number;
 
-// Non-empty array of TargetDPRRatio
-export type TargetDPRRatios = [TargetDPRRatio, ...TargetDPRRatio[]];
-
-export type TargetDPRRatiosQualities = { [key in TargetDPRRatio]?: number };
+export type VariableQualities = { [key in DevicePixelRatio]?: number };
 
 export interface SrcSetOptions {
   widths?: number[];
@@ -39,8 +36,8 @@ export interface SrcSetOptions {
   minWidth?: number;
   maxWidth?: number;
   disableVariableQuality?: boolean;
-  targetDPRRatios?: TargetDPRRatios;
-  targetDPRRatiosQualities?: TargetDPRRatiosQualities;
+  devicePixelRatios?: DevicePixelRatio[];
+  variableQualities?: VariableQualities;
 }
 
 export default ImgixClient;

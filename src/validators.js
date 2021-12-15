@@ -2,7 +2,6 @@ import {
   MIN_SRCSET_WIDTH,
   MAX_SRCSET_WIDTH,
   DEFAULT_SRCSET_WIDTH_TOLERANCE,
-  DPR_TARGETS_RATIOS,
 } from './constants.js';
 
 export function validateAndDestructureOptions(options) {
@@ -73,28 +72,26 @@ export function validateVariableQuality(disableVariableQuality) {
   }
 }
 
-export function validateTargetDPRRatios(targetDPRRatios) {
-  if (!Array.isArray(targetDPRRatios) || !targetDPRRatios.length) {
+export function validateDevicePixelRatios(devicePixelRatios) {
+  if (!Array.isArray(devicePixelRatios) || !devicePixelRatios.length) {
     throw new Error(
-      'The targetDPRRatios argument can only be passed a valid non-empty array of integers',
+      'The devicePixelRatios argument can only be passed a valid non-empty array of integers',
     );
   } else {
-    const allValidDPR = targetDPRRatios.every(function (dpr) {
-      return DPR_TARGETS_RATIOS.includes(dpr);
+    const allValidDPR = devicePixelRatios.every(function (dpr) {
+      return typeof dpr === 'number' && dpr >= 1 && dpr <= 5;
     });
 
     if (!allValidDPR) {
       throw new Error(
-        'The targetDPRRatios argument can only contains 1, 2, 3, 4 or 5 values',
+        'The devicePixelRatios argument can only contain positive integer values between 1 and 5',
       );
     }
   }
 }
 
-export function validateTargetDPRRatiosQualities(targetDPRRatiosQualities) {
-  if (typeof targetDPRRatiosQualities !== 'object') {
-    throw new Error(
-      'The targetDPRRatiosQualities argument can only be an object',
-    );
+export function validateVariableQualities(variableQualities) {
+  if (typeof variableQualities !== 'object') {
+    throw new Error('The variableQualities argument can only be an object');
   }
 }

@@ -2,21 +2,21 @@ import md5 from 'md5';
 import { Base64 } from 'js-base64';
 
 import {
-  VERSION,
-  DOMAIN_REGEX,
-  DEFAULT_OPTIONS,
-  DPR_QUALITIES,
-  DPR_TARGETS_RATIOS,
+    VERSION,
+    DOMAIN_REGEX,
+    DEFAULT_OPTIONS,
+    DPR_QUALITIES,
+    DEFAULT_DPR,
 } from './constants.js';
 
 import {
-  validateRange,
-  validateWidths,
-  validateAndDestructureOptions,
-  validateVariableQuality,
-  validateWidthTolerance,
-  validateTargetDPRRatios,
-  validateTargetDPRRatiosQualities,
+    validateRange,
+    validateWidths,
+    validateAndDestructureOptions,
+    validateVariableQuality,
+    validateWidthTolerance,
+    validateDevicePixelRatios,
+    validateVariableQualities,
 } from './validators.js';
 
 export default class ImgixClient {
@@ -193,11 +193,11 @@ export default class ImgixClient {
   }
 
   _buildDPRSrcSet(path, params, options) {
-    if (options.targetDPRRatios) {
-      validateTargetDPRRatios(options.targetDPRRatios);
+    if (options.devicePixelRatios) {
+      validateDevicePixelRatios(options.devicePixelRatios);
     }
 
-    const targetRatios = options.targetDPRRatios || DPR_TARGETS_RATIOS;
+    const targetRatios = options.devicePixelRatios || DEFAULT_DPR;
 
     const disableVariableQuality = options.disableVariableQuality || false;
 
@@ -205,17 +205,17 @@ export default class ImgixClient {
       validateVariableQuality(disableVariableQuality);
     }
 
-    if (options.targetDPRRatiosQualities) {
-      validateTargetDPRRatiosQualities(options.targetDPRRatiosQualities);
+    if (options.variableQualities) {
+      validateVariableQualities(options.variableQualities);
     }
 
-    const qualities = { ...DPR_QUALITIES, ...options.targetDPRRatiosQualities };
+    const qualities = { ...DPR_QUALITIES, ...options.variableQualities };
 
     const withQuality = (path, params, dpr) => {
       return `${this.buildURL(path, {
         ...params,
         dpr: dpr,
-        q: params.q || qualities[dpr],
+        q: params.q || qualities[dpr] || qualities[Math.floor(dpr)],
       })} ${dpr}x`;
     };
 

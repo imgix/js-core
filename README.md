@@ -144,8 +144,8 @@ https://testing.imgix.net/folder/image.jpg?w=1000&ixlib=js-...
   - [**`minWidth`**](#minimum-and-maximum-width-ranges)
   - [**`maxWidth`**](#minimum-and-maximum-width-ranges)
   - [**`disableVariableQuality`**](#variable-qualities)
-  - [**`targetDPRRatios`**](#fixed-image-rendering)
-  - [**`targetDPRRatiosQualities`**](#variable-qualities)
+  - [**`devicePixelRatios`**](#fixed-image-rendering)
+  - [**`variableQualities`**](#variable-qualities)
 
 <!-- prettier-ignore-end -->
 
@@ -213,7 +213,7 @@ https://testing.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=5&s=7c4b8adb733d
 <!-- prettier-ignore-end -->
 
 This library generate by default `1` to `5` dpr `srcset`.
-You can control generated target ratios with `targetDPRRatios` parameters.
+You can control generated target ratios with `devicePixelRatios` parameters.
 
 ```js
 const client = new ImgixClient({
@@ -230,7 +230,7 @@ const srcset = client.buildSrcSet(
     fit: 'crop',
   },
   {
-    targetDPRRatios: [1, 2],
+    devicePixelRatios: [1, 2],
   },
 );
 
@@ -361,9 +361,11 @@ const client = new ImgixClient({
 });
 
 const srcset = client.buildSrcSet('image.jpg', { w: 100 });
+
+console.log(srcset);
 ```
 
-will generate a srcset with the following `q` to `dpr` mapping:
+Will generate a srcset with the following `q` to `dpr` mapping:
 
 ```html
 https://testing.imgix.net/image.jpg?w=100&dpr=1&q=75 1x,
@@ -373,7 +375,7 @@ https://testing.imgix.net/image.jpg?w=100&dpr=4&q=23 4x,
 https://testing.imgix.net/image.jpg?w=100&dpr=5&q=20 5x
 ```
 
-Quality parameters is overridable for each `dpr` by passing `targetDPRRatiosQualities` parameters.
+Quality parameters is overridable for each `dpr` by passing `variableQualities` parameters.
 
 ```js
 const client = new ImgixClient({
@@ -384,11 +386,13 @@ const client = new ImgixClient({
 const srcset = client.buildSrcSet(
   'image.jpg',
   { w: 100 },
-  { targetDPRRatiosQualities: { 1: 45, 2: 30, 3: 20, 4: 15, 5: 10 } },
+  { variableQualities: { 1: 45, 2: 30, 3: 20, 4: 15, 5: 10 } },
 );
+
+console.log(srcset);
 ```
 
-will generate the following custom `q` to `dpr` mapping:
+Will generate the following custom `q` to `dpr` mapping:
 
 ```html
 https://testing.imgix.net/image.jpg?w=100&dpr=1&q=45 1x,

@@ -39,8 +39,8 @@ const options: SrcSetOptions = {
   minWidth: 500,
   maxWidth: 2000,
   disableVariableQuality: false,
-  targetDPRRatios: [1, 2],
-  targetDPRRatiosQualities: {
+  devicePixelRatios: [1, 2],
+  variableQualities: {
     1: 45,
     2: 30,
   },
