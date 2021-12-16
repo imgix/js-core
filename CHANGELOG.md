@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [v3.4.0](https://github.com/imgix/js-core/compare/v3.2.2...v3.4.0) (2021-12-16)
+
+### Features
+
+* dpr srcset options ([#307](https://github.com/imgix/js-core/issues/307)) ([380abf0](https://github.com/imgix/js-core/commit/380abf094ce617d6f23208e57b46169ca9949609))
+
 ## [v3.2.1](https://github.com/imgix/js-core/compare/v3.2.0...v3.2.1) (2021-06-28)
 
 * build: remove stale `.d.ts` file from `dist` ([#293](https://github.com/imgix/js-core/pull/293))

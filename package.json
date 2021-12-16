@@ -1,7 +1,7 @@
 {
   "name": "@imgix/js-core",
   "description": "A JavaScript client library for generating image URLs with imgix",
-  "version": "3.2.2",
+  "version": "3.4.0",
   "repository": "https://github.com/imgix/js-core",
   "license": "BSD-2-Clause",
   "main": "dist/index.cjs.js",
