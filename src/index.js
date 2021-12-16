@@ -2,21 +2,21 @@ import md5 from 'md5';
 import { Base64 } from 'js-base64';
 
 import {
-    VERSION,
-    DOMAIN_REGEX,
-    DEFAULT_OPTIONS,
-    DPR_QUALITIES,
-    DEFAULT_DPR,
+  VERSION,
+  DOMAIN_REGEX,
+  DEFAULT_OPTIONS,
+  DPR_QUALITIES,
+  DEFAULT_DPR,
 } from './constants.js';
 
 import {
-    validateRange,
-    validateWidths,
-    validateAndDestructureOptions,
-    validateVariableQuality,
-    validateWidthTolerance,
-    validateDevicePixelRatios,
-    validateVariableQualities,
+  validateRange,
+  validateWidths,
+  validateAndDestructureOptions,
+  validateVariableQuality,
+  validateWidthTolerance,
+  validateDevicePixelRatios,
+  validateVariableQualities,
 } from './validators.js';
 
 export default class ImgixClient {
@@ -169,8 +169,9 @@ export default class ImgixClient {
   }
 
   _buildSrcSetPairs(path, params, options) {
-    const [widthTolerance, minWidth, maxWidth] =
-      validateAndDestructureOptions(options);
+    const [widthTolerance, minWidth, maxWidth] = validateAndDestructureOptions(
+      options,
+    );
 
     let targetWidthValues;
     if (options.widths) {

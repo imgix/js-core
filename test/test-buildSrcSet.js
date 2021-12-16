@@ -116,9 +116,37 @@ function assertCorrectDevicePixelRatiosDescriptors(srcset, targetRatios) {
 }
 
 const RESOLUTIONS = [
-  100, 116, 135, 156, 181, 210, 244, 283, 328, 380, 441, 512, 594, 689, 799,
-  927, 1075, 1247, 1446, 1678, 1946, 2257, 2619, 3038, 3524, 4087, 4741, 5500,
-  6380, 7401, 8192,
+  100,
+  116,
+  135,
+  156,
+  181,
+  210,
+  244,
+  283,
+  328,
+  380,
+  441,
+  512,
+  594,
+  689,
+  799,
+  927,
+  1075,
+  1247,
+  1446,
+  1678,
+  1946,
+  2257,
+  2619,
+  3038,
+  3524,
+  4087,
+  4741,
+  5500,
+  6380,
+  7401,
+  8192,
 ];
 
 describe('SrcSet Builder:', function describeSuite() {
@@ -490,7 +518,17 @@ describe('SrcSet Builder:', function describeSuite() {
 
         it('should generate the expected default srcset pair values', function testSpec() {
           const resolutions = [
-            500, 580, 673, 780, 905, 1050, 1218, 1413, 1639, 1901, 2000,
+            500,
+            580,
+            673,
+            780,
+            905,
+            1050,
+            1218,
+            1413,
+            1639,
+            1901,
+            2000,
           ];
           assertCorrectWidthDescriptors(srcset, resolutions);
         });
@@ -605,8 +643,21 @@ describe('SrcSet Builder:', function describeSuite() {
 
         it('should generate the expected default srcset pair values', function testSpec() {
           const resolutions = [
-            100, 140, 196, 274, 384, 538, 753, 1054, 1476, 2066, 2893, 4050,
-            5669, 7937, 8192,
+            100,
+            140,
+            196,
+            274,
+            384,
+            538,
+            753,
+            1054,
+            1476,
+            2066,
+            2893,
+            4050,
+            5669,
+            7937,
+            8192,
           ];
           assertCorrectWidthDescriptors(srcset, resolutions);
         });
@@ -747,7 +798,11 @@ describe('SrcSet Builder:', function describeSuite() {
           assert.throws(function () {
             new ImgixClient({
               domain: 'testing.imgix.net',
-            }).buildSrcSet('image.jpg', { w: 100 }, { devicePixelRatios: 'abc' });
+            }).buildSrcSet(
+              'image.jpg',
+              { w: 100 },
+              { devicePixelRatios: 'abc' },
+            );
           }, Error);
         });
 
@@ -819,16 +874,13 @@ describe('SrcSet Builder:', function describeSuite() {
             { variableQualities: { 1: 40, 2: 35 } },
           );
 
-          assertIncludesQualities(
-            srcset,
-            [
-              40,
-              35,
-              DPR_QUALITY[2],
-              DPR_QUALITY[3],
-              DPR_QUALITY[4],
-            ],
-          );
+          assertIncludesQualities(srcset, [
+            40,
+            35,
+            DPR_QUALITY[2],
+            DPR_QUALITY[3],
+            DPR_QUALITY[4],
+          ]);
         });
 
         it('should override the variable quality if a quality parameter is provided', function testSpec() {
@@ -862,20 +914,20 @@ describe('SrcSet Builder:', function describeSuite() {
         });
 
         it('should work with float dpr', function testSpec() {
-            const srcset = new ImgixClient({
-                domain: 'testing.imgix.net',
-            }).buildSrcSet(
-                'image.jpg',
-                { w: 800 },
-                {
-                    devicePixelRatios: [1, 1.5, 2],
-                    variableQualities: {
-                        1.5: 60
-                    },
-                },
-            );
+          const srcset = new ImgixClient({
+            domain: 'testing.imgix.net',
+          }).buildSrcSet(
+            'image.jpg',
+            { w: 800 },
+            {
+              devicePixelRatios: [1, 1.5, 2],
+              variableQualities: {
+                1.5: 60,
+              },
+            },
+          );
 
-            assertIncludesQualities(srcset, [DPR_QUALITY[0], 60, DPR_QUALITY[1]]);
+          assertIncludesQualities(srcset, [DPR_QUALITY[0], 60, DPR_QUALITY[1]]);
         });
 
         it('errors with non-object argument', function testSpec() {
