@@ -6,6 +6,7 @@ import {
   DOMAIN_REGEX,
   DEFAULT_OPTIONS,
   DPR_QUALITIES,
+  DEFAULT_DPR,
 } from './constants.js';
 
 import {
@@ -14,6 +15,8 @@ import {
   validateAndDestructureOptions,
   validateVariableQuality,
   validateWidthTolerance,
+  validateDevicePixelRatios,
+  validateVariableQualities,
 } from './validators.js';
 
 export default class ImgixClient {
@@ -191,18 +194,29 @@ export default class ImgixClient {
   }
 
   _buildDPRSrcSet(path, params, options) {
-    const targetRatios = [1, 2, 3, 4, 5];
+    if (options.devicePixelRatios) {
+      validateDevicePixelRatios(options.devicePixelRatios);
+    }
+
+    const targetRatios = options.devicePixelRatios || DEFAULT_DPR;
+
     const disableVariableQuality = options.disableVariableQuality || false;
 
     if (!disableVariableQuality) {
       validateVariableQuality(disableVariableQuality);
     }
 
+    if (options.variableQualities) {
+      validateVariableQualities(options.variableQualities);
+    }
+
+    const qualities = { ...DPR_QUALITIES, ...options.variableQualities };
+
     const withQuality = (path, params, dpr) => {
       return `${this.buildURL(path, {
         ...params,
         dpr: dpr,
-        q: params.q || DPR_QUALITIES[dpr],
+        q: params.q || qualities[dpr] || qualities[Math.floor(dpr)],
       })} ${dpr}x`;
     };
 

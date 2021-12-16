@@ -1,4 +1,4 @@
-import ImgixClient from 'index';
+import ImgixClient, { SrcSetOptions } from 'index';
 
 const expectedToken = 'MYT0KEN';
 // $ExpectType ImgixClient
@@ -33,12 +33,17 @@ client._buildParams(params);
 // $ExpectType string
 client._signParams(path, params);
 
-const options = {
+const options: SrcSetOptions = {
   widths: [100, 500, 1000],
   widthTolerance: 0.05,
   minWidth: 500,
   maxWidth: 2000,
   disableVariableQuality: false,
+  devicePixelRatios: [1, 2],
+  variableQualities: {
+    1: 45,
+    2: 30,
+  },
 };
 
 // $ExpectType string

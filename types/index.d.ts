@@ -26,12 +26,18 @@ declare class ImgixClient {
   ): number[];
 }
 
+export type DevicePixelRatio = 1 | 2 | 3 | 4 | 5 | number;
+
+export type VariableQualities = { [key in DevicePixelRatio]?: number };
+
 export interface SrcSetOptions {
   widths?: number[];
   widthTolerance?: number;
   minWidth?: number;
   maxWidth?: number;
   disableVariableQuality?: boolean;
+  devicePixelRatios?: DevicePixelRatio[];
+  variableQualities?: VariableQualities;
 }
 
 export default ImgixClient;

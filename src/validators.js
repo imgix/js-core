@@ -71,3 +71,27 @@ export function validateVariableQuality(disableVariableQuality) {
     );
   }
 }
+
+export function validateDevicePixelRatios(devicePixelRatios) {
+  if (!Array.isArray(devicePixelRatios) || !devicePixelRatios.length) {
+    throw new Error(
+      'The devicePixelRatios argument can only be passed a valid non-empty array of integers',
+    );
+  } else {
+    const allValidDPR = devicePixelRatios.every(function (dpr) {
+      return typeof dpr === 'number' && dpr >= 1 && dpr <= 5;
+    });
+
+    if (!allValidDPR) {
+      throw new Error(
+        'The devicePixelRatios argument can only contain positive integer values between 1 and 5',
+      );
+    }
+  }
+}
+
+export function validateVariableQualities(variableQualities) {
+  if (typeof variableQualities !== 'object') {
+    throw new Error('The variableQualities argument can only be an object');
+  }
+}
