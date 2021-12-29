@@ -1,0 +1,33 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@4.7.0
+jobs:
+  test:
+    parameters:
+      version: 
+        default: "stable"
+        description: Node.JS version to install
+        type: string
+    docker:
+      - image: cimg/node:<<parameters.version>>
+    steps:
+      - checkout
+      - node/install-packages
+      - run: npm run test
+  deploy:
+    docker:
+      - image: cimg/node:current
+    steps:
+      - checkout
+      - run: npx semantic-release
+workflows:
+  test:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              version:
+                - "current"
+                - "lts"
+      - deploy
