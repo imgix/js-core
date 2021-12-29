@@ -30,4 +30,6 @@ workflows:
               version:
                 - "current"
                 - "lts"
-      - deploy
+      - deploy:
+          requires:
+            - test
