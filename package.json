@@ -44,9 +44,9 @@
     "prepare": "npm run build && npm run compile && npm run assert_version",
     "pretest": "npm run build",
     "pretty": "prettier --write '{src,test,types}/**/*.{js,ts}'",
-    "test": "mocha --require esm --recursive ./test/*.js && npm run dtslint",
+    "test": "mocha --require esm --recursive ./test/*.js && npm run tsd",
     "test:performance": "mocha --require esm --recursive test/performance/*.js",
-    "dtslint": "echo Running dtslint; dtslint types",
+    "tsd": "echo Running tsd; tsd",
     "release:dryRun": "npx node-env-run --exec 'semantic-release --dryRun'",
     "release:publish": "semantic-release"
   },
@@ -58,6 +58,9 @@
     "README.md",
     "src"
   ],
+  "tsd": {
+    "directory": "types"
+  },
   "release": {
     "branches": [
       "main",
