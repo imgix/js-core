@@ -35,5 +35,73 @@ describe('Path Encoding:', function describeSuite() {
 
       assert.strictEqual(actual, expected);
     });
+
+    it('passes through a path unencoded if disablePathEncoding is set', () => {
+      const actual = client.buildURL(
+        '/file+with%20some+crazy?things.jpg',
+        {},
+        {
+          disablePathEncoding: true,
+        },
+      );
+
+      const expected =
+        'https://sdk-test.imgix.net/file+with%20some+crazy?things.jpg';
+      assert.strictEqual(actual, expected);
+    });
+  });
+  describe('buildSrcSet', () => {
+    let client;
+
+    beforeEach(function setupClient() {
+      client = new ImgixClient({
+        domain: 'sdk-test.imgix.net',
+        includeLibraryParam: false,
+      });
+    });
+    it('passes through a path unencoded for a fixed srcset if disablePathEncoding is set', () => {
+      const actual = client.buildSrcSet(
+        '/file+with%20some+crazy?things.jpg',
+        {
+          w: 100,
+        },
+        {
+          disablePathEncoding: true,
+        },
+      );
+
+      const expected =
+        'https://sdk-test.imgix.net/file+with%20some+crazy?things.jpg';
+      assert(actual.includes(expected), 'srcset should include expected url');
+    });
+    it('passes through a path unencoded for a fixed srcset if disablePathEncoding and disableVariableQuality is set', () => {
+      const actual = client.buildSrcSet(
+        '/file+with%20some+crazy?things.jpg',
+        {
+          w: 100,
+        },
+        {
+          disablePathEncoding: true,
+          disableVariableQuality: true,
+        },
+      );
+
+      const expected =
+        'https://sdk-test.imgix.net/file+with%20some+crazy?things.jpg';
+      assert(actual.includes(expected), 'srcset should include expected url');
+    });
+    it('passes through a path unencoded for a fluid srcset if disablePathEncoding is set', () => {
+      const actual = client.buildSrcSet(
+        '/file+with%20some+crazy?things.jpg',
+        {},
+        {
+          disablePathEncoding: true,
+        },
+      );
+
+      const expected =
+        'https://sdk-test.imgix.net/file+with%20some+crazy?things.jpg';
+      assert(actual.includes(expected), 'srcset should include expected url');
+    });
   });
 });
