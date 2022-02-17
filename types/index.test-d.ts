@@ -17,8 +17,11 @@ params = { w: 100 };
 
 expectType<string>(client.buildURL(path, params));
 
+const buildURLOptions = {
+  disablePathEncoding: true,
+};
 params = {};
-expectType<string>(client.buildURL('foo/bar/baz', params));
+expectType<string>(client.buildURL('foo/bar/baz', params, buildURLOptions));
 
 expectType<string>(client._sanitizePath(path));
 
@@ -26,7 +29,7 @@ expectType<string>(client._buildParams(params));
 
 expectType<string>(client._signParams(path, params));
 
-const options: SrcSetOptions = {
+const srcsetOptions: SrcSetOptions = {
   widths: [100, 500, 1000],
   widthTolerance: 0.05,
   minWidth: 500,
@@ -37,19 +40,20 @@ const options: SrcSetOptions = {
     1: 45,
     2: 30,
   },
+  disablePathEncoding: true,
 };
 
 expectType<string>(client.buildSrcSet(path));
 expectType<string>(client.buildSrcSet(path, params));
-expectType<string>(client.buildSrcSet(path, params, options));
+expectType<string>(client.buildSrcSet(path, params, srcsetOptions));
 
 expectType<string>(client._buildSrcSetPairs(path));
 expectType<string>(client._buildSrcSetPairs(path, params));
-expectType<string>(client._buildSrcSetPairs(path, params, options));
+expectType<string>(client._buildSrcSetPairs(path, params, srcsetOptions));
 
 expectType<string>(client._buildDPRSrcSet(path));
 expectType<string>(client._buildDPRSrcSet(path, params));
-expectType<string>(client._buildDPRSrcSet(path, params, options));
+expectType<string>(client._buildDPRSrcSet(path, params, srcsetOptions));
 
 const minWidth = 200;
 const maxWidth = 1000;
