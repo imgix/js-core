@@ -26,13 +26,14 @@
     * [In-browser](#in-browser)
 - [Configuration](#configuration)
 - [API](#api)
-    * [`ImgixClient.buildURL(path, params)`](#imgixclientbuildurlpath-params)
+    * [`ImgixClient.buildURL(path, params, options)`](#imgixclientbuildurlpath-params-options)
     * [`ImgixClient.buildSrcSet(path, params, options)`](#imgixclientbuildsrcsetpath-params-options)
         + [Fixed Image Rendering](#fixed-image-rendering)
         + [Custom Widths](#custom-widths)
         + [Width Tolerance](#width-tolerance)
         + [Minimum and Maximum Width Ranges](#minimum-and-maximum-width-ranges)
         + [Variable Qualities](#variable-qualities)
+        + [Disable Path Encoding](#disable-path-encoding)
     * [Web Proxy Sources](#web-proxy-sources)
 - [What is the `Ixlib` Param on Every Request?](#what-is-the-ixlib-param-on-every-request)
 - [Testing](#testing)
@@ -109,10 +110,12 @@ The following options can be used when creating an instance of `ImgixClient`:
 
 ## API
 
-### `ImgixClient.buildURL(path, params)`
+### `ImgixClient.buildURL(path, params, options)`
 
 - **`path`:** String, required. A full, unencoded path to the image. This includes any additional directory information required to [locate the image](https://docs.imgix.com/setup/serving-images) within a source.
 - **`params`:** Object. Any number of imgix rendering API [parameters](https://docs.imgix.com/apis/url).
+- **`options`:** Object. Any number of modifiers, described below:
+  - [**`disablePathEncoding`**](#disable-path-encoding)
 
 Construct a single image URL by passing in the image `path` and any rendering API parameters.
 
@@ -146,6 +149,7 @@ https://testing.imgix.net/folder/image.jpg?w=1000&ixlib=js-...
   - [**`disableVariableQuality`**](#variable-qualities)
   - [**`devicePixelRatios`**](#fixed-image-rendering)
   - [**`variableQualities`**](#variable-qualities)
+  - [**`disablePathEncoding`**](#disable-path-encoding)
 
 <!-- prettier-ignore-end -->
 
@@ -240,8 +244,10 @@ console.log(srcset);
 Will result in a smaller srcset.
 
 ```html
-https://testing.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=1&s=3d754a157458402fd3e26977107ade74 1x,
-https://testing.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=2&s=a984ad1a81d24d9dd7d18195d5262c82 2x
+https://testing.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=1&s=3d754a157458402fd3e26977107ade74
+1x,
+https://testing.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=2&s=a984ad1a81d24d9dd7d18195d5262c82
+2x
 ```
 
 For more information to better understand `srcset`, we highly recommend [Eric Portis' "Srcset and sizes" article](https://ericportis.com/posts/2014/srcset-sizes/) which goes into depth about the subject.
@@ -401,6 +407,32 @@ https://testing.imgix.net/image.jpg?w=100&dpr=3&q=20 3x,
 https://testing.imgix.net/image.jpg?w=100&dpr=4&q=15 4x,
 https://testing.imgix.net/image.jpg?w=100&dpr=5&q=10 5x
 ```
+
+#### Disable Path Encoding
+
+This library will encode by default all paths passed to both `buildURL` and `buildSrcSet` methods. To disable path encoding, pass `{ disablePathEncoding: true }` to the third argument `options` of `buildURL()` or `buildSrcSet()`.
+
+```js
+const client = new ImgixClient({
+  domain: 'testing.imgix.net',
+});
+
+const src = client.buildURL(
+  'file+with%20some+crazy?things.jpg',
+  {},
+  { disablePathEncoding: true },
+);
+console.log(src);
+
+const srcset = client.buildSrcSet(
+  'file+with%20some+crazy?things.jpg',
+  {},
+  { disablePathEncoding: true },
+);
+console.log(srcset);
+```
+
+Normally this would output a src of `https://sdk-test.imgix.net/file%2Bwith%2520some%2Bcrazy%3Fthings.jpg`, but since path encoding is disabled, it will output a src of `https://sdk-test.imgix.net/file+with%20some+crazy?things.jpg`.
 
 ### Web Proxy Sources
 
