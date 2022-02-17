@@ -11,7 +11,11 @@ declare class ImgixClient {
     includeLibraryParam?: boolean;
   });
 
-  buildURL(path: string, params?: {}): string;
+  buildURL(
+    path: string,
+    params?: {},
+    options?: { disablePathEncoding?: boolean },
+  ): string;
   _sanitizePath(path: string): string;
   _buildParams(params: {}): string;
   _signParams(path: string, queryParams?: {}): string;
@@ -38,6 +42,7 @@ export interface SrcSetOptions {
   disableVariableQuality?: boolean;
   devicePixelRatios?: DevicePixelRatio[];
   variableQualities?: VariableQualities;
+  disablePathEncoding?: boolean;
 }
 
 export default ImgixClient;

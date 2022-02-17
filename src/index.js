@@ -47,19 +47,17 @@ export default class ImgixClient {
     return VERSION;
   }
 
-  buildURL(path = '', params = {}) {
-    const sanitizedPath = this._sanitizePath(path);
+  buildURL(rawPath = '', params = {}, options = {}) {
+    let path = rawPath;
+    if (!options.disablePathEncoding) {
+      path = this._sanitizePath(path);
+    }
 
     let finalParams = this._buildParams(params);
     if (!!this.settings.secureURLToken) {
-      finalParams = this._signParams(sanitizedPath, finalParams);
+      finalParams = this._signParams(path, finalParams);
     }
-    return (
-      this.settings.urlPrefix +
-      this.settings.domain +
-      sanitizedPath +
-      finalParams
-    );
+    return this.settings.urlPrefix + this.settings.domain + path + finalParams;
   }
 
   _buildParams(params = {}) {
@@ -168,10 +166,9 @@ export default class ImgixClient {
     return resolutions;
   }
 
-  _buildSrcSetPairs(path, params, options) {
-    const [widthTolerance, minWidth, maxWidth] = validateAndDestructureOptions(
-      options,
-    );
+  _buildSrcSetPairs(path, params = {}, options = {}) {
+    const [widthTolerance, minWidth, maxWidth] =
+      validateAndDestructureOptions(options);
 
     let targetWidthValues;
     if (options.widths) {
@@ -187,13 +184,18 @@ export default class ImgixClient {
     }
 
     const srcset = targetWidthValues.map(
-      (w) => `${this.buildURL(path, { ...params, w })} ${w}w`,
+      (w) =>
+        `${this.buildURL(
+          path,
+          { ...params, w },
+          { disablePathEncoding: options.disablePathEncoding },
+        )} ${w}w`,
     );
 
     return srcset.join(',\n');
   }
 
-  _buildDPRSrcSet(path, params, options) {
+  _buildDPRSrcSet(path, params = {}, options = {}) {
     if (options.devicePixelRatios) {
       validateDevicePixelRatios(options.devicePixelRatios);
     }
@@ -213,16 +215,25 @@ export default class ImgixClient {
     const qualities = { ...DPR_QUALITIES, ...options.variableQualities };
 
     const withQuality = (path, params, dpr) => {
-      return `${this.buildURL(path, {
-        ...params,
-        dpr: dpr,
-        q: params.q || qualities[dpr] || qualities[Math.floor(dpr)],
-      })} ${dpr}x`;
+      return `${this.buildURL(
+        path,
+        {
+          ...params,
+          dpr: dpr,
+          q: params.q || qualities[dpr] || qualities[Math.floor(dpr)],
+        },
+        { disablePathEncoding: options.disablePathEncoding },
+      )} ${dpr}x`;
     };
 
     const srcset = disableVariableQuality
       ? targetRatios.map(
-          (dpr) => `${this.buildURL(path, { ...params, dpr })} ${dpr}x`,
+          (dpr) =>
+            `${this.buildURL(
+              path,
+              { ...params, dpr },
+              { disablePathEncoding: options.disablePathEncoding },
+            )} ${dpr}x`,
         )
       : targetRatios.map((dpr) => withQuality(path, params, dpr));
 
