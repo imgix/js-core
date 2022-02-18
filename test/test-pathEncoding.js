@@ -49,6 +49,19 @@ describe('Path Encoding:', function describeSuite() {
         'https://sdk-test.imgix.net/file+with%20some+crazy?things.jpg';
       assert.strictEqual(actual, expected);
     });
+    it('prepends / to path when disablePathEncoding is set', () => {
+      const actual = client.buildURL(
+        'file+with%20some+crazy?things.jpg',
+        {},
+        {
+          disablePathEncoding: true,
+        },
+      );
+
+      const expected =
+        'https://sdk-test.imgix.net/file+with%20some+crazy?things.jpg';
+      assert(actual.includes(expected), 'srcset should include expected url');
+    });
   });
   describe('buildSrcSet', () => {
     let client;
@@ -93,6 +106,19 @@ describe('Path Encoding:', function describeSuite() {
     it('passes through a path unencoded for a fluid srcset if disablePathEncoding is set', () => {
       const actual = client.buildSrcSet(
         '/file+with%20some+crazy?things.jpg',
+        {},
+        {
+          disablePathEncoding: true,
+        },
+      );
+
+      const expected =
+        'https://sdk-test.imgix.net/file+with%20some+crazy?things.jpg';
+      assert(actual.includes(expected), 'srcset should include expected url');
+    });
+    it('prepends / to path when disablePathEncoding is set', () => {
+      const actual = client.buildSrcSet(
+        'file+with%20some+crazy?things.jpg',
         {},
         {
           disablePathEncoding: true,
