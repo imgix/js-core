@@ -48,10 +48,9 @@ export default class ImgixClient {
   }
 
   buildURL(rawPath = '', params = {}, options = {}) {
-    let path = rawPath;
-    if (!options.disablePathEncoding) {
-      path = this._sanitizePath(path);
-    }
+    const path = this._sanitizePath(rawPath, {
+      encode: !options.disablePathEncoding,
+    });
 
     let finalParams = this._buildParams(params);
     if (!!this.settings.secureURLToken) {
@@ -94,18 +93,30 @@ export default class ImgixClient {
       : '?s=' + signature;
   }
 
-  _sanitizePath(path) {
+  /**
+   * "Sanitize" the path of the image URL.
+   * Ensures that the path has a leading slash, and that the path is correctly
+   * encoded. If it's a proxy path (begins with http/https), then encode the
+   * whole path as a URI component, otherwise only encode specific characters.
+   * @param {string} path The URL path of the image
+   * @param {Object} options Sanitization options
+   * @param {boolean} options.encode Whether to encode the path, default true
+   * @returns {string} The sanitized path
+   */
+  _sanitizePath(path, options = {}) {
     // Strip leading slash first (we'll re-add after encoding)
     let _path = path.replace(/^\//, '');
 
-    if (/^https?:\/\//.test(_path)) {
-      // Use de/encodeURIComponent to ensure *all* characters are handled,
-      // since it's being used as a path
-      _path = encodeURIComponent(_path);
-    } else {
-      // Use de/encodeURI if we think the path is just a path,
-      // so it leaves legal characters like '/' and '@' alone
-      _path = encodeURI(_path).replace(/[#?:+]/g, encodeURIComponent);
+    if (!(options.encode === false)) {
+      if (/^https?:\/\//.test(_path)) {
+        // Use de/encodeURIComponent to ensure *all* characters are handled,
+        // since it's being used as a path
+        _path = encodeURIComponent(_path);
+      } else {
+        // Use de/encodeURI if we think the path is just a path,
+        // so it leaves legal characters like '/' and '@' alone
+        _path = encodeURI(_path).replace(/[#?:+]/g, encodeURIComponent);
+      }
     }
 
     return '/' + _path;
