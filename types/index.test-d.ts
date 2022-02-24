@@ -24,6 +24,7 @@ params = {};
 expectType<string>(client.buildURL('foo/bar/baz', params, buildURLOptions));
 
 expectType<string>(client._sanitizePath(path));
+expectType<string>(client._sanitizePath(path, { encode: false }));
 
 expectType<string>(client._buildParams(params));
 
