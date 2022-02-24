@@ -16,7 +16,7 @@ declare class ImgixClient {
     params?: {},
     options?: { disablePathEncoding?: boolean },
   ): string;
-  _sanitizePath(path: string): string;
+  _sanitizePath(path: string, options?: { encode?: boolean }): string;
   _buildParams(params: {}): string;
   _signParams(path: string, queryParams?: {}): string;
   buildSrcSet(path: string, params?: {}, options?: SrcSetOptions): string;
