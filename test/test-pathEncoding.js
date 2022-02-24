@@ -62,6 +62,25 @@ describe('Path Encoding:', function describeSuite() {
         'https://sdk-test.imgix.net/file+with%20some+crazy?things.jpg';
       assert(actual.includes(expected), 'srcset should include expected url');
     });
+    it('signs a pre-encoded path correctly', () => {
+      const client = new ImgixClient({
+        domain: 'sdk-test.imgix.net',
+        secureURLToken: 'abcde1234',
+        includeLibraryParam: false,
+      });
+      const actual = client.buildURL(
+        'file+with%20some+crazy%20things.jpg',
+        {},
+        {
+          disablePathEncoding: true,
+        },
+      );
+
+      // The signing param for this URL was taken from a known working implementation
+      const expected =
+        'https://sdk-test.imgix.net/file+with%20some+crazy%20things.jpg?s=4aadfc1a58f27729a41d05831c52116f';
+      assert.strictEqual(actual, expected);
+    });
   });
   describe('buildSrcSet', () => {
     let client;
@@ -128,6 +147,27 @@ describe('Path Encoding:', function describeSuite() {
       const expected =
         'https://sdk-test.imgix.net/file+with%20some+crazy?things.jpg';
       assert(actual.includes(expected), 'srcset should include expected url');
+    });
+    it('signs a pre-encoded path correctly', () => {
+      const client = new ImgixClient({
+        domain: 'sdk-test.imgix.net',
+        secureURLToken: 'abcde1234',
+        includeLibraryParam: false,
+      });
+      const actual = client.buildSrcSet(
+        'file+with%20some+crazy%20things.jpg',
+        {},
+        {
+          disablePathEncoding: true,
+        },
+      );
+
+      // The signing param for this URL was taken from a known working implementation
+      const expected = '524748753f8aa52fb41b9359f79c3188';
+      const firstURLSignature = new URL(
+        actual.split(',')[0].split(' ')[0],
+      ).searchParams.get('s');
+      assert.strictEqual(firstURLSignature, expected);
     });
   });
 });
