@@ -12,14 +12,9 @@ function ownKeys(object, enumerableOnly) {
 
   if (Object.getOwnPropertySymbols) {
     var symbols = Object.getOwnPropertySymbols(object);
-
-    if (enumerableOnly) {
-      symbols = symbols.filter(function (sym) {
-        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
-      });
-    }
-
-    keys.push.apply(keys, symbols);
+    enumerableOnly && (symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    })), keys.push.apply(keys, symbols);
   }
 
   return keys;
@@ -27,19 +22,12 @@ function ownKeys(object, enumerableOnly) {
 
 function _objectSpread2(target) {
   for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i] != null ? arguments[i] : {};
-
-    if (i % 2) {
-      ownKeys(Object(source), true).forEach(function (key) {
-        _defineProperty(target, key, source[key]);
-      });
-    } else if (Object.getOwnPropertyDescriptors) {
-      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
-    } else {
-      ownKeys(Object(source)).forEach(function (key) {
-        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
-      });
-    }
+    var source = null != arguments[i] ? arguments[i] : {};
+    i % 2 ? ownKeys(Object(source), !0).forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) {
+      Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+    });
   }
 
   return target;
@@ -48,17 +36,11 @@ function _objectSpread2(target) {
 function _typeof(obj) {
   "@babel/helpers - typeof";
 
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function (obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function (obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
-
-  return _typeof(obj);
+  return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+  }, _typeof(obj);
 }
 
 function _classCallCheck(instance, Constructor) {
@@ -80,6 +62,9 @@ function _defineProperties(target, props) {
 function _createClass(Constructor, protoProps, staticProps) {
   if (protoProps) _defineProperties(Constructor.prototype, protoProps);
   if (staticProps) _defineProperties(Constructor, staticProps);
+  Object.defineProperty(Constructor, "prototype", {
+    writable: false
+  });
   return Constructor;
 }
 
@@ -294,18 +279,21 @@ var ImgixClient = /*#__PURE__*/function () {
   _createClass(ImgixClient, [{
     key: "buildURL",
     value: function buildURL() {
-      var path = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+      var rawPath = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
       var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
-      var sanitizedPath = this._sanitizePath(path);
+      var path = this._sanitizePath(rawPath, {
+        encode: !options.disablePathEncoding
+      });
 
       var finalParams = this._buildParams(params);
 
       if (!!this.settings.secureURLToken) {
-        finalParams = this._signParams(sanitizedPath, finalParams);
+        finalParams = this._signParams(path, finalParams);
       }
 
-      return this.settings.urlPrefix + this.settings.domain + sanitizedPath + finalParams;
+      return this.settings.urlPrefix + this.settings.domain + path + finalParams;
     }
   }, {
     key: "_buildParams",
@@ -331,23 +319,38 @@ var ImgixClient = /*#__PURE__*/function () {
     key: "_signParams",
     value: function _signParams(path, queryParams) {
       var signatureBase = this.settings.secureURLToken + path + queryParams;
-      var signature = md5__default['default'](signatureBase);
+      var signature = md5__default["default"](signatureBase);
       return queryParams.length > 0 ? queryParams + '&s=' + signature : '?s=' + signature;
     }
+    /**
+     * "Sanitize" the path of the image URL.
+     * Ensures that the path has a leading slash, and that the path is correctly
+     * encoded. If it's a proxy path (begins with http/https), then encode the
+     * whole path as a URI component, otherwise only encode specific characters.
+     * @param {string} path The URL path of the image
+     * @param {Object} options Sanitization options
+     * @param {boolean} options.encode Whether to encode the path, default true
+     * @returns {string} The sanitized path
+     */
+
   }, {
     key: "_sanitizePath",
     value: function _sanitizePath(path) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
       // Strip leading slash first (we'll re-add after encoding)
       var _path = path.replace(/^\//, '');
 
-      if (/^https?:\/\//.test(_path)) {
-        // Use de/encodeURIComponent to ensure *all* characters are handled,
-        // since it's being used as a path
-        _path = encodeURIComponent(_path);
-      } else {
-        // Use de/encodeURI if we think the path is just a path,
-        // so it leaves legal characters like '/' and '@' alone
-        _path = encodeURI(_path).replace(/[#?:+]/g, encodeURIComponent);
+      if (!(options.encode === false)) {
+        if (/^https?:\/\//.test(_path)) {
+          // Use de/encodeURIComponent to ensure *all* characters are handled,
+          // since it's being used as a path
+          _path = encodeURIComponent(_path);
+        } else {
+          // Use de/encodeURI if we think the path is just a path,
+          // so it leaves legal characters like '/' and '@' alone
+          _path = encodeURI(_path).replace(/[#?:+]/g, encodeURIComponent);
+        }
       }
 
       return '/' + _path;
@@ -369,8 +372,11 @@ var ImgixClient = /*#__PURE__*/function () {
 
   }, {
     key: "_buildSrcSetPairs",
-    value: function _buildSrcSetPairs(path, params, options) {
+    value: function _buildSrcSetPairs(path) {
       var _this = this;
+
+      var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
       var _validateAndDestructu = validateAndDestructureOptions(options),
           _validateAndDestructu2 = _slicedToArray(_validateAndDestructu, 3),
@@ -390,14 +396,19 @@ var ImgixClient = /*#__PURE__*/function () {
       var srcset = targetWidthValues.map(function (w) {
         return "".concat(_this.buildURL(path, _objectSpread2(_objectSpread2({}, params), {}, {
           w: w
-        })), " ").concat(w, "w");
+        }), {
+          disablePathEncoding: options.disablePathEncoding
+        }), " ").concat(w, "w");
       });
       return srcset.join(',\n');
     }
   }, {
     key: "_buildDPRSrcSet",
-    value: function _buildDPRSrcSet(path, params, options) {
+    value: function _buildDPRSrcSet(path) {
       var _this2 = this;
+
+      var params = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
       if (options.devicePixelRatios) {
         validateDevicePixelRatios(options.devicePixelRatios);
@@ -420,13 +431,17 @@ var ImgixClient = /*#__PURE__*/function () {
         return "".concat(_this2.buildURL(path, _objectSpread2(_objectSpread2({}, params), {}, {
           dpr: dpr,
           q: params.q || qualities[dpr] || qualities[Math.floor(dpr)]
-        })), " ").concat(dpr, "x");
+        }), {
+          disablePathEncoding: options.disablePathEncoding
+        }), " ").concat(dpr, "x");
       };
 
       var srcset = disableVariableQuality ? targetRatios.map(function (dpr) {
         return "".concat(_this2.buildURL(path, _objectSpread2(_objectSpread2({}, params), {}, {
           dpr: dpr
-        })), " ").concat(dpr, "x");
+        }), {
+          disablePathEncoding: options.disablePathEncoding
+        }), " ").concat(dpr, "x");
       }) : targetRatios.map(function (dpr) {
         return withQuality(path, params, dpr);
       });
