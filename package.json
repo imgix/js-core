@@ -9,7 +9,8 @@
   "types": "dist/index.d.ts",
   "dependencies": {
     "js-base64": "~3.7.0",
-    "md5": "^2.2.1"
+    "md5": "^2.2.1",
+    "ufo": "^0.7.10"
   },
   "devDependencies": {
     "@babel/core": "7.17.9",
@@ -45,6 +46,7 @@
     "pretest": "npm run build",
     "pretty": "prettier --write '{src,test,types}/**/*.{js,ts}'",
     "test": "mocha --require esm --recursive ./test/*.js && npm run tsd",
+    "test:watch": "mocha --require esm --recursive ./test/*.js --watch",
     "test:performance": "mocha --require esm --recursive test/performance/*.js",
     "tsd": "echo Running tsd; tsd",
     "release:dryRun": "npx node-env-run --exec 'semantic-release --dryRun'",
