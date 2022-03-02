@@ -28,6 +28,13 @@ declare class ImgixClient {
     widthTolerance?: number,
     cache?: {},
   ): number[];
+  static _buildURL(path: string, params?: {}, options?: {}): string;
+  static _buildSrcSet(
+    path: string,
+    params?: {},
+    srcSetOptions?: {},
+    clientOptions?: {},
+  ): string;
 }
 
 export type DevicePixelRatio = 1 | 2 | 3 | 4 | 5 | number;
