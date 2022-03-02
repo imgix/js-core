@@ -68,3 +68,14 @@ expectType<number[]>(ImgixClient.targetWidths(minWidth, maxWidth, widthTol));
 expectType<number[]>(
   ImgixClient.targetWidths(minWidth, maxWidth, widthTol, cache),
 );
+
+const absoluteURL = 'https://test.imgix.net/image.jpg';
+
+expectType<string>(ImgixClient._buildURL(absoluteURL, params, {}));
+expectType<string>(ImgixClient._buildURL(absoluteURL, params, buildURLOptions));
+
+expectType<string>(ImgixClient._buildSrcSet(absoluteURL));
+expectType<string>(ImgixClient._buildSrcSet(absoluteURL, params));
+expectType<string>(
+  ImgixClient._buildSrcSet(absoluteURL, params, srcsetOptions),
+);
