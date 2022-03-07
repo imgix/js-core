@@ -34,7 +34,7 @@
     "sinon": "13.0.1",
     "tsd": "0.19.1",
     "typescript": "4.5.5",
-    "uglify-js": "3.15.1"
+    "uglify-js": "3.15.2"
   },
   "scripts": {
     "assert_version": "node assert_version.cjs",
