@@ -5,7 +5,7 @@
 `@imgix/js-core` is a JavaScript library for generating image URLs with [imgix](https://www.imgix.com/) that can be used in browser or server-side settings.
 
 [![NPM Version](https://img.shields.io/npm/v/imgix-core-js.svg)](https://www.npmjs.com/package/@imgix/js-core)
-[![Build Status](https://api.travis-ci.com/imgix/js-core.svg?branch=main)](https://travis-ci.com/github/imgix/js-core)
+[![Build Status](https://circleci.com/gh/imgix/js-core.svg?style=shield)](https://circleci.com/gh/imgix/js-core)
 [![Monthly Downloads](https://img.shields.io/npm/dm/imgix-core-js.svg)](https://www.npmjs.com/package/@imgix/js-core)
 [![Minified Size](https://img.shields.io/bundlephobia/min/imgix-core-js)](https://bundlephobia.com/result?p=imgix-core-js)
 [![License](https://img.shields.io/github/license/imgix/js-core)](https://github.com/imgix/js-core/blob/main/LICENSE.md)
