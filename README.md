@@ -107,6 +107,8 @@ The following options can be used when creating an instance of `ImgixClient`:
 - **`useHTTPS`:** Boolean. Specifies whether constructed URLs should use the HTTPS protocol. Defaults to `true`.
 - **`includeLibraryParam`:** Boolean. Specifies whether the constructed URLs will include an [`ixlib` parameter](#what-is-the-ixlib-param-on-every-request). Defaults to `true`.
 - **`secureURLToken`:** String. When specified, this token will be used to sign images. Read more about securing images [on the imgix Docs site](https://docs.imgix.com/setup/securing-images). Defaults to `null`.
+  - :warning: *The `secureURLToken` option should only be used in server-side applications to prevent exposing your secure token.* :warning:
+
 
 ## API
 
