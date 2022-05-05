@@ -36,6 +36,7 @@
         + [Disable Path Encoding](#disable-path-encoding)
     * [Web Proxy Sources](#web-proxy-sources)
 - [What is the `Ixlib` Param on Every Request?](#what-is-the-ixlib-param-on-every-request)
+- [Support for Management API](#support-for-management-api)
 - [Testing](#testing)
 - [License](#license)
 
@@ -462,6 +463,10 @@ new ImgixClient({
   includeLibraryParam: false,
 });
 ```
+
+## Support for Management API
+
+Users looking for client library support for the imgix [management API](https://docs.imgix.com/apis/management) should use the [imgix-management-js](https://github.com/imgix/imgix-management-js) library. These two projects may be merged at a future date.
 
 ## Testing
 
