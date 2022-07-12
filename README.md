@@ -162,7 +162,6 @@ The @imgix/js-core module allows for generation of custom `srcset` attributes, w
 const client = new ImgixClient({
   domain: 'testing.imgix.net',
   secureURLToken: 'my-token',
-  includeLibraryParam: false,
 });
 
 const srcset = client.buildSrcSet('image.jpg');
@@ -193,7 +192,6 @@ Specifying either a `w` or a `h` parameter to `buildSrcSet()` will create a DPR-
 const client = new ImgixClient({
   domain: 'testing.imgix.net',
   secureURLToken: 'my-token',
-  includeLibraryParam: false,
 });
 
 const srcset = client.buildSrcSet('image.jpg', {
@@ -226,7 +224,6 @@ You can control generated target ratios with `devicePixelRatios` parameters.
 const client = new ImgixClient({
   domain: 'testing.imgix.net',
   secureURLToken: 'my-token',
-  includeLibraryParam: false,
 });
 
 const srcset = client.buildSrcSet(
@@ -262,7 +259,6 @@ In situations where specific widths are desired when generating `srcset` pairs, 
 ```js
 const client = new ImgixClient({
   domain: 'testing.imgix.net',
-  includeLibraryParam: false,
 });
 
 const srcset = client.buildSrcSet(
@@ -294,7 +290,6 @@ By default this rate is set to 8 percent, which we consider to be the ideal rate
 ```js
 const client = new ImgixClient({
   domain: 'testing.imgix.net',
-  includeLibraryParam: false,
 });
 
 const srcset = client.buildSrcSet('image.jpg', {}, { widthTolerance: 0.2 });
@@ -323,7 +318,6 @@ In certain circumstances, you may want to limit the minimum or maximum value of 
 ```js
 const client = new ImgixClient({
   domain: 'testing.imgix.net',
-  includeLibraryParam: false,
 });
 
 const srcset = client.buildSrcSet(
@@ -366,7 +360,6 @@ This behavior specifically occurs when a [fixed-size image](https://github.com/i
 ```js
 const client = new ImgixClient({
   domain: 'testing.imgix.net',
-  includeLibraryParam: false,
 });
 
 const srcset = client.buildSrcSet('image.jpg', { w: 100 });
@@ -389,7 +382,6 @@ Quality parameters is overridable for each `dpr` by passing `variableQualities` 
 ```js
 const client = new ImgixClient({
   domain: 'testing.imgix.net',
-  includeLibraryParam: false,
 });
 
 const srcset = client.buildSrcSet(
