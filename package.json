@@ -13,8 +13,8 @@
     "ufo": "^0.7.10"
   },
   "devDependencies": {
-    "@babel/core": "7.18.9",
-    "@babel/preset-env": "7.18.9",
+    "@babel/core": "7.18.10",
+    "@babel/preset-env": "7.18.10",
     "@babel/register": "7.18.9",
     "@google/semantic-release-replace-plugin": "1.1.0",
     "@semantic-release/changelog": "5.0.1",
