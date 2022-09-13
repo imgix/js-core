@@ -1,9 +1,4 @@
 declare class ImgixClient {
-  domain: string;
-  useHTTPS: boolean;
-  includeLibraryParam: boolean;
-  secureURLToken: string;
-
   constructor(opts: {
     domain: string;
     secureURLToken?: string;
