@@ -15,6 +15,12 @@ jobs:
       - checkout
       - node/install-packages
       - run: npm run test
+      - run:
+          name: "Test that build is successful"
+          command: npm run build
+      - run:
+          name: "Test that compile is successful"
+          command: npm run compile
   deploy:
     docker:
       - image: cimg/node:current
