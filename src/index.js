@@ -6,7 +6,7 @@ import {
   DEFAULT_OPTIONS,
   DOMAIN_REGEX,
   DPR_QUALITIES,
-  VERSION
+  VERSION,
 } from './constants.js';
 import { extractUrl } from './helpers';
 import {
@@ -16,19 +16,19 @@ import {
   validateVariableQualities,
   validateVariableQuality,
   validateWidths,
-  validateWidthTolerance
+  validateWidthTolerance,
 } from './validators.js';
 
 export default class ImgixClient {
   constructor(opts = {}) {
-    this.settings = { ...DEFAULT_OPTIONS, ...opts };
+    this._settings = { ...DEFAULT_OPTIONS, ...opts };
     // a cache to store memoized srcset width-pairs
     this.targetWidthsCache = {};
-    if (typeof this.settings.domain != 'string') {
+    if (typeof this._settings.domain != 'string') {
       throw new Error('ImgixClient must be passed a valid string domain');
     }
 
-    if (DOMAIN_REGEX.exec(this.settings.domain) == null) {
+    if (DOMAIN_REGEX.exec(this._settings.domain) == null) {
       throw new Error(
         'Domain must be passed in as fully-qualified ' +
           'domain name and should not include a protocol or any path ' +
@@ -36,25 +36,93 @@ export default class ImgixClient {
       );
     }
 
-    if (this.settings.includeLibraryParam) {
-      this.settings.libraryParam = 'js-' + ImgixClient.version();
+    if (this._settings.includeLibraryParam) {
+      const defaultLibraryParam = 'js-' + ImgixClient.version();
+      this._settings.libraryParam =
+        this._settings.libraryParam || defaultLibraryParam;
     }
 
-    this.settings.urlPrefix = this.settings.useHTTPS ? 'https://' : 'http://';
+    this._settings.urlPrefix = this._settings.useHTTPS ? 'https://' : 'http://';
   }
 
   static version() {
     return VERSION;
   }
 
+  get settings() {
+    return this._settings;
+  }
+  get domain() {
+    return this._settings.domain;
+  }
+
+  set domain(value) {
+    if (typeof value != 'string') {
+      throw new Error('ImgixClient must be passed a valid string domain');
+    }
+
+    if (DOMAIN_REGEX.exec(value) == null) {
+      throw new Error(
+        'Domain must be passed in as fully-qualified ' +
+          'domain name and should not include a protocol or any path ' +
+          'element, i.e. "example.imgix.net".',
+      );
+    }
+    this._settings.domain = value;
+  }
+
+  get includeLibraryParam() {
+    return this._settings.includeLibraryParam;
+  }
+
+  set includeLibraryParam(value) {
+    if (typeof value !== 'boolean') {
+      throw 'includeLibraryParam must be a boolean';
+    }
+    this._settings.includeLibraryParam = value;
+  }
+
+  get libraryParam() {
+    return this._settings.libraryParam;
+  }
+
+  set libraryParam(value) {
+    if (typeof value !== 'string') {
+      throw 'libraryParam must be string';
+    }
+    this._settings.libraryParam = value;
+  }
+
+  get secureURLToken() {
+    return this._settings.secureURLToken;
+  }
+
+  set secureURLToken(value) {
+    if (typeof value !== 'string') {
+      throw 'secureURLToken must be string';
+    }
+    this._settings.secureURLToken = value;
+  }
+
+  get urlPrefix() {
+    return this._settings.urlPrefix;
+  }
+
+  set urlPrefix(value) {
+    if (typeof value !== 'string') {
+      throw 'urlPrefix must be string';
+    }
+    this._settings.urlPrefix = value;
+  }
+
   buildURL(rawPath = '', params = {}, options = {}) {
     const path = this._sanitizePath(rawPath, options);
 
     let finalParams = this._buildParams(params, options);
-    if (!!this.settings.secureURLToken) {
+    if (!!this.secureURLToken) {
       finalParams = this._signParams(path, finalParams);
     }
-    return this.settings.urlPrefix + this.settings.domain + path + finalParams;
+    return this.urlPrefix + this.domain + path + finalParams;
   }
 
   /**
@@ -105,12 +173,12 @@ export default class ImgixClient {
   _buildParams(params = {}, options = {}) {
     // If a custom encoder is present, use it
     // Otherwise just use the encodeURIComponent
-    const encode = options.encoder || encodeURIComponent
+    const encode = options.encoder || encodeURIComponent;
 
     const queryParams = [
       // Set the libraryParam if applicable.
-      ...(this.settings.libraryParam
-        ? [`ixlib=${this.settings.libraryParam}`]
+      ...(this.includeLibraryParam && this.libraryParam
+        ? [`ixlib=${this.libraryParam}`]
         : []),
 
       // Map over the key-value pairs in params while applying applicable encoding.
@@ -120,9 +188,7 @@ export default class ImgixClient {
         }
         const encodedKey = encode(key);
         const encodedValue =
-          key.substr(-2) === '64'
-            ? Base64.encodeURI(value)
-            : encode(value);
+          key.substr(-2) === '64' ? Base64.encodeURI(value) : encode(value);
         prev.push(`${encodedKey}=${encodedValue}`);
 
         return prev;
@@ -133,7 +199,7 @@ export default class ImgixClient {
   }
 
   _signParams(path, queryParams) {
-    const signatureBase = this.settings.secureURLToken + path + queryParams;
+    const signatureBase = this.secureURLToken + path + queryParams;
     const signature = md5(signatureBase);
 
     return queryParams.length > 0
@@ -151,7 +217,7 @@ export default class ImgixClient {
    * @param {boolean} options.encode Whether to encode the path, default true
    * @returns {string} The sanitized path
    */
-   _sanitizePath(path, options = {}) {
+  _sanitizePath(path, options = {}) {
     // Strip leading slash first (we'll re-add after encoding)
     let _path = path.replace(/^\//, '');
 
@@ -288,12 +354,7 @@ export default class ImgixClient {
     }
 
     const srcset = targetWidthValues.map(
-      (w) =>
-        `${this.buildURL(
-          path,
-          { ...params, w },
-          options,
-        )} ${w}w`,
+      (w) => `${this.buildURL(path, { ...params, w }, options)} ${w}w`,
     );
 
     return srcset.join(',\n');
@@ -333,11 +394,7 @@ export default class ImgixClient {
     const srcset = disableVariableQuality
       ? targetRatios.map(
           (dpr) =>
-            `${this.buildURL(
-              path,
-              { ...params, dpr },
-              options,
-            )} ${dpr}x`,
+            `${this.buildURL(path, { ...params, dpr }, options)} ${dpr}x`,
         )
       : targetRatios.map((dpr) => withQuality(path, params, dpr));
 
