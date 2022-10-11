@@ -1,15 +1,24 @@
-declare class ImgixClient {
+export type ImgixClientOptions = {
   domain: string;
-  useHTTPS: boolean;
-  includeLibraryParam: boolean;
-  secureURLToken: string;
+  secureURLToken?: string;
+  useHTTPS?: boolean;
+  includeLibraryParam?: boolean;
+  libraryParm?: string;
+};
 
-  constructor(opts: {
-    domain: string;
-    secureURLToken?: string;
-    useHTTPS?: boolean;
-    includeLibraryParam?: boolean;
-  });
+interface _buildURLOptions extends Omit<ImgixClientOptions, 'domain'> {
+  domain?: string;
+  disablePathEncoding?: boolean;
+}
+
+declare class ImgixClient {
+  readonly domain: string;
+  readonly useHTTPS: boolean;
+  includeLibraryParam: boolean;
+  readonly secureURLToken: string;
+  libraryParam: string;
+
+  constructor(opts: ImgixClientOptions);
 
   buildURL(
     path: string,
@@ -28,12 +37,16 @@ declare class ImgixClient {
     widthTolerance?: number,
     cache?: {},
   ): number[];
-  static _buildURL(path: string, params?: {}, options?: {}): string;
+  static _buildURL(
+    path: string,
+    params?: {},
+    options?: _buildURLOptions,
+  ): string;
   static _buildSrcSet(
     path: string,
     params?: {},
-    srcSetOptions?: {},
-    clientOptions?: {},
+    srcSetOptions?: SrcSetOptions,
+    clientOptions?: ImgixClientOptions,
   ): string;
 }
 
