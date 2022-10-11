@@ -98,6 +98,9 @@ export default class ImgixClient {
   }
 
   set secureURLToken(value) {
+    if (typeof value === 'undefined') {
+      return (this._settings.secureURLToken = undefined);
+    }
     if (typeof value !== 'string') {
       throw 'secureURLToken must be string';
     }

@@ -1,6 +1,6 @@
 export type ImgixClientOptions = {
   domain: string;
-  secureURLToken?: string;
+  secureURLToken?: string | undefined;
   useHTTPS?: boolean;
   includeLibraryParam?: boolean;
   libraryParm?: string;
