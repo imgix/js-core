@@ -48,7 +48,6 @@ describe('Imgix client:', function describeSuite() {
       const expectedURL = `https://${domain}/image.jpg`;
       const client = new ImgixClient({ domain: domain });
       client.includeLibraryParam = false;
-      console.log(client);
       assert.strictEqual(client.buildURL('image.jpg'), expectedURL);
     });
 
