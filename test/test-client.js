@@ -1,6 +1,6 @@
 import assert from 'assert';
-import ImgixClient from '../src/index.js';
 import { VERSION } from '../src/constants.js';
+import ImgixClient from '../src/index.js';
 
 describe('Imgix client:', function describeSuite() {
   describe('The constructor', function describeSuite() {
@@ -40,6 +40,15 @@ describe('Imgix client:', function describeSuite() {
       const expectedURL = `https://${domain}/image.jpg?ixlib=js-${VERSION}`;
       const client = new ImgixClient({ domain: domain });
 
+      assert.strictEqual(client.buildURL('image.jpg'), expectedURL);
+    });
+
+    it('remove ixlib param when `includeLibraryParam` is falsy', function testSpec() {
+      const domain = 'test.imgix.net';
+      const expectedURL = `https://${domain}/image.jpg`;
+      const client = new ImgixClient({ domain: domain });
+      client.includeLibraryParam = false;
+      console.log(client);
       assert.strictEqual(client.buildURL('image.jpg'), expectedURL);
     });
 
