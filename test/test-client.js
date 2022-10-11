@@ -43,14 +43,6 @@ describe('Imgix client:', function describeSuite() {
       assert.strictEqual(client.buildURL('image.jpg'), expectedURL);
     });
 
-    it('remove ixlib param when `includeLibraryParam` is falsy', function testSpec() {
-      const domain = 'test.imgix.net';
-      const expectedURL = `https://${domain}/image.jpg`;
-      const client = new ImgixClient({ domain: domain });
-      client.includeLibraryParam = false;
-      assert.strictEqual(client.buildURL('image.jpg'), expectedURL);
-    });
-
     it('errors with invalid domain - appended slash', function testSpec() {
       assert.throws(function () {
         new ImgixClient({
@@ -87,6 +79,38 @@ describe('Imgix client:', function describeSuite() {
       assert.throws(function () {
         new ImgixClient({});
       }, Error);
+    });
+  });
+
+  describe('The `this.settings` setters', function describeSuite() {
+    it('update the value of the settings property', function testSpec() {
+      const client = new ImgixClient({
+        domain: 'test.imgix.net',
+        secureURLToken: 'foobar',
+      });
+
+      const newSettings = {
+        domain: 'sdk-test.imgix.net',
+        includeLibraryParam: false,
+        urlPrefix: 'http://',
+        secureURLToken: undefined,
+      };
+
+      client.domain = newSettings.domain;
+      client.secureURLToken = newSettings.secureURLToken;
+      client.includeLibraryParam = newSettings.includeLibraryParam;
+      client.urlPrefix = newSettings.urlPrefix;
+      console.log(client.settings);
+      const expectedURL = `http://${newSettings.domain}/image.jpg`;
+      assert.strictEqual(client.buildURL('image.jpg'), expectedURL);
+    });
+
+    it('remove ixlib param when `includeLibraryParam` is falsy', function testSpec() {
+      const domain = 'test.imgix.net';
+      const expectedURL = `https://${domain}/image.jpg`;
+      const client = new ImgixClient({ domain: domain });
+      client.includeLibraryParam = false;
+      assert.strictEqual(client.buildURL('image.jpg'), expectedURL);
     });
   });
 });
