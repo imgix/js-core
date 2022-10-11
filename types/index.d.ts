@@ -12,11 +12,12 @@ interface _buildURLOptions extends Omit<ImgixClientOptions, 'domain'> {
 }
 
 declare class ImgixClient {
-  readonly domain: string;
-  readonly useHTTPS: boolean;
+  domain: string;
+  useHTTPS: boolean;
   includeLibraryParam: boolean;
-  readonly secureURLToken: string;
+  secureURLToken: string;
   libraryParam: string;
+  urPrefix: string;
 
   constructor(opts: ImgixClientOptions);
 
