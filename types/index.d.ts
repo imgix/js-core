@@ -17,7 +17,7 @@ declare class ImgixClient {
   includeLibraryParam: boolean;
   secureURLToken: string;
   libraryParam: string;
-  urPrefix: string;
+  urlPrefix: string;
 
   constructor(opts: ImgixClientOptions);
 
