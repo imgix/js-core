@@ -99,8 +99,7 @@ describe('Imgix client:', function describeSuite() {
       client.domain = newSettings.domain;
       client.secureURLToken = newSettings.secureURLToken;
       client.includeLibraryParam = newSettings.includeLibraryParam;
-      client.urlPrefix = newSettings.urlPrefix;
-      console.log(client.settings);
+      client.useHTTPS = false;
       const expectedURL = `http://${newSettings.domain}/image.jpg`;
       assert.strictEqual(client.buildURL('image.jpg'), expectedURL);
     });
