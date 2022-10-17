@@ -4,7 +4,6 @@ import { getQuery } from 'ufo';
 import {
   DEFAULT_DPR,
   DEFAULT_OPTIONS,
-  DOMAIN_REGEX,
   DPR_QUALITIES,
   VERSION,
 } from './constants.js';
@@ -12,7 +11,10 @@ import { extractUrl } from './helpers';
 import {
   validateAndDestructureOptions,
   validateDevicePixelRatios,
+  validateDomainString,
   validateRange,
+  validateURLToken,
+  validateUseHTTPS,
   validateVariableQualities,
   validateVariableQuality,
   validateWidths,
@@ -24,25 +26,14 @@ export default class ImgixClient {
     this._settings = { ...DEFAULT_OPTIONS, ...opts };
     // a cache to store memoized srcset width-pairs
     this.targetWidthsCache = {};
-    if (typeof this._settings.domain != 'string') {
-      throw new Error('ImgixClient must be passed a valid string domain');
-    }
 
-    if (DOMAIN_REGEX.exec(this._settings.domain) == null) {
-      throw new Error(
-        'Domain must be passed in as fully-qualified ' +
-          'domain name and should not include a protocol or any path ' +
-          'element, i.e. "example.imgix.net".',
-      );
-    }
+    validateDomainString(this._settings.domain);
 
     if (this._settings.includeLibraryParam) {
       const defaultLibraryParam = 'js-' + ImgixClient.version();
       this._settings.libraryParam =
         this._settings.libraryParam || defaultLibraryParam;
     }
-
-    this._settings.urlPrefix = this._settings.useHTTPS ? 'https://' : 'http://';
   }
 
   static version() {
@@ -53,69 +44,64 @@ export default class ImgixClient {
     return this._settings;
   }
   get domain() {
-    return this._settings.domain;
+    return this.settings.domain;
   }
 
   set domain(value) {
-    if (typeof value != 'string') {
-      throw new Error('ImgixClient must be passed a valid string domain');
-    }
-
-    if (DOMAIN_REGEX.exec(value) == null) {
-      throw new Error(
-        'Domain must be passed in as fully-qualified ' +
-          'domain name and should not include a protocol or any path ' +
-          'element, i.e. "example.imgix.net".',
-      );
-    }
-    this._settings.domain = value;
+    validateDomainString(value);
+    this.settings.domain = value;
   }
 
   get includeLibraryParam() {
-    return this._settings.includeLibraryParam;
+    return this.settings.includeLibraryParam;
   }
 
   set includeLibraryParam(value) {
     if (typeof value !== 'boolean') {
       throw 'includeLibraryParam must be a boolean';
     }
-    this._settings.includeLibraryParam = value;
+    this.settings.includeLibraryParam = value;
   }
 
   get libraryParam() {
-    return this._settings.libraryParam;
+    return this.settings.libraryParam;
   }
 
   set libraryParam(value) {
     if (typeof value !== 'string') {
       throw 'libraryParam must be string';
     }
-    this._settings.libraryParam = value;
+    this.settings.libraryParam = value;
   }
 
   get secureURLToken() {
-    return this._settings.secureURLToken;
+    return this.settings.secureURLToken;
   }
 
   set secureURLToken(value) {
+    validateURLToken(value);
     if (typeof value === 'undefined') {
-      return (this._settings.secureURLToken = undefined);
+      this.settings.secureURLToken = undefined;
+    } else {
+      this.settings.secureURLToken = value;
     }
-    if (typeof value !== 'string') {
-      throw 'secureURLToken must be string';
-    }
-    this._settings.secureURLToken = value;
+  }
+
+  get useHTTPS() {
+    return this.settings.useHTTPS;
+  }
+
+  set useHTTPS(value) {
+    validateUseHTTPS(value);
+    this.settings.useHTTPS = value;
   }
 
   get urlPrefix() {
-    return this._settings.urlPrefix;
-  }
-
-  set urlPrefix(value) {
-    if (typeof value !== 'string') {
-      throw 'urlPrefix must be string';
+    if (this.useHTTPS) {
+      return 'https://';
+    } else {
+      return 'http://';
     }
-    this._settings.urlPrefix = value;
   }
 
   buildURL(rawPath = '', params = {}, options = {}) {
