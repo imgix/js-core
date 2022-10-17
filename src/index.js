@@ -67,7 +67,7 @@ export default class ImgixClient {
     return this.settings.libraryParam;
   }
 
-  set libraryParam(value) {
+  set _libraryParam(value) {
     if (typeof value !== 'string') {
       throw 'libraryParam must be string';
     }
