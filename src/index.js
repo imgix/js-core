@@ -145,7 +145,7 @@ export default class ImgixClient {
    * @example
    * const client = ImgixClient
    * const params = { w: 100 }
-   * const opts = { useHttps: true }
+   * const opts = { useHTTPS: true }
    * const src = "sdk-test.imgix.net/amsterdam.jpg?h=100"
    * const url = client._buildURL(src, params, opts)
    * console.log(url)
