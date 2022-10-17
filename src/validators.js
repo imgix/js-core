@@ -1,7 +1,8 @@
 import {
-  MIN_SRCSET_WIDTH,
-  MAX_SRCSET_WIDTH,
   DEFAULT_SRCSET_WIDTH_TOLERANCE,
+  DOMAIN_REGEX,
+  MAX_SRCSET_WIDTH,
+  MIN_SRCSET_WIDTH,
 } from './constants.js';
 
 export function validateAndDestructureOptions(options) {
@@ -93,5 +94,27 @@ export function validateDevicePixelRatios(devicePixelRatios) {
 export function validateVariableQualities(variableQualities) {
   if (typeof variableQualities !== 'object') {
     throw new Error('The variableQualities argument can only be an object');
+  }
+}
+
+export function validateDomainString(domainString) {
+  if (DOMAIN_REGEX.exec(domainString) == null) {
+    throw new Error(
+      'Domain must be passed in as fully-qualified ' +
+        'domain name and should not include a protocol or any path ' +
+        'element, i.e. "example.imgix.net".',
+    );
+  }
+}
+
+export function validateURLToken(tokenString) {
+  if (typeof tokenString !== 'string' && typeof tokenString !== 'undefined') {
+    throw new Error('secureURLToken must be string or undefined');
+  }
+}
+
+export function validateUseHTTPS(useHTTPSBoolean) {
+  if (typeof useHTTPSBoolean !== 'boolean') {
+    throw new Error('useHTTPs must be a boolean');
   }
 }

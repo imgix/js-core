@@ -1,10 +1,13 @@
 import assert from 'assert';
 
 import {
+  validateDomainString,
   validateRange,
+  validateURLToken,
+  validateUseHTTPS,
+  validateVariableQuality,
   validateWidths,
   validateWidthTolerance,
-  validateVariableQuality,
 } from '../src/validators.js';
 
 describe('Validators:', function () {
@@ -142,6 +145,57 @@ describe('Validators:', function () {
 
       assert.doesNotThrow(() => {
         validateVariableQuality(false);
+      });
+    });
+  });
+  describe('Testing validateDomain', () => {
+    it('throws when domain string includes a protocol', () => {
+      assert.throws(() => {
+        validateDomainString('https://sdk-test.imgix.net');
+      });
+    });
+    it('throws when domain string includes a path', () => {
+      assert.throws(() => {
+        validateDomainString('sdk-test.imgix.net/amsterdam.jpg');
+      });
+    });
+    it('throws when domain is not a string', () => {
+      assert.throws(() => {
+        validateDomainString({});
+      });
+    });
+    it('does not throw on a valid domain string', () => {
+      assert.doesNotThrow(() => {
+        validateDomainString('sdk-test.imgix.net');
+      });
+    });
+  });
+  describe('Testing validateUseHTTPS', () => {
+    it('throws when useHTTPS is not a boolean', () => {
+      assert.throws(() => {
+        validateUseHTTPS('true');
+      });
+    });
+    it('does not throw on a valid useHTTPS boolean', () => {
+      assert.doesNotThrow(() => {
+        validateUseHTTPS(false);
+      });
+    });
+  });
+  describe('Testing validateURLToken', () => {
+    it('throws when token is not a string or undefined', () => {
+      assert.throws(() => {
+        validateURLToken(1);
+      });
+    });
+    it('does not throw when token is a string', () => {
+      assert.doesNotThrow(() => {
+        validateURLToken('abc1234');
+      });
+    });
+    it('does not throw when token is a undefined', () => {
+      assert.doesNotThrow(() => {
+        validateURLToken(undefined);
       });
     });
   });
