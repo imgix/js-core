@@ -427,7 +427,7 @@ const srcset = client.buildSrcSet(
 console.log(srcset);
 ```
 
-Normally this would output a src of `https://sdk-test.imgix.net/file%2Bwith%2520some%2Bcrazy%3Fthings.jpg`, but since path encoding is disabled, it will output a src of `https://sdk-test.imgix.net/file+with%20some+crazy?things.jpg`.
+Normally this would output a src of `https://testing.imgix.net/file%2Bwith%2520some%2Bcrazy%3Fthings.jpg`, but since path encoding is disabled, it will output a src of `https://testing.imgix.net/file+with%20some+crazy?things.jpg`.
 
 ### Web Proxy Sources
 
