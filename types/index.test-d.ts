@@ -79,3 +79,11 @@ expectType<string>(ImgixClient._buildSrcSet(absoluteURL, params));
 expectType<string>(
   ImgixClient._buildSrcSet(absoluteURL, params, srcsetOptions),
 );
+
+// Expect getters to return the correct type
+expectType<string>(client.domain);
+expectType<boolean>(client.useHTTPS);
+expectType<string>(client.urlPrefix);
+expectType<boolean>(client.includeLibraryParam);
+expectType<string>(client.libraryParam);
+expectType<string | null>(client.secureURLToken);

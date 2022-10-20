@@ -1,24 +1,16 @@
-export type ImgixClientOptions = {
-  domain: string;
-  secureURLToken?: string | undefined;
-  useHTTPS?: boolean;
-  includeLibraryParam?: boolean;
-  libraryParm?: string;
-};
-
-interface _buildURLOptions extends Omit<ImgixClientOptions, 'domain'> {
-  domain?: string;
-  disablePathEncoding?: boolean;
-}
-
 declare class ImgixClient {
-  domain: string;
-  includeLibraryParam: boolean;
-  readonly libraryParam: string;
-  secureURLToken: string;
-  readonly settings: ImgixClient;
-  readonly urlPrefix: string;
-  useHTTPS: boolean;
+  private _settings: Object;
+  private _libraryParam: string;
+  get domain(): string;
+  set domain(domain: string);
+  get useHTTPS(): boolean;
+  set useHTTPS(useHttps: boolean);
+  get includeLibraryParam(): boolean;
+  set includeLibraryParam(includeLibraryParam: boolean);
+  get libraryParam(): string;
+  get secureURLToken(): string | null;
+  set secureURLToken(token: string | null);
+  get urlPrefix(): string;
 
   constructor(opts: ImgixClientOptions);
 
@@ -50,6 +42,19 @@ declare class ImgixClient {
     srcSetOptions?: SrcSetOptions,
     clientOptions?: ImgixClientOptions,
   ): string;
+}
+
+export type ImgixClientOptions = {
+  domain: string;
+  secureURLToken?: string | undefined;
+  useHTTPS?: boolean;
+  includeLibraryParam?: boolean;
+  libraryParm?: string;
+};
+
+interface _buildURLOptions extends Omit<ImgixClientOptions, 'domain'> {
+  domain?: string;
+  disablePathEncoding?: boolean;
 }
 
 export type DevicePixelRatio = 1 | 2 | 3 | 4 | 5 | number;
