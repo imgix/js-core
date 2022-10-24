@@ -432,7 +432,8 @@ Normally this would output a src of `https://testing.imgix.net/file%2Bwith%2520s
 
 ### Custom URL encoding
 
-This library will encode by default using the `encodeURI()` or `encodeURIComponent()`. If you want to use another form of encoding you can pass it in the optionss. 
+This library will encode by default using `encodeURI()`,  `encodeURIComponent()`, or a combination of the two depending on the image path and parameters. 
+You can define a custom encoding function in `buildURL's `options` object **if** you wish to override this behavior. Note that encoding your own URL can result in a URL that is **not** recognized by the imgix rendering API.
 
 ```js
 const ImgixClient = require("@imgix/js-core");
@@ -442,14 +443,20 @@ const client = new ImgixClient({
 });
 
 client.buildURL(
-  "https://imgix-proxy.n8s.jp/img_nikkei-sum.jpg",
+  "https://proxy.imgix.net/image.jpg",
   {
-    "txt": "test!()*"
+    "txt": "test!(')*"
   },
   {
     customEncoder: (path) => encodeURI(path).replace("'", "%27")
   }
 )
+
+/*
+  output:
+  https://proxy.imgix.net/image.jpg?txt=test!(%27)
+*/
+
 ```
 
 ### Web Proxy Sources

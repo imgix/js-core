@@ -367,7 +367,7 @@ describe('URL Builder:', function describeSuite() {
           "txt-y": 600
         },
         {
-          customEncoder: (path) => encodeURI(path).replace("'", "%27")
+          encoder: (path) => encodeURI(path).replace("'", "%27")
         }
       )
 

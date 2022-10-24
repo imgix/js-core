@@ -48,10 +48,7 @@ export default class ImgixClient {
   }
 
   buildURL(rawPath = '', params = {}, options = {}) {
-    const path = this._sanitizePath(rawPath, {
-      encode: !options.disablePathEncoding,
-      customEncoder: options.customEncoder
-    });
+    const path = this._sanitizePath(rawPath, options);
 
     let finalParams = this._buildParams(params, options);
     if (!!this.settings.secureURLToken) {
@@ -108,7 +105,7 @@ export default class ImgixClient {
   _buildParams(params = {}, options = {}) {
     // If a custom encoder is present, use it
     // Otherwise just use the encodeURIComponent
-    const encode = options.customEncoder || encodeURIComponent
+    const encode = options.encoder || encodeURIComponent
 
     const queryParams = [
       // Set the libraryParam if applicable.
@@ -127,10 +124,6 @@ export default class ImgixClient {
             ? Base64.encodeURI(value)
             : encode(value);
         prev.push(`${encodedKey}=${encodedValue}`);
-
-        if(value === "test!(')"){
-          console.log('#######################',encodedKey, encodedValue)
-        }
 
         return prev;
       }, []),
@@ -158,26 +151,25 @@ export default class ImgixClient {
    * @param {boolean} options.encode Whether to encode the path, default true
    * @returns {string} The sanitized path
    */
-  _sanitizePath(path, options = {}) {
+   _sanitizePath(path, options = {}) {
     // Strip leading slash first (we'll re-add after encoding)
     let _path = path.replace(/^\//, '');
 
-    if (!(options.encode === false)) {
-      if (/^https?:\/\//.test(_path)) {
-        // If a custom encoder is passed, use it
-        // otherwise use de/encodeURIComponent to ensure *all* characters are handled,
-        // since it's being used as a path
-        const encode = options.customEncoder || encodeURIComponent
-        _path = encode(_path);
-      } else {
-        // If a custom encoder is passed, use it
-        // Otherwise use de/encodeURI if we think the path is just a path,
-        // so it leaves legal characters like '/' and '@' alone
-        const encode = options.customEncoder || encodeURI
-        _path = encode(_path).replace(/[#?:+]/g, encodeURIComponent);
-      }
+    if (options.disablePathEncoding) {
+      return '/' + _path;
     }
 
+    if (options.encoder) {
+      _path = options.encoder(_path);
+    } else if (/^https?:\/\//.test(_path)) {
+      // Use de/encodeURIComponent to ensure *all* characters are handled,
+      // since it's being used as a path
+      _path = encodeURIComponent(_path);
+    } else {
+      // Use de/encodeURI if we think the path is just a path,
+      // so it leaves legal characters like '/' and '@' alone
+      _path = encodeURI(_path).replace(/[#?:+]/g, encodeURIComponent);
+    }
     return '/' + _path;
   }
 
@@ -300,10 +292,7 @@ export default class ImgixClient {
         `${this.buildURL(
           path,
           { ...params, w },
-          { 
-            disablePathEncoding: options.disablePathEncoding, 
-            customEncoder: options.customEncoder 
-          },
+          options,
         )} ${w}w`,
     );
 
@@ -337,10 +326,7 @@ export default class ImgixClient {
           dpr: dpr,
           q: params.q || qualities[dpr] || qualities[Math.floor(dpr)],
         },
-        { 
-          disablePathEncoding: options.disablePathEncoding, 
-          customEncoder: options.customEncoder 
-        },
+        options,
       )} ${dpr}x`;
     };
 
@@ -350,10 +336,7 @@ export default class ImgixClient {
             `${this.buildURL(
               path,
               { ...params, dpr },
-              { 
-                disablePathEncoding: options.disablePathEncoding, 
-                customEncoder: options.customEncoder 
-              },
+              options,
             )} ${dpr}x`,
         )
       : targetRatios.map((dpr) => withQuality(path, params, dpr));
