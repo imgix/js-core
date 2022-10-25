@@ -80,11 +80,7 @@ export default class ImgixClient {
 
   set secureURLToken(value) {
     validateURLToken(value);
-    if (typeof value === 'undefined') {
-      this.settings.secureURLToken = undefined;
-    } else {
-      this.settings.secureURLToken = value;
-    }
+    this.settings.secureURLToken = value;
   }
 
   get useHTTPS() {
