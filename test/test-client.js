@@ -111,5 +111,12 @@ describe('Imgix client:', function describeSuite() {
       client.includeLibraryParam = false;
       assert.strictEqual(client.buildURL('image.jpg'), expectedURL);
     });
+    it('does not re-assign settings property to another object or value type', function testSpec() {
+      assert.throws(function () {
+        const client = new ImgixClient({ domain: 'sdk-test.imgix.net' });
+        client.settings = {};
+        client.buildURL('/bar');
+      });
+    });
   });
 });
