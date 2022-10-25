@@ -119,7 +119,7 @@ The following options can be used when creating an instance of `ImgixClient`:
 - **`params`:** Object. Any number of imgix rendering API [parameters](https://docs.imgix.com/apis/url).
 - **`options`:** Object. Any number of modifiers, described below:
   - [**`disablePathEncoding`**](#disable-path-encoding)
-  - [**`customEncoder`**](#custom-encoder)
+  - [**`encoder`**](#encoder)
 
 Construct a single image URL by passing in the image `path` and any rendering API parameters.
 
@@ -448,7 +448,7 @@ client.buildURL(
     "txt": "test!(')*"
   },
   {
-    customEncoder: (path) => encodeURI(path).replace("'", "%27")
+    encoder: (path) => encodeURI(path).replace("'", "%27")
   }
 )
 
