@@ -6,7 +6,7 @@ import {
   DEFAULT_OPTIONS,
   DOMAIN_REGEX,
   DPR_QUALITIES,
-  VERSION,
+  VERSION
 } from './constants.js';
 import { extractUrl } from './helpers';
 import {
@@ -16,7 +16,7 @@ import {
   validateVariableQualities,
   validateVariableQuality,
   validateWidths,
-  validateWidthTolerance,
+  validateWidthTolerance
 } from './validators.js';
 
 export default class ImgixClient {
@@ -50,9 +50,10 @@ export default class ImgixClient {
   buildURL(rawPath = '', params = {}, options = {}) {
     const path = this._sanitizePath(rawPath, {
       encode: !options.disablePathEncoding,
+      customEncoder: options.customEncoder
     });
 
-    let finalParams = this._buildParams(params);
+    let finalParams = this._buildParams(params, options);
     if (!!this.settings.secureURLToken) {
       finalParams = this._signParams(path, finalParams);
     }
@@ -104,7 +105,11 @@ export default class ImgixClient {
     return client.buildURL(pathname, combinedParams);
   }
 
-  _buildParams(params = {}) {
+  _buildParams(params = {}, options = {}) {
+    // If a custom encoder is present, use it
+    // Otherwise just use the encodeURIComponent
+    const encode = options.customEncoder || encodeURIComponent
+
     const queryParams = [
       // Set the libraryParam if applicable.
       ...(this.settings.libraryParam
@@ -116,12 +121,17 @@ export default class ImgixClient {
         if (value == null) {
           return prev;
         }
-        const encodedKey = encodeURIComponent(key);
+        const encodedKey = encode(key);
         const encodedValue =
           key.substr(-2) === '64'
             ? Base64.encodeURI(value)
-            : encodeURIComponent(value);
+            : encode(value);
         prev.push(`${encodedKey}=${encodedValue}`);
+
+        if(value === "test!(')"){
+          console.log('#######################',encodedKey, encodedValue)
+        }
+
         return prev;
       }, []),
     ];
@@ -154,13 +164,17 @@ export default class ImgixClient {
 
     if (!(options.encode === false)) {
       if (/^https?:\/\//.test(_path)) {
-        // Use de/encodeURIComponent to ensure *all* characters are handled,
+        // If a custom encoder is passed, use it
+        // otherwise use de/encodeURIComponent to ensure *all* characters are handled,
         // since it's being used as a path
-        _path = encodeURIComponent(_path);
+        const encode = options.customEncoder || encodeURIComponent
+        _path = encode(_path);
       } else {
-        // Use de/encodeURI if we think the path is just a path,
+        // If a custom encoder is passed, use it
+        // Otherwise use de/encodeURI if we think the path is just a path,
         // so it leaves legal characters like '/' and '@' alone
-        _path = encodeURI(_path).replace(/[#?:+]/g, encodeURIComponent);
+        const encode = options.customEncoder || encodeURI
+        _path = encode(_path).replace(/[#?:+]/g, encodeURIComponent);
       }
     }
 
@@ -286,7 +300,10 @@ export default class ImgixClient {
         `${this.buildURL(
           path,
           { ...params, w },
-          { disablePathEncoding: options.disablePathEncoding },
+          { 
+            disablePathEncoding: options.disablePathEncoding, 
+            customEncoder: options.customEncoder 
+          },
         )} ${w}w`,
     );
 
@@ -320,7 +337,10 @@ export default class ImgixClient {
           dpr: dpr,
           q: params.q || qualities[dpr] || qualities[Math.floor(dpr)],
         },
-        { disablePathEncoding: options.disablePathEncoding },
+        { 
+          disablePathEncoding: options.disablePathEncoding, 
+          customEncoder: options.customEncoder 
+        },
       )} ${dpr}x`;
     };
 
@@ -330,7 +350,10 @@ export default class ImgixClient {
             `${this.buildURL(
               path,
               { ...params, dpr },
-              { disablePathEncoding: options.disablePathEncoding },
+              { 
+                disablePathEncoding: options.disablePathEncoding, 
+                customEncoder: options.customEncoder 
+              },
             )} ${dpr}x`,
         )
       : targetRatios.map((dpr) => withQuality(path, params, dpr));

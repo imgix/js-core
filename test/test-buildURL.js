@@ -354,5 +354,26 @@ describe('URL Builder:', function describeSuite() {
       assert(!actual.includes('txt=undefined'));
       assert(!actual.includes('txt=null'));
     });
+
+    it('should be able to use a custom encoder', function testSpec() {
+      const actual = client.buildURL(
+        "unsplash/walrus.jpg",
+        {
+          txt: "test!(')",
+          "txt-color": "000",
+          "txt-size": 400,
+          "txt-font": "Avenir-Black",
+          "txt-x": 800,
+          "txt-y": 600
+        },
+        {
+          customEncoder: (path) => encodeURI(path).replace("'", "%27")
+        }
+      )
+
+      const expected = 'https://test.imgix.net/unsplash/walrus.jpg?txt=test!(%27)&txt-color=000&txt-size=400&txt-font=Avenir-Black&txt-x=800&txt-y=600'
+
+      assert.strictEqual(actual, expected)
+    })
   });
 });
