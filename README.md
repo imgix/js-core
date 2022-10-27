@@ -119,6 +119,7 @@ The following options can be used when creating an instance of `ImgixClient`:
 - **`params`:** Object. Any number of imgix rendering API [parameters](https://docs.imgix.com/apis/url).
 - **`options`:** Object. Any number of modifiers, described below:
   - [**`disablePathEncoding`**](#disable-path-encoding)
+  - [**`customEncoder`**](#custom-encoder)
 
 Construct a single image URL by passing in the image `path` and any rendering API parameters.
 
@@ -428,6 +429,28 @@ console.log(srcset);
 ```
 
 Normally this would output a src of `https://testing.imgix.net/file%2Bwith%2520some%2Bcrazy%3Fthings.jpg`, but since path encoding is disabled, it will output a src of `https://testing.imgix.net/file+with%20some+crazy?things.jpg`.
+
+### Custom URL encoding
+
+This library will encode by default using the `encodeURI()` or `encodeURIComponent()`. If you want to use another form of encoding you can pass it in the optionss. 
+
+```js
+const ImgixClient = require("@imgix/js-core");
+const client = new ImgixClient({
+  domain: 'test.imgix.com',
+  secureURLToken: 'xxxxxxxx',
+});
+
+client.buildURL(
+  "https://imgix-proxy.n8s.jp/img_nikkei-sum.jpg",
+  {
+    "txt": "test!()*"
+  },
+  {
+    customEncoder: (path) => encodeURI(path).replace("'", "%27")
+  }
+)
+```
 
 ### Web Proxy Sources
 
