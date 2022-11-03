@@ -227,7 +227,7 @@ describe('URL Builder:', function describeSuite() {
     it('includes an `ixlib` param if the `includeLibraryParam` and `libraryPram` settings are truthy', function testSpec() {
       // TODO(LUIS): SFCC and Vue still set ixLibParam through settings. They
       // need to updated or they won't include the param.
-      client.libraryParam = 'test';
+      client._libraryParam = 'test';
       client.includeLibraryParam = true;
       const result = client._buildParams({});
       assert(result.match(/ixlib=test/));
