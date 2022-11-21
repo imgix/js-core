@@ -218,8 +218,8 @@ https://testing.imgix.net/image.jpg?h=800&ar=3%3A2&fit=crop&dpr=5&s=7c4b8adb733d
 
 <!-- prettier-ignore-end -->
 
-This library generate by default `1` to `5` dpr `srcset`.
-You can control generated target ratios with `devicePixelRatios` parameters.
+By default, this library generates a `srcset` with pixel density values of `1` through `5`.
+These target ratios can be controlled by using the `devicePixelRatios` parameters.
 
 ```js
 const client = new ImgixClient({
