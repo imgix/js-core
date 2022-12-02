@@ -89,6 +89,7 @@ console.log(url); // => 'https://testing.imgix.net/users/1.png?w=400&h=300&s=…
 ### In-browser
 
 ```js
+const ImgixClient = require('@imgix/js-core');
 var client = new ImgixClient({
   domain: 'testing.imgix.net',
   // Do not use signed URLs with `secureURLToken` on the client side,
