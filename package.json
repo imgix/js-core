@@ -10,7 +10,7 @@
   "dependencies": {
     "js-base64": "~3.7.0",
     "md5": "^2.2.1",
-    "ufo": "^0.8.0"
+    "ufo": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "7.20.5",
