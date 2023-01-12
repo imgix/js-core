@@ -118,8 +118,8 @@ The following options can be used when creating an instance of `ImgixClient`:
 - **`path`:** String, required. A full, unencoded path to the image. This includes any additional directory information required to [locate the image](https://docs.imgix.com/setup/serving-images) within a source.
 - **`params`:** Object. Any number of imgix rendering API [parameters](https://docs.imgix.com/apis/url).
 - **`options`:** Object. Any number of modifiers, described below:
-  - [**`disablePathEncoding`**](#disable-path-encoding)
-  - [**`encoder`**](#encoder)
+  - [**`disablePathEncoding`**](#disable-path-encoding): Boolean. Disables encoding logic applied to the image path.
+  - [**`encoder`**](#encoder): Function. Applies custom logic to encode the image path and query parameters.
 
 Construct a single image URL by passing in the image `path` and any rendering API parameters.
 
@@ -432,7 +432,7 @@ Normally this would output a src of `https://testing.imgix.net/file%2Bwith%2520s
 
 ### Custom URL encoding
 
-This library will encode by default using `encodeURI()`,  `encodeURIComponent()`, or a combination of the two depending on the image path and parameters. 
+This library will encode by default using `encodeURI()`,  `encodeURIComponent()`, or a combination of the two depending on the image path and parameters.
 You can define a custom encoding function in `buildURL's `options` object **if** you wish to override this behavior. Note that encoding your own URL can result in a URL that is **not** recognized by the imgix rendering API.
 
 ```js
@@ -457,6 +457,26 @@ client.buildURL(
   https://proxy.imgix.net/image.jpg?txt=test!(%27)
 */
 
+```
+
+The custom encoder also accepts a second optional parameter `key` which allows users to modify how query parameters are encoded. This parameter does not affect the custom encoding logic of the image path.
+
+```js
+const ImgixClient = require("@imgix/js-core");
+const client = new ImgixClient({
+  domain: 'test.imgix.com',
+  secureURLToken: 'xxxxxxxx',
+});
+
+client.buildURL(
+  "https://proxy.imgix.net/image.jpg",
+  {
+    "txt": "test!(')*"
+  },
+  {
+    encoder: (value, key) => key?.substr(-2) === '64' ? Base64.encodeURI(value) : value.replace(' ', "+")
+  }
+)
 ```
 
 ### Web Proxy Sources
