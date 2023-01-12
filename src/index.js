@@ -119,11 +119,11 @@ export default class ImgixClient {
         if (value == null) {
           return prev;
         }
-        const encodedKey = useCustomEncoder ? customEncoder(key) : encodeURIComponent(key);
+        const encodedKey = useCustomEncoder ? customEncoder(key, value) : encodeURIComponent(key);
         const encodedValue =
           key.substr(-2) === '64'
-          ? useCustomEncoder ? customEncoder(value) : Base64.encodeURI(value)
-          : useCustomEncoder ? customEncoder(value) : encodeURIComponent(value);
+          ? useCustomEncoder ? customEncoder(value, key) : Base64.encodeURI(value)
+          : useCustomEncoder ? customEncoder(value, key) : encodeURIComponent(value);
         prev.push(`${encodedKey}=${encodedValue}`);
 
         return prev;
