@@ -253,6 +253,14 @@ describe('URL Builder:', function describeSuite() {
 
       assert.strictEqual(result, expectation);
     });
+
+    it('does not base64-encode when a custom encoder is defined', () => {
+      const params = { txt64: 'bG9yZW0gaXBzdW0' };
+      const expectation = '?txt64=bG9yZW0gaXBzdW0';
+      const result = client._buildParams(params, { encoder: (param) => param });
+
+      assert.strictEqual(result, expectation);
+    })
   });
 
   describe('Calling _signParams()', function describeSuite() {
