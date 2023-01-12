@@ -105,7 +105,8 @@ export default class ImgixClient {
   _buildParams(params = {}, options = {}) {
     // If a custom encoder is present, use it
     // Otherwise just use the encodeURIComponent
-    const encode = options.encoder || encodeURIComponent
+    const useCustomEncoder = !!options.encoder;
+    const customEncoder = options.encoder;
 
     const queryParams = [
       // Set the libraryParam if applicable.
@@ -118,11 +119,11 @@ export default class ImgixClient {
         if (value == null) {
           return prev;
         }
-        const encodedKey = encode(key);
+        const encodedKey = useCustomEncoder ? customEncoder(key) : encodeURIComponent(key);
         const encodedValue =
           key.substr(-2) === '64'
-            ? Base64.encodeURI(value)
-            : encode(value);
+          ? useCustomEncoder ? customEncoder(value) : Base64.encodeURI(value)
+          : useCustomEncoder ? customEncoder(value) : encodeURIComponent(value);
         prev.push(`${encodedKey}=${encodedValue}`);
 
         return prev;
