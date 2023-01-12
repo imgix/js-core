@@ -1,4 +1,5 @@
 import assert from 'assert';
+import { Base64 } from 'js-base64';
 import ImgixClient from '../src/index.js';
 
 describe('URL Builder:', function describeSuite() {
@@ -260,7 +261,7 @@ describe('URL Builder:', function describeSuite() {
       const result = client._buildParams(params, { encoder: (param) => param });
 
       assert.strictEqual(result, expectation);
-    })
+    });
   });
 
   describe('Calling _signParams()', function describeSuite() {
@@ -382,6 +383,14 @@ describe('URL Builder:', function describeSuite() {
       const expected = 'https://test.imgix.net/unsplash/walrus.jpg?txt=test!(%27)&txt-color=000&txt-size=400&txt-font=Avenir-Black&txt-x=800&txt-y=600'
 
       assert.strictEqual(actual, expected)
-    })
+    });
+
+    it('can custom encode the parameter value based on the parameter key', () => {
+      const params = { txt64: 'lorem ipsum', txt: 'Hello World' };
+      const expectation = '?txt64=bG9yZW0gaXBzdW0&txt=Hello+World';
+      const result = client._buildParams(params, { encoder: (value, key) => key.substr(-2) === '64' ? Base64.encodeURI(value) : value.replace(" ", "+") });
+
+      assert.strictEqual(result, expectation);
+    });
   });
 });
