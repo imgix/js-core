@@ -388,7 +388,7 @@ describe('URL Builder:', function describeSuite() {
     it('can custom encode the parameter value based on the parameter key', () => {
       const params = { txt64: 'lorem ipsum', txt: 'Hello World' };
       const expectation = '?txt64=bG9yZW0gaXBzdW0&txt=Hello+World';
-      const result = client._buildParams(params, { encoder: (value, key) => key.substr(-2) === '64' ? Base64.encodeURI(value) : value.replace(" ", "+") });
+      const result = client._buildParams(params, { encoder: (value, key) => key && key.substr(-2) === '64' ? Base64.encodeURI(value) : value.replace(" ", "+") });
 
       assert.strictEqual(result, expectation);
     });
