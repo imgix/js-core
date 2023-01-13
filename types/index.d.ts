@@ -16,8 +16,8 @@ declare class ImgixClient {
     params?: {},
     options?: { disablePathEncoding?: boolean },
   ): string;
-  _sanitizePath(path: string, options?: { encode?: boolean }): string;
-  _buildParams(params: {}): string;
+  _sanitizePath(path: string, options?: _sanitizePathOptions): string;
+  _buildParams(params: {}, options?: _buildParamsOptions): string;
   _signParams(path: string, queryParams?: {}): string;
   buildSrcSet(path: string, params?: {}, options?: SrcSetOptions): string;
   _buildSrcSetPairs(path: string, params?: {}, options?: SrcSetOptions): string;
@@ -50,6 +50,15 @@ export interface SrcSetOptions {
   devicePixelRatios?: DevicePixelRatio[];
   variableQualities?: VariableQualities;
   disablePathEncoding?: boolean;
+}
+
+export interface _sanitizePathOptions {
+  disablePathEncoding?: boolean,
+  encoder?: (path: string) => string
+}
+
+export interface _buildParamsOptions {
+  encoder?: (value: string, key?: string) => string
 }
 
 export default ImgixClient;
