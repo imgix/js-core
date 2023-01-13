@@ -193,7 +193,7 @@ describe('URL Builder:', function describeSuite() {
         assert.strictEqual(result.substring(1), expectation);
       });
 
-      it("does not encode the path any differently if the option second parameter is passed to the custom encoder", function testSpec() {
+      it("does not alter path encoding when custom encoder optional 'key' parameter is set", function testSpec() {
         const expectation = path.replaceAll(' ', '+');
         const result = client._sanitizePath(path, { encoder: (path, optionalValue) => path.replaceAll(' ', '+')});
 
