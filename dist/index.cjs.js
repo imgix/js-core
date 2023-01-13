@@ -151,7 +151,7 @@ function _toPropertyKey(arg) {
 }
 
 // package version used in the ix-lib parameter
-var VERSION = '3.7.0';
+var VERSION = '3.7.1';
 // regex pattern used to determine if a domain is valid
 var DOMAIN_REGEX = /^(?:[a-z\d\-_]{1,62}\.){0,125}(?:[a-z\d](?:\-(?=\-*[a-z\d])|[a-z]|\d){0,62}\.)[a-z\d]{1,63}$/i;
 // minimum generated srcset width
@@ -335,7 +335,8 @@ var ImgixClient = /*#__PURE__*/function () {
       var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
       // If a custom encoder is present, use it
       // Otherwise just use the encodeURIComponent
-      var encode = options.encoder || encodeURIComponent;
+      var useCustomEncoder = !!options.encoder;
+      var customEncoder = options.encoder;
       var queryParams = [].concat(_toConsumableArray(this.settings.libraryParam ? ["ixlib=".concat(this.settings.libraryParam)] : []), _toConsumableArray(Object.entries(params).reduce(function (prev, _ref) {
         var _ref2 = _slicedToArray(_ref, 2),
           key = _ref2[0],
@@ -343,8 +344,8 @@ var ImgixClient = /*#__PURE__*/function () {
         if (value == null) {
           return prev;
         }
-        var encodedKey = encode(key);
-        var encodedValue = key.substr(-2) === '64' ? jsBase64.Base64.encodeURI(value) : encode(value);
+        var encodedKey = useCustomEncoder ? customEncoder(key, value) : encodeURIComponent(key);
+        var encodedValue = key.substr(-2) === '64' ? useCustomEncoder ? customEncoder(value, key) : jsBase64.Base64.encodeURI(value) : useCustomEncoder ? customEncoder(value, key) : encodeURIComponent(value);
         prev.push("".concat(encodedKey, "=").concat(encodedValue));
         return prev;
       }, [])));
