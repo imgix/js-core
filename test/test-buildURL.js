@@ -182,6 +182,24 @@ describe('URL Builder:', function describeSuite() {
         assert.strictEqual(result.indexOf('%2520'), expectation2);
       });
     });
+
+    describe('with a custom encoder defined', function describeSuite() {
+      const path = 'http://example.com/images and photos/1.png?foo=%20';
+
+      it("encodes the path given custom logic", function testSpec() {
+        const expectation = path.replaceAll(' ', '+');
+        const result = client._sanitizePath(path, { encoder: (path) => path.replaceAll(' ', '+')});
+
+        assert.strictEqual(result.substring(1), expectation);
+      });
+
+      it("does not encode the path any differently if the option second parameter is passed to the custom encoder", function testSpec() {
+        const expectation = path.replaceAll(' ', '+');
+        const result = client._sanitizePath(path, { encoder: (path, optionalValue) => path.replaceAll(' ', '+')});
+
+        assert.strictEqual(result.substring(1), expectation);
+      });
+    });
   });
 
   describe('Calling _buildParams()', function describeSuite() {
