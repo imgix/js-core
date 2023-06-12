@@ -1,4 +1,4 @@
-import resolve from 'rollup-plugin-node-resolve';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import { uglify } from 'rollup-plugin-uglify';
 import babel from 'rollup-plugin-babel';
@@ -14,7 +14,7 @@ export default [
       format: 'umd',
     },
     plugins: [
-      resolve(),
+      nodeResolve(),
       commonjs(),
       babel({
         exclude: ['node_modules/**'],
