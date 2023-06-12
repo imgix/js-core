@@ -35,7 +35,7 @@ workflows:
           matrix:
             parameters:
               version:
-                - "current"
+                - "20.2"
                 - "lts"
       - deploy:
           requires:
