@@ -1,7 +1,6 @@
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
-const commonjs = require('rollup-plugin-commonjs');
-const { uglify } = require('rollup-plugin-uglify');
-const babel = require('rollup-plugin-babel');
+const commonjs = require('@rollup/plugin-commonjs');
+const babel = require('@rollup/plugin-babel');
 const pkg = require('./package.json');
 
 export default [
@@ -19,7 +18,6 @@ export default [
       babel({
         exclude: ['node_modules/**'],
       }),
-      uglify(),
     ],
   },
   {
