@@ -38,6 +38,7 @@ workflows:
                 - "20.17"
                 - "22.9"
                 - "lts"
+                - "current"
       - deploy:
           requires:
             - test
