@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@5.1.0
+  node: circleci/node@5
 jobs:
   test:
     parameters:
@@ -23,7 +23,7 @@ jobs:
           command: npm run compile
   deploy:
     docker:
-      - image: cimg/node:20.2
+      - image: cimg/node:current
     steps:
       - checkout
       - node/install-packages
@@ -35,8 +35,10 @@ workflows:
           matrix:
             parameters:
               version:
-                - "20.2"
+                - "20.17"
+                - "22.9"
                 - "lts"
+                - "current"
       - deploy:
           requires:
             - test

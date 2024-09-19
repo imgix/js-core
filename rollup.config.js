@@ -1,13 +1,12 @@
 const { nodeResolve } = require('@rollup/plugin-node-resolve');
-const commonjs = require('rollup-plugin-commonjs');
-const { uglify } = require('rollup-plugin-uglify');
-const babel = require('rollup-plugin-babel');
+const commonjs = require('@rollup/plugin-commonjs');
+const babel = require('@rollup/plugin-babel');
 const pkg = require('./package.json');
 
 export default [
   // Browser-friendly UMD build.
   {
-    input: 'src/index.js',
+    input: 'src/index.mjs',
     output: {
       name: 'ImgixClient',
       file: 'dist/imgix-js-core.umd.js',
@@ -17,20 +16,21 @@ export default [
       nodeResolve(),
       commonjs(),
       babel({
+        babelHelpers: "bundled",
         exclude: ['node_modules/**'],
       }),
-      uglify(),
     ],
   },
   {
-    input: 'src/index.js',
-    external: ['md5', 'js-base64', 'assert'],
+    input: 'src/index.mjs',
+    external: ['md5', 'js-base64', 'assert', 'ufo'],
     output: [
       { file: pkg.main, format: 'cjs', exports: 'default'},
       { file: pkg.module, format: 'es', exports: 'default' },
     ],
     plugins: [
       babel({
+        babelHelpers: "bundled",
         exclude: ['node_modules/**'],
       }),
     ],

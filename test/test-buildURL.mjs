@@ -1,6 +1,6 @@
 import assert from 'assert';
 import { Base64 } from 'js-base64';
-import ImgixClient from '../src/index.js';
+import ImgixClient from '../src/index.mjs';
 
 describe('URL Builder:', function describeSuite() {
   describe('Calling _sanitizePath()', function describeSuite() {

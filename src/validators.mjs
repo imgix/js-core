@@ -2,7 +2,7 @@ import {
   MIN_SRCSET_WIDTH,
   MAX_SRCSET_WIDTH,
   DEFAULT_SRCSET_WIDTH_TOLERANCE,
-} from './constants.js';
+} from './constants.mjs';
 
 export function validateAndDestructureOptions(options) {
   let widthTolerance;

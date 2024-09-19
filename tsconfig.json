@@ -3,5 +3,7 @@
     "target": "es2015",
     "module": "umd"
   },
-  "files": ["types/index.d.ts"]
+  "files": [
+    "types/index.d.ts"
+  ]
 }
