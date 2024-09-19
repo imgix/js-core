@@ -24,10 +24,17 @@ params = {};
 expectType<string>(client.buildURL('foo/bar/baz', params, buildURLOptions));
 
 expectType<string>(client._sanitizePath(path));
-expectType<string>(client._sanitizePath(path, { disablePathEncoding: true, encoder: (path) => path }));
+expectType<string>(
+  client._sanitizePath(path, {
+    disablePathEncoding: true,
+    encoder: (path) => path,
+  }),
+);
 
 expectType<string>(client._buildParams(params));
-expectType<string>(client._buildParams(params, { encoder: (value, key) => value }));
+expectType<string>(
+  client._buildParams(params, { encoder: (value, key) => value }),
+);
 
 expectType<string>(client._signParams(path, params));
 
