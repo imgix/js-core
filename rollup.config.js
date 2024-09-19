@@ -6,7 +6,7 @@ const pkg = require('./package.json');
 export default [
   // Browser-friendly UMD build.
   {
-    input: 'src/index.js',
+    input: 'src/index.mjs',
     output: {
       name: 'ImgixClient',
       file: 'dist/imgix-js-core.umd.js',
@@ -21,7 +21,7 @@ export default [
     ],
   },
   {
-    input: 'src/index.js',
+    input: 'src/index.mjs',
     external: ['md5', 'js-base64', 'assert'],
     output: [
       { file: pkg.main, format: 'cjs', exports: 'default'},

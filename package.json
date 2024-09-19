@@ -45,9 +45,9 @@
     "prepublishOnly": "npm run build && npm run compile && npm run assert_version",
     "pretest": "npm run build",
     "pretty": "prettier --write '{src,test,types}/**/*.{js,ts}'",
-    "test": "mocha --require esm --recursive ./test/*.js && npm run tsd",
-    "test:watch": "mocha --require esm --recursive ./test/*.js --watch",
-    "test:performance": "mocha --require esm --recursive test/performance/*.js",
+    "test": "mocha --require esm --recursive ./test/*.mjs && npm run tsd",
+    "test:watch": "mocha --require esm --recursive ./test/*.mjs --watch",
+    "test:performance": "mocha --require esm --recursive test/performance/*.mjs",
     "tsd": "echo Running tsd; tsd",
     "release:dryRun": "npx node-env-run --exec 'semantic-release --dryRun'",
     "release:publish": "semantic-release"

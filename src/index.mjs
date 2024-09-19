@@ -7,8 +7,8 @@ import {
   DOMAIN_REGEX,
   DPR_QUALITIES,
   VERSION
-} from './constants.js';
-import { extractUrl } from './helpers';
+} from './constants.mjs';
+import { extractUrl } from './helpers.mjs';
 import {
   validateAndDestructureOptions,
   validateDevicePixelRatios,
@@ -17,7 +17,7 @@ import {
   validateVariableQuality,
   validateWidths,
   validateWidthTolerance
-} from './validators.js';
+} from './validators.mjs';
 
 export default class ImgixClient {
   constructor(opts = {}) {

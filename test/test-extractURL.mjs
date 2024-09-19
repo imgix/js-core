@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { extractUrl } from '../src/helpers.js';
+import { extractUrl } from '../src/helpers.mjs';
 
 describe('extractURL', () => {
   describe('For non-proxy path URLs', () => {

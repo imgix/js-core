@@ -1,5 +1,5 @@
 import assert from 'assert';
-import ImgixClient from '../src/index.js';
+import ImgixClient from '../src/index.mjs';
 
 describe('Path Encoding:', function describeSuite() {
   // NOTE: the image urls tested bellow actually resolve to an image.
