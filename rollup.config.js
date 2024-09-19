@@ -16,19 +16,21 @@ export default [
       nodeResolve(),
       commonjs(),
       babel({
+        babelHelpers: "bundled",
         exclude: ['node_modules/**'],
       }),
     ],
   },
   {
     input: 'src/index.mjs',
-    external: ['md5', 'js-base64', 'assert'],
+    external: ['md5', 'js-base64', 'assert', 'ufo'],
     output: [
       { file: pkg.main, format: 'cjs', exports: 'default'},
       { file: pkg.module, format: 'es', exports: 'default' },
     ],
     plugins: [
       babel({
+        babelHelpers: "bundled",
         exclude: ['node_modules/**'],
       }),
     ],
