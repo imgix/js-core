@@ -9,6 +9,7 @@ declare class ImgixClient {
     secureURLToken?: string;
     useHTTPS?: boolean;
     includeLibraryParam?: boolean;
+    sortParams?: boolean;
   });
 
   buildURL(
@@ -53,12 +54,12 @@ export interface SrcSetOptions {
 }
 
 export interface _sanitizePathOptions {
-  disablePathEncoding?: boolean,
-  encoder?: (path: string) => string
+  disablePathEncoding?: boolean;
+  encoder?: (path: string) => string;
 }
 
 export interface _buildParamsOptions {
-  encoder?: (value: string, key?: string) => string
+  encoder?: (value: string, key?: string) => string;
 }
 
 export default ImgixClient;

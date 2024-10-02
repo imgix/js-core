@@ -26,4 +26,5 @@ export const DEFAULT_OPTIONS = {
   includeLibraryParam: true,
   urlPrefix: 'https://',
   secureURLToken: null,
+  sortParams: false,
 };
