@@ -396,11 +396,11 @@ describe('URL Builder:', function describeSuite() {
         {
           encoder: (path) => encodeURI(path).replace("'", "%27")
         }
-      )
+      );
 
-      const expected = 'https://test.imgix.net/unsplash/walrus.jpg?txt=test!(%27)&txt-color=000&txt-size=400&txt-font=Avenir-Black&txt-x=800&txt-y=600'
+      const expected = 'https://test.imgix.net/unsplash/walrus.jpg?txt=test!(%27)&txt-color=000&txt-size=400&txt-font=Avenir-Black&txt-x=800&txt-y=600';
 
-      assert.strictEqual(actual, expected)
+      assert.strictEqual(actual, expected);
     });
 
     it('can custom encode the parameter value based on the parameter key', () => {
@@ -409,6 +409,27 @@ describe('URL Builder:', function describeSuite() {
       const result = client._buildParams(params, { encoder: (value, key) => key && key.substr(-2) === '64' ? Base64.encodeURI(value) : value.replace(" ", "+") });
 
       assert.strictEqual(result, expectation);
+    });
+
+    it('sorts parameters if the `sortParams` setting is truthy', () => {
+      client.settings.sortParams = true;
+
+      const actual = client.buildURL(
+        "unsplash/walrus.jpg",
+        {
+          txt64: 'base64',
+          txt: 'text',
+          'txt-color': '000',
+          'txt-size': 400,
+          'txt-x': 800,
+          'txt-y': 600,
+          'txt-font': 'Avenir-Black',
+        }
+      );
+
+      const expected = 'https://test.imgix.net/unsplash/walrus.jpg?txt=text&txt-color=000&txt-font=Avenir-Black&txt-size=400&txt-x=800&txt-y=600&txt64=YmFzZTY0';
+
+      assert.strictEqual(actual, expected);
     });
   });
 });

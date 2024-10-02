@@ -108,27 +108,39 @@ export default class ImgixClient {
     const useCustomEncoder = !!options.encoder;
     const customEncoder = options.encoder;
 
-    const queryParams = [
+    let queryParams = [
       // Set the libraryParam if applicable.
       ...(this.settings.libraryParam
-        ? [`ixlib=${this.settings.libraryParam}`]
+        ? [['ixlib', this.settings.libraryParam]]
         : []),
-
-      // Map over the key-value pairs in params while applying applicable encoding.
-      ...Object.entries(params).reduce((prev, [key, value]) => {
-        if (value == null) {
-          return prev;
-        }
-        const encodedKey = useCustomEncoder ? customEncoder(key, value) : encodeURIComponent(key);
-        const encodedValue =
-          key.substr(-2) === '64'
-          ? useCustomEncoder ? customEncoder(value, key) : Base64.encodeURI(value)
-          : useCustomEncoder ? customEncoder(value, key) : encodeURIComponent(value);
-        prev.push(`${encodedKey}=${encodedValue}`);
-
-        return prev;
-      }, []),
+      ...Object.entries(params),
     ];
+
+    if (this.settings.sortParams) {
+      queryParams = queryParams.sort(([a], [b]) =>
+        a > b ? 1 : a < b ? -1 : 0,
+      );
+    }
+
+    // Map over the key-value pairs in params while applying applicable encoding.
+    queryParams = queryParams.reduce((prev, [key, value]) => {
+      if (value == null) {
+        return prev;
+      }
+
+      const encodedKey = useCustomEncoder
+        ? customEncoder(key, value)
+        : encodeURIComponent(key);
+      const encodedValue = useCustomEncoder
+        ? customEncoder(value, key)
+        : key.substr(-2) === '64'
+        ? Base64.encodeURI(value)
+        : encodeURIComponent(value);
+
+      prev.push(`${encodedKey}=${encodedValue}`);
+
+      return prev;
+    }, []);
 
     return `${queryParams.length > 0 ? '?' : ''}${queryParams.join('&')}`;
   }
@@ -152,7 +164,7 @@ export default class ImgixClient {
    * @param {boolean} options.encode Whether to encode the path, default true
    * @returns {string} The sanitized path
    */
-   _sanitizePath(path, options = {}) {
+  _sanitizePath(path, options = {}) {
     // Strip leading slash first (we'll re-add after encoding)
     let _path = path.replace(/^\//, '');
 
@@ -289,12 +301,7 @@ export default class ImgixClient {
     }
 
     const srcset = targetWidthValues.map(
-      (w) =>
-        `${this.buildURL(
-          path,
-          { ...params, w },
-          options,
-        )} ${w}w`,
+      (w) => `${this.buildURL(path, { ...params, w }, options)} ${w}w`,
     );
 
     return srcset.join(',\n');
@@ -334,11 +341,7 @@ export default class ImgixClient {
     const srcset = disableVariableQuality
       ? targetRatios.map(
           (dpr) =>
-            `${this.buildURL(
-              path,
-              { ...params, dpr },
-              options,
-            )} ${dpr}x`,
+            `${this.buildURL(path, { ...params, dpr }, options)} ${dpr}x`,
         )
       : targetRatios.map((dpr) => withQuality(path, params, dpr));
 
