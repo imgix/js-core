@@ -23,7 +23,7 @@ jobs:
           command: npm run compile
   deploy:
     docker:
-      - image: cimg/node:20.2
+      - image: cimg/node:20.18
     steps:
       - checkout
       - node/install-packages
